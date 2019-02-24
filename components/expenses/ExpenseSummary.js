@@ -13,14 +13,18 @@ export default class ExpenseSummary extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.timeContainer}>
-          <Text style={[styles.detailFontStyle, {marginRight:5}]}>{Util.getTimeForm(new Date())}</Text>
-          <Text style={styles.detailFontStyle}>{Util.getNoon(new Date())}</Text>
+          <View style={[styles.centerVerticalLine, {flex: 0.1}]}></View>
+          <View style={styles.timeDetailContainer}>
+            <Text style={[styles.timeFontStyle, {marginRight:5}]}>{Util.getTimeForm(Util.getDate())}</Text>
+            <Text style={styles.timeFontStyle}>{Util.getNoon(Util.getDate())}</Text>
+          </View>
+          <View style={[styles.centerVerticalLine, {flex: 1}]}></View>
         </View>
         <View style={styles.totalExpenseContainer}>
           <Text style={styles.expenseStyle}>{Util.comma(2000)}</Text>
         </View>
         <View style={styles.detailContainer}>
-          <Text style={styles.detailFontStyle}>
+          <Text style={[styles.detailFontStyle]}>
             어쩌구 저쩌구 ... 어쩌구 저쩌구 ... 
             어쩌구 저쩌구 ... 어쩌구 저쩌구 ... 
             어쩌구 저쩌구 ... 어쩌구 저쩌구 ... 
@@ -41,13 +45,29 @@ const styles = StyleSheet.create({
     minHeight: 70,
     marginLeft: 40,
     marginRight: 20,
+    marginBottom: -10,
+    paddingBottom: 10
   },
   
   // Time 부분
   timeContainer: {
-    width: 80,
+    width: 80, 
+    flexDirection: 'column', 
+    alignItems: 'center',
+  },
+  timeDetailContainer: {
+    height: 20,
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  timeFontStyle: {
+    color: 'grey',
+    fontSize: 11
+  },
+  centerVerticalLine: {
+    width: 2, 
+    backgroundColor:'#000',
+    
   },
 
   // 금액 부분
@@ -58,6 +78,7 @@ const styles = StyleSheet.create({
     marginRight: 15
   },
   expenseStyle: {
+    marginTop: 3,
     fontWeight: 'bold'
   },
 
@@ -67,7 +88,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   detailFontStyle: {
+    marginTop: 7,
+    marginBottom: 20,
     color: 'grey',
-    fontSize: 10
+    fontSize: 11
   }
 })

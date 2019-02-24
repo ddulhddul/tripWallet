@@ -3,14 +3,23 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import ExpensesScreen from '../screens/ExpensesScreen';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
+import ExpensesScreen from '../screens/ExpensesScreen';
+import DayExpensesScreen from '../screens/DayExpensesScreen';
+
 const ExpensesStack = createStackNavigator({
-  Expenses: ExpensesScreen,
-});
+  Expenses: {
+    screen: ExpensesScreen
+  },
+  DayExpenses: {
+    screen: DayExpensesScreen
+  },
+}, {
+  initialRouteName: "Expenses"
+})
 
 ExpensesStack.navigationOptions = {
   tabBarLabel: 'Expenses',

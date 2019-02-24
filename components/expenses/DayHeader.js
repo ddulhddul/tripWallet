@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Util from '../Util'
 
 export default class DayHeader extends Component {
@@ -9,18 +9,27 @@ export default class DayHeader extends Component {
     }
   }
 
+  _onPressDay(date){
+    // this.props.navigateToDayExpenses()
+    this.props.navigation.navigate('DayExpenses', {
+      date: date
+    })
+  }
+
   render() {
+    const {date} = this.props.item
     return (
-      <View style={styles.container}>
+      // <TouchableOpacity style={styles.container} onPress={()=>this._onPressDay(date)}>
+      <TouchableOpacity style={styles.container} onPress={()=>this._onPressDay(date)}>
         <View style={styles.dayContainer}>
-          <Text style={styles.dayStyle}>{Util.getDateForm(new Date())}</Text>
-          <Text style={styles.weekStyle}>({Util.getDay(new Date())})</Text>
+          <Text style={styles.dayStyle}>{Util.getDateForm(date)}</Text>
+          <Text style={styles.weekStyle}>({Util.getDay(date)})</Text>
         </View>
         <View style={styles.totalExpenseContainer}>
           <Text style={styles.expenseTitleStyle}>금액</Text>
           <Text style={styles.expenseStyle}>{Util.comma(2000)}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

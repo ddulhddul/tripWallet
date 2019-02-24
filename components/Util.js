@@ -5,6 +5,14 @@ export default {
     return String(x || '').replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   },
 
+  getDate(param){
+    let date = new Date()
+    if(typeof param === 'number'){
+      date.setDate(date.getDate() + param)
+    }
+    return date
+  },
+
   getTimeForm(date){
     if(!date) return ''
     let hours = date.getHours()
