@@ -3,6 +3,7 @@ import {
   Image,
   Platform,
   ScrollView,
+  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import Util from '../components/Util'
-import ExpenseSmall from '../components/expenses/ExpenseSmall'
+import ExpenseComponent from '../components/expenses/ExpenseComponent'
 
 export default class DayExpensesScreen extends React.Component {
   
@@ -59,8 +60,13 @@ export default class DayExpensesScreen extends React.Component {
           <View style={[styles.circle]} />
         </View>
 
-        <ExpenseSmall style={styles.smallContent}></ExpenseSmall>
-
+        <FlatList
+          style={{width: '100%'}}
+          data={[{key: 'a'}, {key: 'b'}, {key: 'c'}, {key: 'd'}]}
+          renderItem={({item, index}) => (
+            <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+          )}
+        />
       </View>
     )
   }
@@ -118,13 +124,13 @@ const styles = StyleSheet.create({
   },
 
 
-  smallContent: {
-    width: '90%',
-    padding: 15,
-    elevation: 5,
-    backgroundColor: 'white',
+  // smallContent: {
+  //   width: '90%',
+  //   padding: 15,
+  //   elevation: 5,
+  //   backgroundColor: 'white',
 
-    flexDirection: 'row'
-  },
+  //   flexDirection: 'row'
+  // },
 
 })
