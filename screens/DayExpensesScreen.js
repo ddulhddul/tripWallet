@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   SectionList,
   Button,
+  ViewPagerAndroid,
   View,
 } from 'react-native';
 import Util from '../components/Util'
@@ -25,7 +26,8 @@ export default class DayExpensesScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      date: null
+      date: null,
+      index: 0
     }
   }
 
@@ -39,34 +41,53 @@ export default class DayExpensesScreen extends React.Component {
     this.props.navigation.goBack()
   }
 
+  onPageSelected(event){
+    if(!event || !event.nativeEvent) return
+    this.setState({
+      index: event.nativeEvent.position
+    })
+  }
+
   render() {
-    // const { date } = this.state
-    const { date } = { date: new Date() }
+    let { date } = this.state
+    if(!date) date = new Date()
+    const { index } = this.state
     return (
-      <View style={styles.container}> 
+      <View style={{flex:1}}>
         <View style={styles.dayContainer}>
           <Text style={styles.dayStyle}>{Util.getDateForm(date)}</Text>
           <Text style={styles.weekStyle}>({Util.getDay(date)})</Text>
         </View>
         <View style={styles.totalExpensesContainer}>
           <Text style={styles.totalExpenseTitle}>총 사용 금액 : </Text>
-          <Text style={styles.totalExpense}>{Util.comma(30000)} 원</Text>
+          <Text style={styles.totalExpense}>{Util.comma(31000)} 원</Text>
         </View>
-        <View style={styles.pagingContainer}>
-          <View style={[styles.circle]} />
-          <View style={[styles.circle]} />
-          <View style={[styles.circle, {backgroundColor: 'rgb(52, 152, 219)', opacity: 1}]} />
-          <View style={[styles.circle]} />
-          <View style={[styles.circle]} />
+        <View>
+          <View style={styles.pagingContainer}>
+            <View style={[styles.circle]} />
+            <View style={[styles.circle]} />
+            <View style={[styles.circle, index===0? {backgroundColor: 'rgb(52, 152, 219)', opacity: 1} : {}]} />
+            <View style={[styles.circle, index===1? {backgroundColor: 'rgb(52, 152, 219)', opacity: 1} : {}]} />
+            <View style={[styles.circle]} />
+          </View>
         </View>
-
-        <FlatList
-          style={{width: '100%'}}
-          data={[{key: 'a'}, {key: 'b'}, {key: 'c'}, {key: 'd'}]}
-          renderItem={({item, index}) => (
-            <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-          )}
-        />
+        
+        <ViewPagerAndroid style={{flex:1}} initialPage={0} onPageSelected={(event)=>this.onPageSelected(event)}>
+          <View key="1">
+            <ScrollView style={{width: '100%'}}>
+              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+            </ScrollView>
+          </View>
+          <View key="2">
+            <ScrollView style={{width: '100%'}}>
+              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+            </ScrollView>
+          </View>
+        </ViewPagerAndroid>
       </View>
     )
   }
@@ -79,11 +100,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: 30,
     alignItems: 'center',
+    justifyContent: 'center',
   },
 
   // Day 부분
   dayContainer: {
     flexDirection: 'row',
+    justifyContent: 'center'
   },
   dayStyle: {
     marginRight: 5,
@@ -99,6 +122,7 @@ const styles = StyleSheet.create({
   // 총 사용금액
   totalExpensesContainer: {
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   totalExpenseTitle: {
     color: 'grey',
@@ -110,6 +134,7 @@ const styles = StyleSheet.create({
   // middle Paging
   pagingContainer: {
     flexDirection: 'row',
+    alignSelf: 'center',
     width: 150,
     justifyContent: 'space-evenly',
     marginTop: 15,
@@ -132,5 +157,13 @@ const styles = StyleSheet.create({
 
   //   flexDirection: 'row'
   // },
+
+  viewPager: {
+    flex: 1
+  },
+  pageStyle: {
+    alignItems: 'center',
+    padding: 20,
+  }
 
 })
