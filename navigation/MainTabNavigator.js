@@ -10,10 +10,11 @@ import SettingsScreen from '../screens/SettingsScreen';
 import ExpensesScreen from '../screens/ExpensesScreen';
 import DayExpensesScreen from '../screens/DayExpensesScreen';
 import AddExpensesScreen from '../screens/AddExpensesScreen';
+import UpdateMapScreen from '../screens/UpdateMapScreen';
 
 // 임시
 const AddExpensesStack = createStackNavigator({
-  AddExpenses: AddExpensesScreen
+  AddExpenses: UpdateMapScreen
 })
 
 AddExpensesStack.navigationOptions = {
@@ -53,7 +54,8 @@ DayExpensesStack.navigationOptions = {
 const ExpensesStack = createStackNavigator({
   Expenses: ExpensesScreen,
   DayExpenses: DayExpensesScreen,
-  AddExpenses: AddExpensesScreen
+  AddExpenses: AddExpensesScreen,
+  UpdateMap: UpdateMapScreen
 }, {
   initialRouteName: "Expenses"
 })

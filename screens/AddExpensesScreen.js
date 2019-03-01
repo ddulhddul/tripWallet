@@ -15,8 +15,9 @@ import {
 } from 'react-native';
 import Util from '../components/Util'
 import { Icon, Constants, MapView, Location, Permissions } from 'expo'
+import UpdateMapScreen from './UpdateMapScreen'
 
-export default class AddExpensesScreen extends React.Component {
+export default class AddExpensesScreen extends React.Component extends UpdateMapScreen {
   
   static navigationOptions = {
     header: null,
@@ -33,35 +34,6 @@ export default class AddExpensesScreen extends React.Component {
   componentDidMount() {
     this._getLocationAsync();
   }
-
-  _handleMapRegionChange = mapRegion => {
-    this.setState({ mapRegion });
-  };
-
-  _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        locationText: 'Permission to access location was denied',
-      })
-      return
-    }
-
-    let location = await Location.getCurrentPositionAsync({});
-    const reverseGeocode = (await Location.reverseGeocodeAsync(location.coords) || [])[0] || {}
-    // console.log('location', location, reverseGeocode)
-    this.setState({ 
-      location, 
-      locationText: [
-        reverseGeocode.postalCode,
-        reverseGeocode.country,
-        reverseGeocode.city,
-        reverseGeocode.region,
-        reverseGeocode.street,
-        reverseGeocode.name,
-      ].join(' ')
-    });
-  };
 
   render() {
     return (
@@ -97,13 +69,22 @@ export default class AddExpensesScreen extends React.Component {
           </View>
           <View style={styles.row}>
             <View style={[styles.column, {flex:1}]}>
-              <Text style={styles.inputTitleStyle}>장소</Text>
-              <View style={{marginBottom: 10}}>
-                <Text style={this.state.locationText? {fontSize:12, color: 'rgb(231, 76, 60)'}: {display: 'none'}}>
-                  <Icon.MaterialIcons size={12} name='location-on' color="rgb(231, 76, 60)" />
-                  {this.state.locationText}
-                </Text>
-              </View>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('UpdateMap', {
+                setMarkerByLocation: this.setMarkerByLocation,
+                location: {
+                  latitudeDelta: 0.005,
+                  longitudeDelta: 0.005,
+                  ...this.state.location.coords
+                }
+              })}>
+                <Text style={styles.inputTitleStyle}>장소</Text>
+                <View style={{marginBottom: 10}}>
+                  <Text style={this.state.locationText? {fontSize:12, color: 'rgb(231, 76, 60)'}: {display: 'none'}}>
+                    <Icon.MaterialIcons size={12} name='location-on' color="rgb(231, 76, 60)" />
+                    {this.state.locationText}
+                  </Text>
+                </View>
+              </TouchableOpacity>
               <MapView 
                 style={{ alignSelf: 'stretch', height: Dimensions.get('window').width * 0.7 }}
                 region={{ 
