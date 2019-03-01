@@ -11,9 +11,10 @@ import {
   Button,
   TextInput,
   View,
+  Dimensions
 } from 'react-native';
 import Util from '../components/Util'
-import { Icon } from 'expo'
+import { Icon, Constants, MapView, Location, Permissions } from 'expo'
 
 export default class AddExpensesScreen extends React.Component {
   
@@ -24,19 +25,49 @@ export default class AddExpensesScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      locationText: '',
+      location: {coords: { latitude: 37.78825, longitude: -122.4324}},
     }
   }
 
-  goBack(){
-    // this.props.navigation.navigate('Expenses')
-    this.props.navigation.goBack()
+  componentDidMount() {
+    this._getLocationAsync();
   }
+
+  _handleMapRegionChange = mapRegion => {
+    this.setState({ mapRegion });
+  };
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        locationText: 'Permission to access location was denied',
+      })
+      return
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    const reverseGeocode = (await Location.reverseGeocodeAsync(location.coords) || [])[0] || {}
+    // console.log('location', location, reverseGeocode)
+    this.setState({ 
+      location, 
+      locationText: [
+        reverseGeocode.postalCode,
+        reverseGeocode.country,
+        reverseGeocode.city,
+        reverseGeocode.region,
+        reverseGeocode.street,
+        reverseGeocode.name,
+      ].join(' ')
+    });
+  };
 
   render() {
     return (
       <View style={{flex:1}}>
         <View style={{marginTop: 30, marginBottom: 20}}>
-          <TouchableOpacity onPress={()=>this.goBack()}>
+          <TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
             <Icon.MaterialIcons size={40} name='arrow-back' color="black" />
           </TouchableOpacity>
         </View>
@@ -67,7 +98,30 @@ export default class AddExpensesScreen extends React.Component {
           <View style={styles.row}>
             <View style={[styles.column, {flex:1}]}>
               <Text style={styles.inputTitleStyle}>장소</Text>
-              <TextInput style={[styles.inputStyle, {height: 150}]}></TextInput>
+              <View style={{marginBottom: 10}}>
+                <Text style={this.state.locationText? {fontSize:12, color: 'rgb(231, 76, 60)'}: {display: 'none'}}>
+                  <Icon.MaterialIcons size={12} name='location-on' color="rgb(231, 76, 60)" />
+                  {this.state.locationText}
+                </Text>
+              </View>
+              <MapView 
+                style={{ alignSelf: 'stretch', height: Dimensions.get('window').width * 0.7 }}
+                region={{ 
+                  latitude: !this.state.location? null: this.state.location.coords.latitude, 
+                  longitude: !this.state.location? null: this.state.location.coords.longitude, 
+                  // latitudeDelta: 0.0922, 
+                  // longitudeDelta: 0.0421
+                  latitudeDelta: 0.005,
+                  longitudeDelta: 0.005
+                }}
+                // onRegionChange={this._handleMapRegionChange}
+                >
+                <MapView.Marker
+                  coordinate={!this.state.location ? null : this.state.location.coords}
+                  // title="My Marker"
+                  // description="Some description"
+                />
+              </MapView>
             </View>
           </View>
           <View style={styles.row}>
@@ -80,11 +134,11 @@ export default class AddExpensesScreen extends React.Component {
 
         <View style={[styles.buttonArea]}>
           <View style={[styles.buttonColumn]}>
-            <TouchableOpacity onPress={()=>this.goBack()}>
+            <TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
               <Text style={styles.buttonStyle}>취소</Text>
             </TouchableOpacity>
           </View>
-          <View style={[{width: 0.1, /* backgroundColor:'rgb(158, 158, 158)' */}]}></View>
+          <View style={[{width: 0.1}]}></View>
           <View style={[styles.buttonColumn]}>
             <TouchableOpacity onPress={()=>alert(1)}>
               <Text style={[styles.buttonStyle, {color: "rgb(74, 190, 202)"}]}>저장</Text>
