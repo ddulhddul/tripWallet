@@ -15,9 +15,8 @@ import {
 } from 'react-native';
 import Util from '../components/Util'
 import { Icon, Constants, MapView, Location, Permissions } from 'expo'
-import UpdateMapScreen from './UpdateMapScreen'
 
-export default class AddExpensesScreen extends React.Component extends UpdateMapScreen {
+export default class AddExpensesScreen extends React.Component{
   
   static navigationOptions = {
     header: null,
@@ -33,6 +32,35 @@ export default class AddExpensesScreen extends React.Component extends UpdateMap
 
   componentDidMount() {
     this._getLocationAsync();
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        locationText: 'Permission to access location was denied',
+      })
+      return
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setMarkerByLocation(location)
+  }
+
+  setMarkerByLocation= async (location) =>{
+    const reverseGeocode = (await Location.reverseGeocodeAsync(location.coords || {}) || [])[0] || {}
+    // console.log('location', location, reverseGeocode)
+    this.setState({ 
+      location, 
+      locationText: [
+        reverseGeocode.postalCode,
+        reverseGeocode.country,
+        reverseGeocode.city,
+        reverseGeocode.region,
+        reverseGeocode.street,
+        reverseGeocode.name,
+      ].join(' ')
+    });
   }
 
   render() {
