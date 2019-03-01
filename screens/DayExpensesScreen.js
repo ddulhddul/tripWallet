@@ -13,21 +13,26 @@ import {
   View,
 } from 'react-native';
 import Util from '../components/Util'
+import { Icon } from 'expo'
 import ExpenseComponent from '../components/expenses/ExpenseComponent'
 
 export default class DayExpensesScreen extends React.Component {
   
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: <View />,
-    }
+  // static navigationOptions = ({ navigation }) => {
+  //   return {
+  //     headerTitle: null,
+  //   }
+  // }
+  static navigationOptions = {
+    header: null,
   }
   
   constructor(props) {
     super(props)
     this.state = {
       date: null,
-      index: 0
+      pageIndex: 0,
+      dateList: Array.from(Array(10))
     }
   }
 
@@ -37,23 +42,24 @@ export default class DayExpensesScreen extends React.Component {
     this.setState({ date: date })
   }
 
-  _onPressBack= ()=>{
-    this.props.navigation.goBack()
-  }
-
   onPageSelected(event){
     if(!event || !event.nativeEvent) return
     this.setState({
-      index: event.nativeEvent.position
+      pageIndex: event.nativeEvent.position
     })
   }
 
   render() {
     let { date } = this.state
     if(!date) date = new Date()
-    const { index } = this.state
+    const { pageIndex, dateList } = this.state
     return (
       <View style={{flex:1}}>
+        <View style={{marginTop: 30}}>
+          <TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
+            <Icon.MaterialIcons size={40} name='arrow-back' color="black" />
+          </TouchableOpacity>
+        </View>
         <View style={styles.dayContainer}>
           <Text style={styles.dayStyle}>{Util.getDateForm(date)}</Text>
           <Text style={styles.weekStyle}>({Util.getDay(date)})</Text>
@@ -64,29 +70,46 @@ export default class DayExpensesScreen extends React.Component {
         </View>
         <View>
           <View style={styles.pagingContainer}>
-            <View style={[styles.circle]} />
-            <View style={[styles.circle]} />
-            <View style={[styles.circle, index===0? {backgroundColor: 'rgb(52, 152, 219)', opacity: 1} : {}]} />
-            <View style={[styles.circle, index===1? {backgroundColor: 'rgb(52, 152, 219)', opacity: 1} : {}]} />
-            <View style={[styles.circle]} />
+          {
+            dateList.map((obj,index)=>{
+              return (
+                <View 
+                  style={[
+                    styles.circle, 
+                    {justifyContent: 'center', alignItems: 'center'},
+                    index===pageIndex? {backgroundColor: 'rgb(52, 152, 219)', opacity: 1} : {},
+                    ((index < Math.max(0, Math.floor(index/10)*10)) || (index > Math.max(0, Math.floor(index/10)*10)+9)) 
+                      ? {display: 'none'}: {}
+                  ]} 
+                  key={index}>
+                  {/* <Text style={[
+                    index!==number? {display: 'none'}: null,
+                    {color: 'white', fontSize: 5}
+                    ]}>
+                    { number.toString() }
+                  </Text> */}
+                </View>
+              )
+            })
+          }
           </View>
         </View>
         
         <ViewPagerAndroid style={{flex:1}} initialPage={0} onPageSelected={(event)=>this.onPageSelected(event)}>
-          <View key="1">
-            <ScrollView style={{width: '100%'}}>
-              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-            </ScrollView>
-          </View>
-          <View key="2">
-            <ScrollView style={{width: '100%'}}>
-              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-              <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-            </ScrollView>
-          </View>
+        {
+          dateList.map((obj, index)=>{
+            return (
+              <View key={index}>
+                <ScrollView style={{width: '100%'}}>
+                  <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+                  <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+                  <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+                  <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+                </ScrollView>
+              </View>
+            )
+          })
+        }
         </ViewPagerAndroid>
       </View>
     )
@@ -135,7 +158,7 @@ const styles = StyleSheet.create({
   pagingContainer: {
     flexDirection: 'row',
     alignSelf: 'center',
-    width: 150,
+    width: 200,
     justifyContent: 'space-evenly',
     marginTop: 15,
     marginBottom: 20
