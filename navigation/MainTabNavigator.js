@@ -50,17 +50,15 @@ DayExpensesStack.navigationOptions = {
 };
 
 
-
-
 const ExpensesStack = createStackNavigator({
   Expenses: ExpensesScreen,
   DayExpenses: DayExpensesScreen,
-  AddExpenses: AddExpensesScreen,
+  AddExpenses: AddExpensesScreen
 }, {
   initialRouteName: "Expenses"
 })
 
-ExpensesStack.navigationOptions = {
+ExpensesStack.navigationOptions = ({navigation}) => ({
   tabBarLabel: 'Expenses',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
@@ -72,7 +70,8 @@ ExpensesStack.navigationOptions = {
       }
     />
   ),
-};
+  tabBarVisible: navigation.state.index === 0
+})
 
 
 const HomeStack = createStackNavigator({
@@ -122,10 +121,9 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  AddExpensesStack,
   ExpensesStack,
   DayExpensesStack,
   HomeStack,
   LinksStack,
   SettingsStack,
-});
+})

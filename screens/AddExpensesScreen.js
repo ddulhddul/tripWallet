@@ -14,13 +14,12 @@ import {
 } from 'react-native';
 import Util from '../components/Util'
 import { Icon } from 'expo'
-import ExpenseComponent from '../components/expenses/ExpenseComponent'
 
 export default class AddExpensesScreen extends React.Component {
   
-  // static navigationOptions = {
-  //   header: null,
-  // }
+  static navigationOptions = {
+    header: null,
+  }
   
   constructor(props) {
     super(props)
@@ -28,11 +27,16 @@ export default class AddExpensesScreen extends React.Component {
     }
   }
 
+  goBack(){
+    // this.props.navigation.navigate('Expenses')
+    this.props.navigation.goBack()
+  }
+
   render() {
     return (
       <View style={{flex:1}}>
         <View style={{marginTop: 30, marginBottom: 20}}>
-          <TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
+          <TouchableOpacity onPress={()=>this.goBack()}>
             <Icon.MaterialIcons size={40} name='arrow-back' color="black" />
           </TouchableOpacity>
         </View>
@@ -76,7 +80,7 @@ export default class AddExpensesScreen extends React.Component {
 
         <View style={[styles.buttonArea]}>
           <View style={[styles.buttonColumn]}>
-            <TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={()=>this.goBack()}>
               <Text style={styles.buttonStyle}>취소</Text>
             </TouchableOpacity>
           </View>
