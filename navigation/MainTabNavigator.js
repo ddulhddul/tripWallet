@@ -9,6 +9,26 @@ import SettingsScreen from '../screens/SettingsScreen';
 
 import ExpensesScreen from '../screens/ExpensesScreen';
 import DayExpensesScreen from '../screens/DayExpensesScreen';
+import AddExpensesScreen from '../screens/AddExpensesScreen';
+
+// 임시
+const AddExpensesStack = createStackNavigator({
+  AddExpenses: AddExpensesScreen
+})
+
+AddExpensesStack.navigationOptions = {
+  tabBarLabel: 'AddExpenses',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === 'ios'
+          ? `ios-information-circle${focused ? '' : '-outline'}`
+          : 'md-information-circle'
+      }
+    />
+  ),
+};
 
 // 임시
 const DayExpensesStack = createStackNavigator({
@@ -33,12 +53,9 @@ DayExpensesStack.navigationOptions = {
 
 
 const ExpensesStack = createStackNavigator({
-  Expenses: {
-    screen: ExpensesScreen
-  },
-  DayExpenses: {
-    screen: DayExpensesScreen
-  },
+  Expenses: ExpensesScreen,
+  DayExpenses: DayExpensesScreen,
+  AddExpenses: AddExpensesScreen,
 }, {
   initialRouteName: "Expenses"
 })
@@ -105,8 +122,9 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  DayExpensesStack,
+  AddExpensesStack,
   ExpensesStack,
+  DayExpensesStack,
   HomeStack,
   LinksStack,
   SettingsStack,

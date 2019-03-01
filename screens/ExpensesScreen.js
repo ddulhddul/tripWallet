@@ -12,6 +12,7 @@ import {
 import DayHeader from '../components/expenses/DayHeader'
 import ExpenseSummary from '../components/expenses/ExpenseSummary'
 import Util from '../components/Util'
+import { Icon } from 'expo'
 
 export default class ExpensesScreen extends React.Component {
   static navigationOptions = {
@@ -42,8 +43,20 @@ export default class ExpensesScreen extends React.Component {
           ]}
           keyExtractor={(item, index) => item + index}
         />
+        <TouchableOpacity style={styles.plusIcon} onPress={(event)=>this._pressAdd(event)}>
+          <Icon.AntDesign 
+            name="pluscircle" 
+            size={45}
+            color="rgb(74, 190, 202)"
+            />
+        </TouchableOpacity>
       </View>
     );
+  }
+
+  _pressAdd(event){
+    event.stopPropagation()
+    this.props.navigation.navigate('AddExpenses')
   }
 
 }
@@ -54,4 +67,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: 30
   },
+  plusIcon: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20
+  }
 })
