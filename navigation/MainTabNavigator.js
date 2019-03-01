@@ -123,7 +123,7 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  AddExpensesStack,
+  // AddExpensesStack,
   ExpensesStack,
   DayExpensesStack,
   HomeStack,

@@ -27,6 +27,13 @@ export default class AddExpensesScreen extends React.Component{
     this.state = {
       locationText: '',
       location: {coords: { latitude: 37.78825, longitude: -122.4324}},
+
+      amount: 0,
+      remark: '',
+      validate: {
+        amount: 'required'
+      },
+      focus: '',
     }
   }
 
@@ -64,6 +71,16 @@ export default class AddExpensesScreen extends React.Component{
   }
 
   render() {
+
+    let remark = String(this.state.remark || '')
+    let entry = 0
+    while(remark.match(/\n/)){
+      remark = remark.replace(/\n/,'')
+      entry++
+    }
+    console.log('entry', entry)
+    entry = (entry || 1) * 25 + 30
+
     return (
       <View style={{flex:1}}>
         <View style={{marginTop: 30, marginBottom: 20}}>
@@ -74,26 +91,57 @@ export default class AddExpensesScreen extends React.Component{
         
         <ScrollView>
           <View style={styles.row}>
-            <View style={[styles.column, {flex:1}]}>
-              <Text style={styles.inputTitleStyle}>비용</Text>
-              <TextInput style={styles.inputStyle}></TextInput>
-            </View>
+            <TouchableOpacity 
+              onPress={()=>{this.amount && this.amount.focus()}} 
+              style={[styles.column, {flex:1}]}>
+              <Text style={[styles.inputTitleStyle, this.state.focus=='amount'? styles.inputTitleFocusStyle: null]}>비용</Text>
+              <TextInput 
+                style={[styles.inputStyle, this.state.focus=='amount'? styles.inputFocusStyle: null]} autoFocus
+                onFocus={()=>this.setState({focus: 'amount'})}
+                onBlur={()=>this.setState({focus: ''})}
+                ref={(input)=>{this.amount=input}}
+                keyboardType="numeric"
+                value={Util.comma(String(this.state.amount || ''))}
+                onChangeText={(value)=>{
+                  this.setState({
+                    amount: Number(String(value || '').replace(/[^0-9]/g,''))
+                  })
+                }}
+              ></TextInput>
+            </TouchableOpacity>
           </View>
           <View style={styles.row}>
             <View style={[styles.column, {flex:0.5}]}>
-              <Text style={styles.inputTitleStyle}>날짜</Text>
-              <TextInput style={styles.inputStyle}></TextInput>
+              <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>날짜</Text>
+              <TextInput style={[styles.inputStyle, this.state.focus=='temp'? styles.inputFocusStyle: null]}></TextInput>
             </View>
             <View style={[styles.column, {flex:0.5}]}>
-              <Text style={styles.inputTitleStyle}>시간</Text>
-              <TextInput style={styles.inputStyle}></TextInput>
+              <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>시간</Text>
+              <TextInput style={[styles.inputStyle, this.state.focus=='temp'? styles.inputFocusStyle: null]}></TextInput>
             </View>
           </View>
           <View style={styles.row}>
-            <View style={[styles.column, {flex:1}]}>
-              <Text style={styles.inputTitleStyle}>내용</Text>
-              <TextInput style={[styles.inputStyle, {height: 150}]}></TextInput>
-            </View>
+            <TouchableOpacity 
+              onPress={()=>{this.remark && this.remark.focus()}} 
+              style={[styles.column, {flex:1}]}>
+              <Text style={[styles.inputTitleStyle, this.state.focus=='remark'? styles.inputTitleFocusStyle: null]}>내용</Text>
+              <TextInput style={[
+                  styles.inputStyle, {height: entry},
+                  this.state.focus=='remark'? styles.inputFocusStyle: null
+                ]}
+                onFocus={()=>this.setState({focus: 'remark'})}
+                onBlur={()=>this.setState({focus: ''})}
+                value={String(this.state.remark || '')}
+                multiline={true}
+                ref={(input)=>{this.remark=input}}
+                onChangeText={(value)=>{
+                  console.log('value',value)
+                  this.setState({
+                    remark: String(value || '')
+                  })
+                }}
+              ></TextInput>
+            </TouchableOpacity>
           </View>
           <View style={styles.row}>
             <View style={[styles.column, {flex:1}]}>
@@ -105,7 +153,7 @@ export default class AddExpensesScreen extends React.Component{
                   ...this.state.location.coords
                 }
               })}>
-                <Text style={styles.inputTitleStyle}>장소</Text>
+                <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>장소</Text>
                 <View style={{marginBottom: 10}}>
                   <Text style={this.state.locationText? {fontSize:12, color: 'rgb(231, 76, 60)'}: {display: 'none'}}>
                     <Icon.MaterialIcons size={12} name='location-on' color="rgb(231, 76, 60)" />
@@ -135,7 +183,7 @@ export default class AddExpensesScreen extends React.Component{
           </View>
           <View style={styles.row}>
             <View style={[styles.column, {flex:1}]}>
-              <Text style={styles.inputTitleStyle}>사진</Text>
+              <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>사진</Text>
               <TextInput style={[styles.inputStyle, {height: 150}]}></TextInput>
             </View>
           </View>
@@ -180,6 +228,14 @@ const styles = StyleSheet.create({
     height: 30,
     borderBottomWidth: 2,
     borderColor: 'grey',
+  },
+
+  // focus
+  inputTitleFocusStyle: {
+    color: "rgb(74, 190, 202)"
+  },
+  inputFocusStyle: {
+    borderColor: "rgb(74, 190, 202)"
   },
 
   // button

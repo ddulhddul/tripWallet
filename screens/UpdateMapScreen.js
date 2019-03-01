@@ -128,7 +128,10 @@ class UpdateMapScreen extends React.Component {
 
           </View>
           <View style={{marginBottom: 10}}>
-            <Text style={this.state.locationText? {fontSize:12, color: 'rgb(231, 76, 60)'}: {display: 'none'}}>
+            <Text style={[
+              this.state.locationText? {fontSize:12, color: 'rgb(231, 76, 60)'}: {display: 'none'},
+              {minHeight: 40}
+              ]}>
               <Icon.MaterialIcons size={12} name='location-on' color="rgb(231, 76, 60)" />
               {this.state.locationText}
             </Text>
