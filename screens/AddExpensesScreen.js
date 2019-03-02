@@ -3,7 +3,7 @@ import {
   Image,
   Platform,
   ScrollView,
-  FlatList,
+  Picker,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -24,14 +24,17 @@ export default class AddExpensesScreen extends React.Component{
   
   constructor(props) {
     super(props)
-    console.log('Util.yyyymmdd(Util.getCurrentDate())', Util.yyyymmdd(Util.getCurrentDate()))
+    const currentDate = Util.getCurrentDate()
+    // console.log('Util.yyyymmdd(Util.getCurrentDate())', Util.yyyymmdd(Util.getCurrentDate()), Util.hhmm(currentDate).substring(0,2))
     this.state = {
       locationText: '',
       location: {coords: { latitude: 37.78825, longitude: -122.4324}},
 
       amount: 0,
       remark: '',
-      yyyymmdd: Util.yyyymmdd(Util.getCurrentDate()),
+      yyyymmdd: Util.yyyymmdd(currentDate),
+      hh: Util.hhmm(currentDate).substring(0,2),
+      mm: Util.hhmm(currentDate).substring(2,4),
       validate: {
         amount: 'required'
       },
@@ -108,7 +111,6 @@ export default class AddExpensesScreen extends React.Component{
       remark = remark.replace(/\n/,'')
       entry++
     }
-    console.log('entry', entry)
     entry = (entry || 1) * 25 + 30
 
     return (
@@ -141,18 +143,41 @@ export default class AddExpensesScreen extends React.Component{
             </TouchableOpacity>
           </View>
           <View style={styles.row}>
-            <View style={[styles.column, {flex:0.5}]}>
+            <View style={[styles.column, {flex:1}]}>
               <TouchableOpacity onPress={()=>this.openDatePicker()}>
                 <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>날짜</Text>
                 <Text
-                  style={[styles.inputStyle, {textAlign: 'center'}]}
+                  style={[styles.inputStyle, {textAlign: 'center', fontSize: 17}]}
                 >{Util.getDateForm(this.state.yyyymmdd)}</Text>
               </TouchableOpacity>
-              {/* <TextInput style={[styles.inputStyle, this.state.focus=='temp'? styles.inputFocusStyle: null]}></TextInput> */}
             </View>
-            <View style={[styles.column, {flex:0.5}]}>
+          </View>
+          <View style={styles.row}>
+            <View style={[styles.column, {flex:1}]}>
               <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>시간</Text>
-              <TextInput style={[styles.inputStyle, this.state.focus=='temp'? styles.inputFocusStyle: null]}></TextInput>
+              <View style={[styles.inputStyle, {flexDirection: 'row', alignItems: 'center'}]}>
+                <Picker
+                  selectedValue={Util.lpad(this.state.hh, 2, '0')}
+                  style={{ flex: 0.5 }}
+                  onValueChange={(itemValue, itemIndex) => this.setState({hh: itemValue})}
+                  >{
+                    Array.from(Array(24)).map((obj, hour)=>{
+                      return <Picker.Item key={hour} label={String(hour || '0')} value={Util.lpad(hour, 2, '0')} />
+                    })
+                  }
+                </Picker>
+                <Text>:</Text>
+                <Picker
+                  selectedValue={Util.lpad(this.state.mm, 2, '0')}
+                  style={{ flex: 0.5 }}
+                  onValueChange={(itemValue, itemIndex) => this.setState({mm: itemValue})}
+                  >{
+                    Array.from(Array(60)).map((obj, minutes)=>{
+                      return <Picker.Item key={minutes} label={String(minutes || '0')} value={Util.lpad(minutes, 2, '0')} />
+                    })
+                  }
+                </Picker>
+              </View>
             </View>
           </View>
           <View style={styles.row}>
@@ -260,7 +285,7 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   inputStyle: {
-    height: 30,
+    height: 50,
     borderBottomWidth: 2,
     borderColor: 'grey',
   },

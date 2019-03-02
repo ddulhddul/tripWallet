@@ -55,6 +55,14 @@ export default {
     ].join('')
   },
 
+  hhmm(date){
+    if(!date) return ''
+    return [
+      this.lpad(date.getHours(), 2, '0'),
+      this.lpad(date.getMinutes(), 2, '0')
+    ].join('')
+  },
+
   getDay(date){
     if(!date) return ''
     return dayObj[date.getDay()]
