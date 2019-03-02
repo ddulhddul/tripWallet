@@ -14,7 +14,7 @@ import {
   Dimensions
 } from 'react-native';
 import Util from '../components/Util'
-import { Icon, Constants, MapView, Location, Permissions } from 'expo'
+import { Icon, Constants, MapView, Location, Permissions, ImagePicker } from 'expo'
 
 export default class AddExpensesScreen extends React.Component{
   
@@ -35,6 +35,7 @@ export default class AddExpensesScreen extends React.Component{
       yyyymmdd: Util.yyyymmdd(currentDate),
       hh: Util.hhmm(currentDate).substring(0,2),
       mm: Util.hhmm(currentDate).substring(2,4),
+      images: [],
       validate: {
         amount: 'required'
       },
@@ -101,6 +102,25 @@ export default class AddExpensesScreen extends React.Component{
       console.warn('Cannot open date picker', message);
     }
     
+  }
+
+  _pickImage= async ()=>{
+    let { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== 'granted') return
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: false,
+      aspect: [4, 3],
+    })
+    if (!result.cancelled) {
+      this.setState({
+        images: [
+          ...this.state.images,
+          result.uri
+        ]
+      })
+      // this.setState({ image: result.uri })
+    }
   }
 
   render() {
@@ -199,7 +219,6 @@ export default class AddExpensesScreen extends React.Component{
                 multiline={true}
                 ref={(input)=>{this.remark=input}}
                 onChangeText={(value)=>{
-                  console.log('value',value)
                   this.setState({
                     remark: String(value || '')
                   })
@@ -248,7 +267,36 @@ export default class AddExpensesScreen extends React.Component{
           <View style={styles.row}>
             <View style={[styles.column, {flex:1}]}>
               <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>사진</Text>
-              <TextInput style={[styles.inputStyle, {height: 150}]}></TextInput>
+              <View style={[{minHeight: Dimensions.get('window').width * 3 / 4, justifyContent: 'center', alignItems: 'center'}]}>
+                {
+                  this.state.images.map((uri, index)=>{
+                    return uri && (
+                      <View key={['image',index].join('_')} style={{flex: 1, flexDirection: 'row', margin: 20}}>
+                        <Image source={{uri: uri}} 
+                          style={{
+                            width: Dimensions.get('window').width * 3 / 4, 
+                            height: Dimensions.get('window').width * 3 / 4
+                          }} 
+                        />
+                        <TouchableOpacity onPress={()=>{
+                          this.setState({
+                            images: this.state.images.filter((obj)=>{
+                              return obj !== uri
+                            })
+                          })
+                        }} 
+                          style={{position:'absolute', zIndex: 999999, top:10, right: 10}}>
+                          <Icon.FontAwesome name="close" size={40} /* color="rgb(192, 57, 43)" */ />
+                        </TouchableOpacity>
+                      </View>
+                    )
+                  })
+                }
+                <TouchableOpacity onPress={()=>this._pickImage()}
+                  style={{margin: 100}}>
+                  <Icon.FontAwesome name="plus" size={60} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </ScrollView>
@@ -322,67 +370,4 @@ const styles = StyleSheet.create({
     color: 'rgb(158, 158, 158)'
   },
   
-  
-  
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    paddingTop: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  // Day 부분
-  dayContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  dayStyle: {
-    marginRight: 5,
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  weekStyle: {
-    alignSelf: 'flex-end',
-    fontSize: 20,
-    marginBottom: 5
-  },
-
-  // 총 사용금액
-  totalExpensesContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  totalExpenseTitle: {
-    color: 'grey',
-  },
-  totalExpense: {
-    fontWeight: 'bold'
-  },
-
-  // middle Paging
-  pagingContainer: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    width: 200,
-    justifyContent: 'space-evenly',
-    marginTop: 15,
-    marginBottom: 20
-  },
-  circle: {
-    width:15,
-    height:15,
-    borderRadius:50,
-    opacity: 0.3,
-    backgroundColor: 'grey'
-  },
-
-  viewPager: {
-    flex: 1
-  },
-  pageStyle: {
-    alignItems: 'center',
-    padding: 20,
-  }
-
 })
