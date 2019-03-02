@@ -127,39 +127,41 @@ export default class AddExpensesScreen extends React.Component{
               onPress={()=>{this.amount && this.amount.focus()}} 
               style={[styles.column, {flex:1}]}>
               <Text style={[styles.inputTitleStyle, this.state.focus=='amount'? styles.inputTitleFocusStyle: null]}>비용</Text>
-              <TextInput 
-                style={[styles.inputStyle, this.state.focus=='amount'? styles.inputFocusStyle: null]} autoFocus
-                onFocus={()=>this.setState({focus: 'amount'})}
-                onBlur={()=>this.setState({focus: ''})}
-                ref={(input)=>{this.amount=input}}
-                keyboardType="numeric"
-                value={Util.comma(String(this.state.amount || ''))}
-                onChangeText={(value)=>{
-                  this.setState({
-                    amount: Number(String(value || '').replace(/[^0-9]/g,''))
-                  })
-                }}
-              ></TextInput>
+              <View>
+                <TextInput 
+                  style={[styles.inputStyle, this.state.focus=='amount'? styles.inputFocusStyle: null, {fontSize: 17, textAlign: 'right'}]} autoFocus
+                  onFocus={()=>this.setState({focus: 'amount'})}
+                  onBlur={()=>this.setState({focus: ''})}
+                  ref={(input)=>{this.amount=input}}
+                  keyboardType="numeric"
+                  value={Util.comma(String(this.state.amount || ''))}
+                  onChangeText={(value)=>{
+                    this.setState({
+                      amount: Number(String(value || '').replace(/[^0-9]/g,''))
+                    })
+                  }}
+                ></TextInput>
+              </View>
             </TouchableOpacity>
           </View>
           <View style={styles.row}>
-            <View style={[styles.column, {flex:1}]}>
+            <View style={[styles.column, {flex:0.5}]}>
               <TouchableOpacity onPress={()=>this.openDatePicker()}>
                 <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>날짜</Text>
-                <Text
-                  style={[styles.inputStyle, {textAlign: 'center', fontSize: 17}]}
-                >{Util.getDateForm(this.state.yyyymmdd)}</Text>
+                <View style={[styles.inputStyle, {justifyContent: 'center'}]}>
+                  <Text
+                    style={[{textAlign: 'center', fontSize: 17}]}
+                  >{Util.getDateForm(this.state.yyyymmdd)}</Text>
+                </View>
               </TouchableOpacity>
             </View>
-          </View>
-          <View style={styles.row}>
-            <View style={[styles.column, {flex:1}]}>
+            <View style={[styles.column, {flex:0.5, marginLeft: 0, marginRight: 0}]}>
               <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>시간</Text>
-              <View style={[styles.inputStyle, {flexDirection: 'row', alignItems: 'center'}]}>
+              <View style={[styles.inputStyle, {flexDirection: 'row', justifyContent: 'space-evenly'}]}>
                 <Picker
                   selectedValue={Util.lpad(this.state.hh, 2, '0')}
-                  style={{ flex: 0.5 }}
                   onValueChange={(itemValue, itemIndex) => this.setState({hh: itemValue})}
+                  style={{ flex: 0.5 }}
                   >{
                     Array.from(Array(24)).map((obj, hour)=>{
                       return <Picker.Item key={hour} label={String(hour || '0')} value={Util.lpad(hour, 2, '0')} />
@@ -179,6 +181,8 @@ export default class AddExpensesScreen extends React.Component{
                 </Picker>
               </View>
             </View>
+          </View>
+          <View style={styles.row}>
           </View>
           <View style={styles.row}>
             <TouchableOpacity 
@@ -275,6 +279,9 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   column: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    // alignItems: 'center',
     marginLeft: 20,
     marginRight: 20
   },
@@ -288,6 +295,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderBottomWidth: 2,
     borderColor: 'grey',
+    alignItems: 'center'
   },
 
   // focus
