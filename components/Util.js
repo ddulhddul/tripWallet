@@ -5,6 +5,10 @@ export default {
     return String(x || '').replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   },
 
+  getCurrentDate(){
+    return new Date()
+  },
+
   getDate(param){
     let date = new Date()
     if(typeof param === 'number'){
@@ -27,11 +31,19 @@ export default {
 
   getDateForm(date){
     if(!date) return ''
-    return [
-      String(date.getFullYear() || '').substring(2),
-      this.lpad(date.getMonth()+1, 2, '0'),
-      this.lpad(date.getDate(), 2, '0')
-    ].join('.')
+    if(typeof date === 'string'){
+      return [
+        date.substring(0,4),
+        this.lpad(date.substring(4,6), 2, '0'),
+        this.lpad(date.substring(6,8), 2, '0')
+      ].join('.')
+    }else{
+      return [
+        String(date.getFullYear() || '').substring(2),
+        this.lpad(date.getMonth()+1, 2, '0'),
+        this.lpad(date.getDate(), 2, '0')
+      ].join('.')
+    }
   },
 
   yyyymmdd(date){
@@ -43,7 +55,6 @@ export default {
     ].join('')
   },
 
-  
   getDay(date){
     if(!date) return ''
     return dayObj[date.getDay()]

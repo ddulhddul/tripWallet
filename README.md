@@ -9,6 +9,9 @@ $ expo build:android
 - [Expo - ImagePicker](https://docs.expo.io/versions/v28.0.0/sdk/imagepicker/)
 - [Expo - ImageManipulator](https://docs.expo.io/versions/v28.0.0/sdk/imagemanipulator/)
 
+## Android Datepicker
+- [Expo - DatePickerAndroid](https://docs.expo.io/versions/latest/react-native/datepickerandroid/#open)
+
 ## MapView
 - [Expo - MapView](https://docs.expo.io/versions/latest/sdk/map-view/)
 - [Google APIs for Android - MapView](https://developers.google.com/android/reference/com/google/android/gms/maps/MapView)

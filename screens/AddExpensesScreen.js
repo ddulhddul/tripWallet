@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  SectionList,
+  DatePickerAndroid,
   Button,
   TextInput,
   View,
@@ -24,12 +24,14 @@ export default class AddExpensesScreen extends React.Component{
   
   constructor(props) {
     super(props)
+    console.log('Util.yyyymmdd(Util.getCurrentDate())', Util.yyyymmdd(Util.getCurrentDate()))
     this.state = {
       locationText: '',
       location: {coords: { latitude: 37.78825, longitude: -122.4324}},
 
       amount: 0,
       remark: '',
+      yyyymmdd: Util.yyyymmdd(Util.getCurrentDate()),
       validate: {
         amount: 'required'
       },
@@ -68,6 +70,34 @@ export default class AddExpensesScreen extends React.Component{
         reverseGeocode.name,
       ].join(' ')
     });
+  }
+
+  openDatePicker = async ()=>{
+    const yyyymmdd = String(this.state.yyyymmdd || '')
+    try {
+      const {action, year, month, day} = await DatePickerAndroid.open({
+        // Use `new Date()` for current date.
+        // May 25 2020. Month 0 is January.
+        date: new Date(
+          yyyymmdd.substring(0,4),
+          yyyymmdd.substring(4,6)-1,
+          yyyymmdd.substring(6,8)
+        )
+      })
+      if (action !== DatePickerAndroid.dismissedAction) {
+        // Selected year, month (0-11), day
+        this.setState({
+          yyyymmdd: [
+            year, 
+            Util.lpad(month+1, 2, '0'), 
+            Util.lpad(day, 2, '0')
+          ].join('')
+        })
+      }
+    } catch ({code, message}) {
+      console.warn('Cannot open date picker', message);
+    }
+    
   }
 
   render() {
@@ -112,8 +142,13 @@ export default class AddExpensesScreen extends React.Component{
           </View>
           <View style={styles.row}>
             <View style={[styles.column, {flex:0.5}]}>
-              <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>날짜</Text>
-              <TextInput style={[styles.inputStyle, this.state.focus=='temp'? styles.inputFocusStyle: null]}></TextInput>
+              <TouchableOpacity onPress={()=>this.openDatePicker()}>
+                <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>날짜</Text>
+                <Text
+                  style={[styles.inputStyle, {textAlign: 'center'}]}
+                >{Util.getDateForm(this.state.yyyymmdd)}</Text>
+              </TouchableOpacity>
+              {/* <TextInput style={[styles.inputStyle, this.state.focus=='temp'? styles.inputFocusStyle: null]}></TextInput> */}
             </View>
             <View style={[styles.column, {flex:0.5}]}>
               <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>시간</Text>
