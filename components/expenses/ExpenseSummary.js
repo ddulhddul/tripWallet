@@ -10,24 +10,27 @@ export default class ExpenseSummary extends Component {
   }
 
   render() {
+    const { item } = this.props
     return (
       <View style={styles.container}>
         <View style={styles.timeContainer}>
           <View style={[styles.centerVerticalLine, {flex: 0.1}]}></View>
           <View style={styles.timeDetailContainer}>
-            <Text style={[styles.timeFontStyle, {marginRight:5}]}>{Util.getTimeForm(Util.getDate())}</Text>
-            <Text style={styles.timeFontStyle}>{Util.getNoon(Util.getDate())}</Text>
+            <Text style={[styles.timeFontStyle, {marginRight:5}]}>
+              {item.hh}:{item.mm}
+            </Text>
+            <Text style={styles.timeFontStyle}>
+              {Util.getNoon(Number(item.hh))}
+            </Text>
           </View>
           <View style={[styles.centerVerticalLine, {flex: 1}]}></View>
         </View>
         <View style={styles.totalExpenseContainer}>
-          <Text style={styles.expenseStyle}>{Util.comma(2000)}</Text>
+          <Text style={styles.expenseStyle}>{Util.comma(item.amount)} {Util.amountUnit}</Text>
         </View>
         <View style={styles.detailContainer}>
           <Text style={[styles.detailFontStyle]}>
-            어쩌구 저쩌구 ... 어쩌구 저쩌구 ... 
-            어쩌구 저쩌구 ... 어쩌구 저쩌구 ... 
-            어쩌구 저쩌구 ... 어쩌구 저쩌구 ... 
+            {item.remark.replace(/\n/g, ' ')}
           </Text>
         </View>
       </View>

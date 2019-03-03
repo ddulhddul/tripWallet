@@ -1,6 +1,7 @@
 const dayObj = { 0: '일', 1: '월', 2: '화', 3: '수', 4: '목', 5: '금', 6: '토' }
 export default {
   
+  amountUnit: '원',
   comma(x) {
     return String(x || '').replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   },
@@ -25,6 +26,7 @@ export default {
   },
   
   getNoon(date){
+    if(typeof date === 'number') return date >= 12? 'PM': 'AM'
     if(!date) return ''
     return date.getHours() >= 12? 'PM': 'AM'
   },

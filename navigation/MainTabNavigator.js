@@ -8,7 +8,6 @@ import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 import ExpensesScreen from '../screens/ExpensesScreen';
-import DayExpensesScreen from '../screens/DayExpensesScreen';
 import AddExpensesScreen from '../screens/AddExpensesScreen';
 import UpdateMapScreen from '../screens/UpdateMapScreen';
 
@@ -32,29 +31,8 @@ AddExpensesStack.navigationOptions = {
   ),
 };
 
-// 임시
-const DayExpensesStack = createStackNavigator({
-  DayExpenses: DayExpensesScreen
-})
-
-DayExpensesStack.navigationOptions = {
-  tabBarLabel: 'DayExpenses',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
-};
-
-
 const ExpensesStack = createStackNavigator({
   Expenses: ExpensesScreen,
-  DayExpenses: DayExpensesScreen,
   AddExpenses: AddExpensesScreen,
   UpdateMap: UpdateMapScreen
 }, {
@@ -126,7 +104,6 @@ SettingsStack.navigationOptions = {
 export default createBottomTabNavigator({
   // AddExpensesStack,
   ExpensesStack,
-  DayExpensesStack,
   HomeStack,
   LinksStack,
   SettingsStack,

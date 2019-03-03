@@ -1,76 +1,32 @@
-import React from 'react';
-import {
-  Image,
-  Platform,
-  ScrollView,
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  SectionList,
-  Button,
-  ViewPagerAndroid,
-  View,
-} from 'react-native';
-import Util from '../components/Util'
+import React, { Component } from 'react'
+import { View, TouchableOpacity, Text, ViewPagerAndroid, ScrollView, StyleSheet } from 'react-native'
+import Util from '../Util'
 import { Icon } from 'expo'
-import ExpenseComponent from '../components/expenses/ExpenseComponent'
+import ExpenseComponent from './ExpenseComponent'
 
-export default class DayExpensesScreen extends React.Component {
-  
-  static navigationOptions = {
-    header: null,
-  }
-  
+export default class DayPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      yyyymmdd: '',
       initialPage: 0,
-      pageIndex: 0,
-      sections: []
+      pageIndex: 0
     }
-  }
-
-  componentDidMount(){
-    const { navigation } = this.props
-    const yyyymmdd = (navigation.getParam('item') || {}).yyyymmdd || Util.yyyymmdd(Util.getCurrentDate())
-    const sections = navigation.getParam('sections') || []
-
-    this.focusListener = navigation.addListener("didFocus", () => {
-      let pageIndex = 0
-      sections.map((obj, index)=>{
-        if(obj.yyyymmdd === yyyymmdd) pageIndex = index
-      })
-      this.setState({ 
-        yyyymmdd: yyyymmdd,
-        initialPage: pageIndex,
-        pageIndex: pageIndex,
-        sections: sections
-      })
-    })
   }
 
   onPageSelected(event){
     if(!event || !event.nativeEvent) return
     const pageIndex = event.nativeEvent.position
     this.setState({
-      pageIndex: pageIndex,
-      yyyymmdd: this.state.sections[pageIndex].yyyymmdd
+      pageIndex: pageIndex
     })
   }
 
   render() {
-    let { yyyymmdd } = this.state
-    if(!yyyymmdd) return null
-    const { pageIndex, sections } = this.state
+    const { pageIndex } = this.state
+    const { sections } = this.props
+    const yyyymmdd = (sections[pageIndex] || {}).yyyymmdd
     return (
       <View style={{flex:1}}>
-        <View style={{marginTop: 30}}>
-          <TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
-            <Icon.MaterialIcons size={40} name='arrow-back' color="black" />
-          </TouchableOpacity>
-        </View>
         <View style={styles.dayContainer}>
           <Text style={styles.dayStyle}>{Util.getDateForm(yyyymmdd)}</Text>
           <Text style={styles.weekStyle}>({Util.getDay(yyyymmdd)})</Text>
@@ -107,7 +63,13 @@ export default class DayExpensesScreen extends React.Component {
               <View key={index}>
                 <ScrollView style={{width: '100%'}}>{
                   (sectionObj.data || []).map((obj, sectionIndex)=>{
-                    return <ExpenseComponent key={sectionIndex} style={styles.smallContent}></ExpenseComponent>
+                    return (
+                      <ExpenseComponent 
+                        key={sectionIndex} 
+                        style={styles.smallContent}
+                        item={obj}
+                      ></ExpenseComponent>
+                    )
                   })
                 }</ScrollView>
               </View>

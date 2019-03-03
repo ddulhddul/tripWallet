@@ -1,17 +1,13 @@
 import React from 'react';
 import {
-  Image,
-  Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  SectionList,
-  View,
+  ViewPagerAndroid,
+  View
 } from 'react-native';
-import DayHeader from '../components/expenses/DayHeader'
-import ExpenseSummary from '../components/expenses/ExpenseSummary'
-import Util from '../components/Util'
+import Expenses from '../components/expenses/Expenses'
+import DayPage from '../components/daypage/DayPage'
 import { Icon } from 'expo'
 import DBUtil from '../components/database/DBUtil';
 
@@ -24,7 +20,8 @@ export default class ExpensesScreen extends DBUtil {
     super(props)
     this.initTable()
     this.state = {
-      sections: []
+      pageIndex: 0,
+      sections: [],
     }
   }
 
@@ -52,37 +49,51 @@ export default class ExpensesScreen extends DBUtil {
     })
   }
 
-  _onPressDay(yyyymmdd){
-    console.log('_onPressDay', yyyymmdd)
-    this.props.navigation.navigate('DayExpenses', {
-      item: {yyyymmdd: yyyymmdd},
-      sections: this.state.sections
+  onPageSelected(event){
+    if(!event || !event.nativeEvent) return
+    const pageIndex = event.nativeEvent.position
+    this.setState({
+      pageIndex: pageIndex
+    })
+  }
+
+  showTypeChange(pageIndex){
+    this.viewPager.setPage(pageIndex)
+    this.setState({
+      pageIndex: pageIndex
     })
   }
 
   render() {
     return (
       <View style={styles.container}> 
-        <SectionList 
-          renderSectionHeader={({section: {yyyymmdd}}) => (
-            <TouchableOpacity onPress={()=>this._onPressDay(yyyymmdd)}>
-              <DayHeader item={{yyyymmdd: yyyymmdd}} navigation={this.props.navigation} />
-            </TouchableOpacity>
-          )}        
-          renderItem={({ item, index, section }) => (
-            <ExpenseSummary item={item} />
-          )}
-          sections={this.state.sections}
-          // sections={[
-          //   { date: Util.getDate(), data: ['item1', 'item2'] },
-          //   { date: Util.getDate(1), data: ['item3', 'item4'] },
-          //   { date: Util.getDate(2), data: ['item5', 'item6'] },
-          //   { date: Util.getDate(3), data: ['item5', 'item6'] },
-          //   { date: Util.getDate(4), data: ['item5', 'item6'] },
-          //   { date: Util.getDate(5), data: ['item5', 'item6'] },
-          // ]}
-          keyExtractor={(item, index) => item + index}
-        />
+        <View style={{flexDirection: 'row', alignItems: 'center', borderBottomColor: 'rgb(158, 158, 158)', borderBottomWidth: 1}}>
+          <View style={{flex:1, marginLeft: 10}}>
+            <Text style={{fontSize: 25, fontWeight: 'bold'}}>Title</Text>
+            <Text style={{fontSize: 12}}>19.01.01 ~ 20.01.03</Text>
+          </View>
+          <TouchableOpacity onPress={()=>this.showTypeChange(0)} style={{marginRight: 10}}>
+            <Icon.AntDesign name="profile" size={30} color={this.state.pageIndex===0?'blue':null} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>this.showTypeChange(1)} style={{marginRight: 10}}>
+            <Icon.AntDesign name="switcher" size={30} color={this.state.pageIndex===1?'blue':null} />
+          </TouchableOpacity>
+        </View>
+
+        <ViewPagerAndroid 
+          ref={(ref)=>this.viewPager=ref}
+          style={{flex:1}} initialPage={this.state.pageIndex} onPageSelected={(event)=>this.onPageSelected(event)}>
+          <View key={0}>
+            <Expenses
+              sections={this.state.sections}
+            />
+          </View>
+          <View key={1}>
+            <DayPage
+              sections={this.state.sections}
+            />
+          </View>
+        </ViewPagerAndroid>
         <TouchableOpacity style={styles.plusIcon} onPress={(event)=>this._pressAdd(event)}>
           <Icon.AntDesign 
             name="pluscircle" 
