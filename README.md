@@ -5,6 +5,12 @@
 $ expo build:android 
 ```
 
+## Sqlite
+- [Data types](https://sqlite.org/datatype3.html)
+
+## Expo android permissions
+- [https://docs.expo.io/versions/latest/workflow/configuration/#android](https://docs.expo.io/versions/latest/workflow/configuration/#android)
+
 ## Image
 - [Expo - ImagePicker](https://docs.expo.io/versions/v28.0.0/sdk/imagepicker/)
 - [Expo - ImageManipulator](https://docs.expo.io/versions/v28.0.0/sdk/imagemanipulator/)

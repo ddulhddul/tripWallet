@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Image,
-  Platform,
+  Alert,
   ScrollView,
   Picker,
   StyleSheet,
@@ -15,8 +15,9 @@ import {
 } from 'react-native';
 import Util from '../components/Util'
 import { Icon, Constants, MapView, Location, Permissions, ImagePicker } from 'expo'
+import DBUtil from '../components/database/DBUtil';
 
-export default class AddExpensesScreen extends React.Component{
+export default class AddExpensesScreen extends DBUtil {
   
   static navigationOptions = {
     header: null,
@@ -184,7 +185,7 @@ export default class AddExpensesScreen extends React.Component{
                   style={{ flex: 0.5 }}
                   >{
                     Array.from(Array(24)).map((obj, hour)=>{
-                      return <Picker.Item key={hour} label={String(hour || '0')} value={Util.lpad(hour, 2, '0')} />
+                      return <Picker.Item key={hour} label={Util.lpad(hour, 2, '0')} value={Util.lpad(hour, 2, '0')} />
                     })
                   }
                 </Picker>
@@ -195,7 +196,7 @@ export default class AddExpensesScreen extends React.Component{
                   onValueChange={(itemValue, itemIndex) => this.setState({mm: itemValue})}
                   >{
                     Array.from(Array(60)).map((obj, minutes)=>{
-                      return <Picker.Item key={minutes} label={String(minutes || '0')} value={Util.lpad(minutes, 2, '0')} />
+                      return <Picker.Item key={minutes} label={Util.lpad(minutes, 2, '0')} value={Util.lpad(minutes, 2, '0')} />
                     })
                   }
                 </Picker>
@@ -246,6 +247,7 @@ export default class AddExpensesScreen extends React.Component{
               </TouchableOpacity>
               <MapView 
                 style={{ alignSelf: 'stretch', height: Dimensions.get('window').width * 0.7 }}
+                provider={MapView.PROVIDER_GOOGLE}
                 region={{ 
                   latitude: !this.state.location? null: this.state.location.coords.latitude, 
                   longitude: !this.state.location? null: this.state.location.coords.longitude, 
@@ -309,13 +311,61 @@ export default class AddExpensesScreen extends React.Component{
           </View>
           <View style={[{width: 0.1}]}></View>
           <View style={[styles.buttonColumn]}>
-            <TouchableOpacity onPress={()=>alert(1)}>
+            <TouchableOpacity onPress={()=>this.save()}>
               <Text style={[styles.buttonStyle, {color: "rgb(74, 190, 202)"}]}>저장</Text>
             </TouchableOpacity>
           </View>
         </View>
 
       </View>
+    )
+  }
+
+  save(){
+    Alert.alert(
+      '저장',
+      '저장 하시겠습니까?',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {text: '저장', onPress: () => {
+          const param = this.state
+          this.queryExecute(
+            `insert into TN_EXPENSE (
+              amount,
+              remark,
+              yyyymmdd,
+              hh,
+              mm,
+              latitude,
+              longitude,
+              latitudeDelta,
+              longitudeDelta,
+              images
+            ) values (
+              ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )`,
+            [
+              param.amount,
+              param.remark,
+              param.yyyymmdd,
+              param.hh,
+              param.mm,
+              param.location.coords.latitude,
+              param.location.coords.longitude,
+              param.location.coords.latitudeDelta,
+              param.location.coords.longitudeDelta,
+              param.images.join('|')
+            ],
+            (tx, res)=>{
+              alert('saved') 
+            }
+          )
+        }},
+      ],
+      {cancelable: true},
     )
   }
 

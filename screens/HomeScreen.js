@@ -11,8 +11,17 @@ import {
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
+import DBUtil from '../components/database/DBUtil'
 
-export default class HomeScreen extends React.Component {
+export default class HomeScreen extends DBUtil {
+  
+  constructor(props) {
+    super(props)
+    this.state = {
+    }
+    this.initTable()
+  }
+  
   static navigationOptions = {
     header: null,
   };
