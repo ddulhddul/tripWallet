@@ -18,11 +18,6 @@ import ExpenseComponent from '../components/expenses/ExpenseComponent'
 
 export default class DayExpensesScreen extends React.Component {
   
-  // static navigationOptions = ({ navigation }) => {
-  //   return {
-  //     headerTitle: null,
-  //   }
-  // }
   static navigationOptions = {
     header: null,
   }
@@ -30,29 +25,45 @@ export default class DayExpensesScreen extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      date: null,
+      yyyymmdd: '',
+      initialPage: 0,
       pageIndex: 0,
-      dateList: Array.from(Array(10))
+      sections: []
     }
   }
 
   componentDidMount(){
     const { navigation } = this.props
-    const date = navigation.getParam('date')
-    this.setState({ date: date })
+    const yyyymmdd = (navigation.getParam('item') || {}).yyyymmdd || Util.yyyymmdd(Util.getCurrentDate())
+    const sections = navigation.getParam('sections') || []
+
+    this.focusListener = navigation.addListener("didFocus", () => {
+      let pageIndex = 0
+      sections.map((obj, index)=>{
+        if(obj.yyyymmdd === yyyymmdd) pageIndex = index
+      })
+      this.setState({ 
+        yyyymmdd: yyyymmdd,
+        initialPage: pageIndex,
+        pageIndex: pageIndex,
+        sections: sections
+      })
+    })
   }
 
   onPageSelected(event){
     if(!event || !event.nativeEvent) return
+    const pageIndex = event.nativeEvent.position
     this.setState({
-      pageIndex: event.nativeEvent.position
+      pageIndex: pageIndex,
+      yyyymmdd: this.state.sections[pageIndex].yyyymmdd
     })
   }
 
   render() {
-    let { date } = this.state
-    if(!date) date = new Date()
-    const { pageIndex, dateList } = this.state
+    let { yyyymmdd } = this.state
+    if(!yyyymmdd) return null
+    const { pageIndex, sections } = this.state
     return (
       <View style={{flex:1}}>
         <View style={{marginTop: 30}}>
@@ -61,8 +72,8 @@ export default class DayExpensesScreen extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.dayContainer}>
-          <Text style={styles.dayStyle}>{Util.getDateForm(date)}</Text>
-          <Text style={styles.weekStyle}>({Util.getDay(date)})</Text>
+          <Text style={styles.dayStyle}>{Util.getDateForm(yyyymmdd)}</Text>
+          <Text style={styles.weekStyle}>({Util.getDay(yyyymmdd)})</Text>
         </View>
         <View style={styles.totalExpensesContainer}>
           <Text style={styles.totalExpenseTitle}>총 사용 금액 : </Text>
@@ -71,7 +82,7 @@ export default class DayExpensesScreen extends React.Component {
         <View>
           <View style={styles.pagingContainer}>
           {
-            dateList.map((obj,index)=>{
+            (sections || []).map((obj, index)=>{
               return (
                 <View 
                   style={[
@@ -82,12 +93,6 @@ export default class DayExpensesScreen extends React.Component {
                       ? {display: 'none'}: {}
                   ]} 
                   key={index}>
-                  {/* <Text style={[
-                    index!==number? {display: 'none'}: null,
-                    {color: 'white', fontSize: 5}
-                    ]}>
-                    { number.toString() }
-                  </Text> */}
                 </View>
               )
             })
@@ -95,17 +100,16 @@ export default class DayExpensesScreen extends React.Component {
           </View>
         </View>
         
-        <ViewPagerAndroid style={{flex:1}} initialPage={0} onPageSelected={(event)=>this.onPageSelected(event)}>
+        <ViewPagerAndroid style={{flex:1}} initialPage={this.state.initialPage} onPageSelected={(event)=>this.onPageSelected(event)}>
         {
-          dateList.map((obj, index)=>{
+          (sections || []).map((sectionObj, index)=>{
             return (
               <View key={index}>
-                <ScrollView style={{width: '100%'}}>
-                  <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-                  <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-                  <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-                  <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
-                </ScrollView>
+                <ScrollView style={{width: '100%'}}>{
+                  (sectionObj.data || []).map((obj)=>{
+                    return <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+                  })
+                }</ScrollView>
               </View>
             )
           })

@@ -14,7 +14,8 @@ import UpdateMapScreen from '../screens/UpdateMapScreen';
 
 // 임시
 const AddExpensesStack = createStackNavigator({
-  AddExpenses: UpdateMapScreen
+  // AddExpenses: UpdateMapScreen
+  AddExpenses: AddExpensesScreen
 })
 
 AddExpensesStack.navigationOptions = {

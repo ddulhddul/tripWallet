@@ -46,6 +46,15 @@ export default class DBUtil extends React.Component {
     })
   }
 
+  listTnExpense(param=[], callback= ()=>{}){
+    this.queryExecute(
+      `SELECT * FROM TN_EXPENSE
+      ORDER BY YYYYMMDD, HH, MM`,
+      param,
+      callback
+    )
+  }
+
   queryExecute(sql='', param=[], callback=()=>{}) {
     db.transaction(tx => {
       tx.executeSql(

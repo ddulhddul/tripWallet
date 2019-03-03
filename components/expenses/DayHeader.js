@@ -9,27 +9,19 @@ export default class DayHeader extends Component {
     }
   }
 
-  _onPressDay(date){
-    // this.props.navigateToDayExpenses()
-    this.props.navigation.navigate('DayExpenses', {
-      date: date
-    })
-  }
-
   render() {
-    const {date} = this.props.item
+    const {yyyymmdd} = this.props.item
     return (
-      // <TouchableOpacity style={styles.container} onPress={()=>this._onPressDay(date)}>
-      <TouchableOpacity style={styles.container} onPress={()=>this._onPressDay(date)}>
+      <View style={styles.container}>
         <View style={styles.dayContainer}>
-          <Text style={styles.dayStyle}>{Util.getDateForm(date)}</Text>
-          <Text style={styles.weekStyle}>({Util.getDay(date)})</Text>
+          <Text style={styles.dayStyle}>{Util.getDateForm(yyyymmdd)}</Text>
+          <Text style={styles.weekStyle}>({Util.getDay(yyyymmdd)})</Text>
         </View>
         <View style={styles.totalExpenseContainer}>
           <Text style={styles.expenseTitleStyle}>금액</Text>
           <Text style={styles.expenseStyle}>{Util.comma(2000)}</Text>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   }
 }

@@ -361,6 +361,7 @@ export default class AddExpensesScreen extends DBUtil {
             ],
             (tx, res)=>{
               alert('saved') 
+              this.props.navigation.goBack()
             }
           )
         }},

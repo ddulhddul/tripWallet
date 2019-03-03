@@ -33,7 +33,7 @@ export default {
     if(!date) return ''
     if(typeof date === 'string'){
       return [
-        date.substring(0,4),
+        date.substring(2,4),
         this.lpad(date.substring(4,6), 2, '0'),
         this.lpad(date.substring(6,8), 2, '0')
       ].join('.')
@@ -65,7 +65,12 @@ export default {
 
   getDay(date){
     if(!date) return ''
-    return dayObj[date.getDay()]
+    if(typeof date === 'string'){
+      const dateTarget = new Date(date.substring(0,4),date.substring(4,6),date.substring(6,8))
+      return dayObj[dateTarget.getDay()]
+    }else{
+      return dayObj[date.getDay()]
+    }
   },
 
   lpad(str, number, padding){
