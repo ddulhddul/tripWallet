@@ -22,6 +22,7 @@ export default class ExpensesScreen extends DBUtil {
 
   constructor(props){
     super(props)
+    this.initTable()
     this.state = {
       sections: []
     }

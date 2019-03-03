@@ -106,8 +106,8 @@ export default class DayExpensesScreen extends React.Component {
             return (
               <View key={index}>
                 <ScrollView style={{width: '100%'}}>{
-                  (sectionObj.data || []).map((obj)=>{
-                    return <ExpenseComponent style={styles.smallContent}></ExpenseComponent>
+                  (sectionObj.data || []).map((obj, sectionIndex)=>{
+                    return <ExpenseComponent key={sectionIndex} style={styles.smallContent}></ExpenseComponent>
                   })
                 }</ScrollView>
               </View>
