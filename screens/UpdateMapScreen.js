@@ -38,17 +38,17 @@ class UpdateMapScreen extends React.Component {
   }
 
   setMarkerByLocation= async (location) =>{
-    const reverseGeocode = (await Location.reverseGeocodeAsync(location.coords || {}) || [])[0] || {}
+    // const reverseGeocode = (await Location.reverseGeocodeAsync(location.coords || {}) || [])[0] || {}
     this.setState({ 
       location, 
-      locationText: [
-        reverseGeocode.postalCode,
-        reverseGeocode.country,
-        reverseGeocode.city,
-        reverseGeocode.region,
-        reverseGeocode.street,
-        reverseGeocode.name,
-      ].join(' ')
+      // locationText: [
+      //   reverseGeocode.postalCode,
+      //   reverseGeocode.country,
+      //   reverseGeocode.city,
+      //   reverseGeocode.region,
+      //   reverseGeocode.street,
+      //   reverseGeocode.name,
+      // ].join(' ')
     });
   }
 
@@ -67,20 +67,20 @@ class UpdateMapScreen extends React.Component {
 
   _handleMapRegionChange= async (region)=>{
 
-    const reverseGeocode = (await Location.reverseGeocodeAsync(region) || [])[0] || {}
+    // const reverseGeocode = (await Location.reverseGeocodeAsync(region) || [])[0] || {}
     this.setState({
       location: {
         ...location,
         coords: {...region}
       },
-      locationText: [
-        reverseGeocode.postalCode,
-        reverseGeocode.country,
-        reverseGeocode.city,
-        reverseGeocode.region,
-        reverseGeocode.street,
-        reverseGeocode.name,
-      ].join(' ')
+      // locationText: [
+      //   reverseGeocode.postalCode,
+      //   reverseGeocode.country,
+      //   reverseGeocode.city,
+      //   reverseGeocode.region,
+      //   reverseGeocode.street,
+      //   reverseGeocode.name,
+      // ].join(' ')
     })
   }
 
@@ -124,18 +124,19 @@ class UpdateMapScreen extends React.Component {
             <TouchableOpacity style={styles.editButtonArea} onPress={()=>this._onPressSearch()}>
               <Text style={{color: 'white', fontSize: 10}}>검색</Text>
             </TouchableOpacity>
-            {/* Location.geocodeAsync(address) */}
-
           </View>
-          <View style={{marginBottom: 10}}>
-            <Text style={[
-              this.state.locationText? {fontSize:12, color: 'rgb(231, 76, 60)'}: {display: 'none'},
-              {minHeight: 40}
-              ]}>
-              <Icon.MaterialIcons size={12} name='location-on' color="rgb(231, 76, 60)" />
-              {this.state.locationText}
-            </Text>
-          </View>
+          {
+            this.state.location && this.state.location.coords && <View style={{marginBottom: 10}}>
+              <Text style={[
+                {fontSize:12, color: 'rgb(231, 76, 60)'},
+                {minHeight: 40}
+                ]}>
+                <Icon.MaterialIcons size={12} name='location-on' color="rgb(231, 76, 60)" />
+                {/* {this.state.locationText} */}
+                {this.state.location.coords.latitude} {this.state.location.coords.longitude}
+              </Text>
+            </View>
+          }
           <View style={{flex:1}}>
             <View style={{
               position: 'absolute', 
