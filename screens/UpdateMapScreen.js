@@ -66,12 +66,16 @@ class UpdateMapScreen extends React.Component {
   }
 
   _handleMapRegionChange= async (region)=>{
-
+    alert('_handleMapRegionChange'+JSON.stringify(region))
     // const reverseGeocode = (await Location.reverseGeocodeAsync(region) || [])[0] || {}
     this.setState({
       location: {
         ...location,
-        coords: {...region}
+        coords: {
+          ...this.state.location.coords,
+          latitude: region.latitude,
+          longitude: region.longitude,
+        }
       },
       // locationText: [
       //   reverseGeocode.postalCode,

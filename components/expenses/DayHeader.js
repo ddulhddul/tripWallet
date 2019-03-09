@@ -19,7 +19,7 @@ export default class DayHeader extends Component {
         </View>
         <View style={styles.totalExpenseContainer}>
           <Text style={styles.expenseTitleStyle}>금액</Text>
-          <Text style={styles.expenseStyle}>{Util.comma(sumAmount)}</Text>
+          <Text style={styles.expenseStyle}>{Util.comma(sumAmount)} {Util.amountUnit}</Text>
         </View>
       </View>
     );
@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     color: 'grey'
   },
   expenseStyle: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    textAlign: 'right'
   },
 })

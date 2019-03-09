@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { View, Text, Dimensions, StyleSheet, ViewPagerAndroid, ScrollView, InteractionManager } from 'react-native'
+import { 
+  View, Text, Dimensions, StyleSheet, FlatList,
+  ViewPagerAndroid, ScrollView, InteractionManager, TouchableWithoutFeedback 
+} from 'react-native'
 import { MapView } from 'expo'
 import DBUtil from '../components/database/DBUtil';
 import ExpenseComponent from '../components/daypage/ExpenseComponent';
@@ -73,13 +76,18 @@ export default class MapScreen extends DBUtil {
   }
 
   onPageSelected(event){
-    if(!event || !event.nativeEvent) return
-    const pageIndex = event.nativeEvent.position
-    // this.dayscroll.scrollTo({animated: true, x: 20*pageIndex})
-  
+    let pageIndex = 0
+    if(typeof event === 'number') pageIndex = event
+    else{
+      if(!event || !event.nativeEvent) return
+      pageIndex = event.nativeEvent.position
+    }
+    
+    this.flatlist.scrollToIndex({animated: true, index: pageIndex, viewPosition: 1})
     this.setState({
       pageIndex: pageIndex,
-      thisSection: this.state.sections[pageIndex]
+      thisSection: this.state.sections[pageIndex],
+      sections: Object.assign([], this.state.sections)
     })
   }
 
@@ -109,46 +117,42 @@ export default class MapScreen extends DBUtil {
             })
           }
         </MapView>
-        <View style={styles.dayContainer} pointerEvents="none">
-          <ScrollView 
-            ref={(refs)=>this.dayscroll=refs}
-            horizontal={true}>{
-            (sections || []).map((obj, index)=>{
-              if(index < pageIndex) return undefined
-              else if(index == pageIndex){
-                return (
-                  <View key={index} 
-                    ref={(refs)=>this['day'+index]=refs}
-                    style={[styles.dayStyle]}>
-                    <Text style={{fontSize: 10, fontWeight: 'bold'}}>{
-                      Util.getDateForm(obj.yyyymmdd)
+        <View 
+          // pointerEvents="none"
+          style={styles.dayContainer}>
+          <FlatList horizontal={true}
+            ref={(refs)=>this.flatlist=refs}
+            data={sections}
+            keyExtractor={(item, index)=>index}
+            renderItem={({item, index})=>(
+              <View key={index} 
+                style={[styles.dayStyle]}>
+                <TouchableWithoutFeedback onPress={()=>{
+                  this.onPageSelected(index)
+                  this.viewPager.setPage(index)
+                  }}>
+                  <View>
+                    <Text style={this.state.pageIndex == index
+                      ? {fontSize: 10, fontWeight: 'bold'}
+                      : {fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>{
+                      Util.getDateForm(item.yyyymmdd)
                     }</Text>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+                    <Text style={this.state.pageIndex == index
+                      ? {fontSize: 20, fontWeight: 'bold'}
+                      : {fontSize: 13, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>
                       Day {index+1}
                     </Text>
                   </View>
-                )
-              }else{
-                return (
-                  <View key={index} 
-                    ref={(refs)=>this['day'+index]=refs}
-                    style={[styles.dayStyle]}>
-                    <Text style={{fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>{
-                      Util.getDateForm(obj.yyyymmdd)
-                    }</Text>
-                    <Text style={{fontSize: 13, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>
-                      Day {index+1}
-                    </Text>
-                  </View>
-                )
-              }
-            })
-          }</ScrollView>
+                </TouchableWithoutFeedback>
+              </View>
+            )}
+          />
         </View>
         {
           !sections || !sections.length ? undefined :
           <ViewPagerAndroid 
             style={{flex:1}} 
+            ref={(refs=>this.viewPager=refs)}
             initialPage={this.state.initialPage} 
             onPageSelected={(event)=>this.onPageSelected(event)}>{
             (sections || []).map((sectionObj, index)=>{
