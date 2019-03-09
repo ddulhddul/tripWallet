@@ -67,6 +67,7 @@ export default class DayPage extends Component {
                       <ExpenseComponent 
                         key={sectionIndex} 
                         style={styles.smallContent}
+                        search={()=>this.props.search()}
                         item={obj}
                       ></ExpenseComponent>
                     )

@@ -31,22 +31,26 @@ export default class ExpensesScreen extends DBUtil {
       // The screen is focused
       // Call any action
       // this.setState({sections: []})
-      this.listTnExpense([],
-        (tx, res)=>{
-          const list = res.rows._array || []
-          const objByList = list.reduce((entry, obj)=>{
-            entry[obj.yyyymmdd] = entry[obj.yyyymmdd] || []
-            entry[obj.yyyymmdd].push(obj)
-            return entry
-          }, {})
-          this.setState({
-            sections: Array.from(Object.keys(objByList)).map((key)=>{
-              return {yyyymmdd: key, data: objByList[key]}
-            })
-          })
-        }
-      )
+      this.search()
     })
+  }
+
+  search(){
+    this.listTnExpense([],
+      (tx, res)=>{
+        const list = res.rows._array || []
+        const objByList = list.reduce((entry, obj)=>{
+          entry[obj.yyyymmdd] = entry[obj.yyyymmdd] || []
+          entry[obj.yyyymmdd].push(obj)
+          return entry
+        }, {})
+        this.setState({
+          sections: Array.from(Object.keys(objByList)).map((key)=>{
+            return {yyyymmdd: key, data: objByList[key]}
+          })
+        })
+      }
+    )
   }
 
   onPageSelected(event){
@@ -86,11 +90,13 @@ export default class ExpensesScreen extends DBUtil {
           <View key={0}>
             <Expenses
               sections={this.state.sections}
+              search={()=>this.search()}
             />
           </View>
           <View key={1}>
             <DayPage
               sections={this.state.sections}
+              search={()=>this.search()}
             />
           </View>
         </ViewPagerAndroid>
