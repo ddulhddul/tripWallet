@@ -116,7 +116,7 @@ class UpdateMapScreen extends React.Component {
               현재 위치로
             </Text>
           </TouchableOpacity>
-          <View style={{flexDirection: 'row'}}>
+          {/* <View style={{flexDirection: 'row'}}>
             <View style={{flex:1}}>
               <TextInput onChangeText={(value)=>{this.setState({searchLocationText: value})}}
                 placeholder="장소 검색" style={styles.inputTitleStyle} />
@@ -124,7 +124,7 @@ class UpdateMapScreen extends React.Component {
             <TouchableOpacity style={styles.editButtonArea} onPress={()=>this._onPressSearch()}>
               <Text style={{color: 'white', fontSize: 10}}>검색</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
           {
             this.state.location && this.state.location.coords && <View style={{marginBottom: 10}}>
               <Text style={[

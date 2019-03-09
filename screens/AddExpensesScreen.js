@@ -1,14 +1,14 @@
 import React from 'react';
 import {
   Image,
-  Alert,
+  ToastAndroid,
   ScrollView,
   Picker,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   DatePickerAndroid,
-  Button,
   TextInput,
   View,
   Dimensions
@@ -26,63 +26,50 @@ export default class AddExpensesScreen extends DBUtil {
   constructor(props) {
     super(props)
     const currentDate = Util.getCurrentDate()
-    // console.log('Util.yyyymmdd(Util.getCurrentDate())', Util.yyyymmdd(Util.getCurrentDate()), Util.hhmm(currentDate).substring(0,2))
-    this.state = {
+    
+    let defaultSetting = {
       locationText: '',
-      location: {coords: { latitude: 37.78825, longitude: -122.4324}},
-
-      amount: 0,
-      remark: '',
-      yyyymmdd: Util.yyyymmdd(currentDate),
-      hh: Util.hhmm(currentDate).substring(0,2),
-      mm: Util.hhmm(currentDate).substring(2,4),
-      images: [],
       validate: {
         amount: 'required'
       },
       focus: '',
     }
-  }
-
-  componentDidMount() {
-    this._getLocationAsync();
-  }
-
-  _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        locationText: 'Permission to access location was denied',
+    const item = props.navigation.getParam('item') || {}
+    if(!item.expense_id){
+      Object.assign(defaultSetting, {
+        location: {coords: { latitude: 37.78825, longitude: -122.4324}},
+        amount: 0,
+        remark: '',
+        yyyymmdd: Util.yyyymmdd(currentDate),
+        hh: Util.hhmm(currentDate).substring(0,2),
+        mm: Util.hhmm(currentDate).substring(2,4),
+        images: [],
       })
-      return
+    }else{
+      console.log('item', item)
+      Object.assign(defaultSetting, {
+        expense_id: item.expense_id,
+        location: {coords: { latitude: item.latitude, longitude: item.longitude}},
+        amount: item.amount || 0,
+        remark: item.remark || '',
+        yyyymmdd: item.yyyymmdd,
+        hh: item.hh,
+        mm: item.mm,
+        images: String(item.images || '').split('|'),
+      })
     }
 
-    let location = await Location.getCurrentPositionAsync({});
-    this.setMarkerByLocation(location)
+    this.state = defaultSetting
   }
 
   setMarkerByLocation= async (location) =>{
-    const reverseGeocode = (await Location.reverseGeocodeAsync(location.coords || {}) || [])[0] || {}
-    // console.log('location', location, reverseGeocode)
-    this.setState({ 
-      location, 
-      locationText: [
-        reverseGeocode.postalCode,
-        reverseGeocode.country,
-        reverseGeocode.city,
-        reverseGeocode.region,
-        reverseGeocode.street,
-        reverseGeocode.name,
-      ].join(' ')
-    });
+    this.setState({ location })
   }
 
   openDatePicker = async ()=>{
     const yyyymmdd = String(this.state.yyyymmdd || '')
     try {
       const {action, year, month, day} = await DatePickerAndroid.open({
-        // Use `new Date()` for current date.
-        // May 25 2020. Month 0 is January.
         date: new Date(
           yyyymmdd.substring(0,4),
           yyyymmdd.substring(4,6)-1,
@@ -90,7 +77,6 @@ export default class AddExpensesScreen extends DBUtil {
         )
       })
       if (action !== DatePickerAndroid.dismissedAction) {
-        // Selected year, month (0-11), day
         this.setState({
           yyyymmdd: [
             year, 
@@ -120,7 +106,6 @@ export default class AddExpensesScreen extends DBUtil {
           result.uri
         ]
       })
-      // this.setState({ image: result.uri })
     }
   }
 
@@ -142,7 +127,8 @@ export default class AddExpensesScreen extends DBUtil {
           </TouchableOpacity>
         </View>
         
-        <ScrollView>
+        <ScrollView
+          ref={(input)=>{this.scrollview=input}}>
           <View style={styles.row}>
             <TouchableOpacity 
               onPress={()=>{this.amount && this.amount.focus()}} 
@@ -150,7 +136,11 @@ export default class AddExpensesScreen extends DBUtil {
               <Text style={[styles.inputTitleStyle, this.state.focus=='amount'? styles.inputTitleFocusStyle: null]}>비용</Text>
               <View>
                 <TextInput 
-                  style={[styles.inputStyle, this.state.focus=='amount'? styles.inputFocusStyle: null, {fontSize: 17, textAlign: 'right'}]} autoFocus
+                  autoFocus={false}
+                  style={[
+                    styles.inputStyle, 
+                    this.state.focus=='amount'? styles.inputFocusStyle: null, {fontSize: 17, textAlign: 'right'}
+                  ]}
                   onFocus={()=>this.setState({focus: 'amount'})}
                   onBlur={()=>this.setState({focus: ''})}
                   ref={(input)=>{this.amount=input}}
@@ -229,7 +219,7 @@ export default class AddExpensesScreen extends DBUtil {
           </View>
           <View style={styles.row}>
             <View style={[styles.column, {flex:1}]}>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate('UpdateMap', {
+              <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate('UpdateMap', {
                 setMarkerByLocation: this.setMarkerByLocation,
                 location: {
                   latitudeDelta: 0.005,
@@ -237,33 +227,27 @@ export default class AddExpensesScreen extends DBUtil {
                   ...this.state.location.coords
                 }
               })}>
-                <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>장소</Text>
-                <View style={{marginBottom: 10}}>
-                  <Text style={this.state.locationText? {fontSize:12, color: 'rgb(231, 76, 60)'}: {display: 'none'}}>
-                    <Icon.MaterialIcons size={12} name='location-on' color="rgb(231, 76, 60)" />
-                    {this.state.location.coords.latitude} {this.state.location.coords.longitude}
-                  </Text>
+                <View>
+                  <Text style={[styles.inputTitleStyle, this.state.focus=='temp'? styles.inputTitleFocusStyle: null]}>장소</Text>
+                  {/* <Text>{ this.state.locationText }</Text> */}
+                  <View pointerEvents="none">
+                    <MapView 
+                      style={{ alignSelf: 'stretch', height: Dimensions.get('window').width * 0.7 }}
+                      provider={MapView.PROVIDER_GOOGLE}
+                      region={{ 
+                        latitude: !this.state.location? null: this.state.location.coords.latitude, 
+                        longitude: !this.state.location? null: this.state.location.coords.longitude, 
+                        latitudeDelta: 0.005,
+                        longitudeDelta: 0.005
+                      }}
+                      >
+                      <MapView.Marker
+                        coordinate={!this.state.location ? null : this.state.location.coords}
+                      />
+                    </MapView>
+                  </View>
                 </View>
-              </TouchableOpacity>
-              <MapView 
-                style={{ alignSelf: 'stretch', height: Dimensions.get('window').width * 0.7 }}
-                provider={MapView.PROVIDER_GOOGLE}
-                region={{ 
-                  latitude: !this.state.location? null: this.state.location.coords.latitude, 
-                  longitude: !this.state.location? null: this.state.location.coords.longitude, 
-                  // latitudeDelta: 0.0922, 
-                  // longitudeDelta: 0.0421
-                  latitudeDelta: 0.005,
-                  longitudeDelta: 0.005
-                }}
-                // onRegionChange={this._handleMapRegionChange}
-                >
-                <MapView.Marker
-                  coordinate={!this.state.location ? null : this.state.location.coords}
-                  // title="My Marker"
-                  // description="Some description"
-                />
-              </MapView>
+              </TouchableWithoutFeedback>
             </View>
           </View>
           <View style={styles.row}>
@@ -272,7 +256,8 @@ export default class AddExpensesScreen extends DBUtil {
               <View style={[{minHeight: Dimensions.get('window').width * 3 / 4, justifyContent: 'center', alignItems: 'center'}]}>
                 {
                   this.state.images.map((uri, index)=>{
-                    return uri && (
+                    if(!uri) return undefined
+                    return (
                       <View key={['image',index].join('_')} style={{flex: 1, flexDirection: 'row', margin: 20}}>
                         <Image source={{uri: uri}} 
                           style={{
@@ -322,52 +307,45 @@ export default class AddExpensesScreen extends DBUtil {
   }
 
   save(){
-    Alert.alert(
-      '저장',
-      '저장 하시겠습니까?',
-      [
-        {
-          text: '취소',
-          style: 'cancel',
-        },
-        {text: '저장', onPress: () => {
-          const param = this.state
-          this.queryExecute(
-            `insert into TN_EXPENSE (
-              amount,
-              remark,
-              yyyymmdd,
-              hh,
-              mm,
-              latitude,
-              longitude,
-              latitudeDelta,
-              longitudeDelta,
-              images
-            ) values (
-              ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-            )`,
-            [
-              param.amount,
-              param.remark,
-              param.yyyymmdd,
-              param.hh,
-              param.mm,
-              param.location.coords.latitude,
-              param.location.coords.longitude,
-              param.location.coords.latitudeDelta,
-              param.location.coords.longitudeDelta,
-              param.images.join('|')
-            ],
-            (tx, res)=>{
-              alert('saved') 
-              this.props.navigation.goBack()
-            }
+    const state = this.state
+    const {validate} = this.state
+    const valid = Object.keys(validate).reduce((entry, obj)=>{
+      if(!entry) return false
+      if(validate[obj] === 'required'){
+        if(!state[obj]){
+          entry = false
+          this[obj] && this[obj].focus()
+          this.scrollview && this.scrollview.scrollTo({y: 0, animated: true})
+        }
+      }
+      return entry
+    }, true)
+    if(!valid) return
+
+    const param = this.state
+    if(!param.expense_id){
+      this.insertTnExpense(param,
+        (tx, res)=>{
+          ToastAndroid.showWithGravity(
+            '저장되었습니다.',
+            ToastAndroid.SHORT,
+            ToastAndroid.BOTTOM
           )
-        }},
-      ],
-      {cancelable: true},
-    )
+          this.props.navigation.goBack()
+        }
+      )
+    }else{
+      this.updateTnExpense(param,
+        (tx, res)=>{
+          ToastAndroid.showWithGravity(
+            '저장되었습니다.',
+            ToastAndroid.SHORT,
+            ToastAndroid.BOTTOM
+          )
+          this.props.navigation.goBack()
+        }
+      )
+    }
   }
 
 }
@@ -380,7 +358,6 @@ const styles = StyleSheet.create({
   column: {
     flexDirection: 'column',
     justifyContent: 'center',
-    // alignItems: 'center',
     marginLeft: 20,
     marginRight: 20
   },

@@ -75,10 +75,10 @@ const styles = StyleSheet.create({
 
   // 금액 부분
   totalExpenseContainer: {
-    minWidth: 80,
+    width: 100,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginRight: 15
+    marginRight: 15,
   },
   expenseStyle: {
     marginTop: 3,
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
 
   // 상세 내용 부분
   detailContainer: {
-    width: '60%',
+    flex: 1,
     flexDirection: 'row',
   },
   detailFontStyle: {

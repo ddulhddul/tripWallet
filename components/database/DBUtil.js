@@ -55,6 +55,71 @@ export default class DBUtil extends React.Component {
     )
   }
 
+  updateTnExpense(param={}, callback= ()=>{}){
+    this.queryExecute(
+      `UPDATE TN_EXPENSE 
+        SET 
+          amount = ?,
+          remark = ?,
+          yyyymmdd = ?,
+          hh = ?,
+          mm = ?,
+          latitude = ?,
+          longitude = ?,
+          latitudeDelta = ?,
+          longitudeDelta = ?,
+          images = ?
+        WHERE expense_id = ?
+      `,
+      [
+        param.amount,
+        param.remark,
+        param.yyyymmdd,
+        param.hh,
+        param.mm,
+        param.location.coords.latitude,
+        param.location.coords.longitude,
+        param.location.coords.latitudeDelta,
+        param.location.coords.longitudeDelta,
+        param.images.join('|'),
+        param.expense_id
+      ],
+      callback
+    )
+  }
+
+  insertTnExpense(param={}, callback= ()=>{}){
+    this.queryExecute(
+      `insert into TN_EXPENSE (
+        amount,
+        remark,
+        yyyymmdd,
+        hh,
+        mm,
+        latitude,
+        longitude,
+        latitudeDelta,
+        longitudeDelta,
+        images
+      ) values (
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+      )`,
+      [
+        param.amount,
+        param.remark,
+        param.yyyymmdd,
+        param.hh,
+        param.mm,
+        param.location.coords.latitude,
+        param.location.coords.longitude,
+        param.location.coords.latitudeDelta,
+        param.location.coords.longitudeDelta,
+        param.images.join('|')
+      ],
+      callback
+    )
+  }
+
   queryExecute(sql='', param=[], callback=()=>{}) {
     db.transaction(tx => {
       tx.executeSql(
