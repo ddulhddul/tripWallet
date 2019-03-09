@@ -1,6 +1,7 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { Icon } from 'expo';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
@@ -12,6 +13,7 @@ import AddExpensesScreen from '../screens/AddExpensesScreen';
 import UpdateMapScreen from '../screens/UpdateMapScreen';
 
 import MapScreen from '../screens/MapScreen';
+import InfoScreen from '../screens/InfoScreen';
 
 // 임시
 const AddExpensesStack = createStackNavigator({
@@ -42,14 +44,9 @@ const MapStack = createStackNavigator({
 MapStack.navigationOptions = ({navigation}) => ({
   tabBarLabel: 'Map',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
+    <Icon.Entypo focused={focused} 
+     color={focused? 'blue': 'grey'}
+     size={20} name='map' />
   )
 })
 
@@ -64,6 +61,22 @@ const ExpensesStack = createStackNavigator({
 ExpensesStack.navigationOptions = ({navigation}) => ({
   tabBarLabel: 'Expenses',
   tabBarIcon: ({ focused }) => (
+    <Icon.FontAwesome focused={focused} 
+     color={focused? 'blue': 'grey'}
+     size={20} name='money' />
+  ),
+  tabBarVisible: navigation.state.index === 0
+})
+
+const InfoStack = createStackNavigator({
+  Info: InfoScreen,
+}, {
+  initialRouteName: "Info"
+})
+
+InfoStack.navigationOptions = ({navigation}) => ({
+  tabBarLabel: 'Info',
+  tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
@@ -72,10 +85,12 @@ ExpensesStack.navigationOptions = ({navigation}) => ({
           : 'md-information-circle'
       }
     />
-  ),
-  tabBarVisible: navigation.state.index === 0
+  )
 })
 
+
+// // // // // // // // // // // // // // 
+// // // // // // // // // // // // // // 
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -126,7 +141,5 @@ SettingsStack.navigationOptions = {
 export default createBottomTabNavigator({
   MapStack,
   ExpensesStack,
-  HomeStack,
-  LinksStack,
-  SettingsStack,
+  InfoStack
 })
