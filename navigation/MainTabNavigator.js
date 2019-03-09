@@ -8,6 +8,9 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
+import TripScreen from '../screens/TripScreen';
+import NationScreen from '../screens/NationScreen';
+
 import ExpensesScreen from '../screens/ExpensesScreen';
 import AddExpensesScreen from '../screens/AddExpensesScreen';
 import UpdateMapScreen from '../screens/UpdateMapScreen';
@@ -51,11 +54,13 @@ MapStack.navigationOptions = ({navigation}) => ({
 })
 
 const ExpensesStack = createStackNavigator({
-  Expenses: ExpensesScreen,
+  Trip: TripScreen,
+  Nation: NationScreen,
   AddExpenses: AddExpensesScreen,
+  Expenses: ExpensesScreen,
   UpdateMap: UpdateMapScreen
 }, {
-  initialRouteName: "Expenses"
+  initialRouteName: "Trip"
 })
 
 ExpensesStack.navigationOptions = ({navigation}) => ({
@@ -65,7 +70,10 @@ ExpensesStack.navigationOptions = ({navigation}) => ({
      color={focused? 'blue': 'grey'}
      size={20} name='money' />
   ),
-  tabBarVisible: navigation.state.index === 0
+  tabBarVisible: 
+    navigation.state.index!==0 && 
+    navigation.state.index!==1 && 
+    navigation.state.index!==2
 })
 
 const InfoStack = createStackNavigator({
@@ -139,7 +147,7 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  MapStack,
   ExpensesStack,
-  InfoStack
+  MapStack,
+  // InfoStack
 })

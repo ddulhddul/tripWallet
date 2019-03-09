@@ -131,6 +131,8 @@ const styles = StyleSheet.create({
     paddingTop: 30
   },
   plusIcon: {
+    backgroundColor: 'white',
+    borderRadius: 50,
     position: 'absolute',
     right: 20,
     bottom: 20
