@@ -123,7 +123,7 @@ export default class MapScreen extends DBUtil {
           <FlatList horizontal={true}
             ref={(refs)=>this.flatlist=refs}
             data={sections}
-            keyExtractor={(item, index)=>index}
+            keyExtractor={(item, index)=>JSON.stringify(item)}
             renderItem={({item, index})=>(
               <View key={index} 
                 style={[styles.dayStyle]}>
