@@ -25,15 +25,16 @@ export default class DayPage extends Component {
     const { pageIndex } = this.state
     const { sections } = this.props
     const yyyymmdd = (sections[pageIndex] || {}).yyyymmdd
+    const sumAmount = (sections[pageIndex] || {}).sumAmount
     return (
-      <View style={{flex:1}}>
+      <View style={{flex:1, marginTop: 20}}>
         <View style={styles.dayContainer}>
           <Text style={styles.dayStyle}>{Util.getDateForm(yyyymmdd)}</Text>
           <Text style={styles.weekStyle}>({Util.getDay(yyyymmdd)})</Text>
         </View>
         <View style={styles.totalExpensesContainer}>
           <Text style={styles.totalExpenseTitle}>총 사용 금액 : </Text>
-          <Text style={styles.totalExpense}>{Util.comma(31000)} 원</Text>
+          <Text style={styles.totalExpense}>{Util.comma(sumAmount)} 원</Text>
         </View>
         <View>
           <View style={styles.pagingContainer}>

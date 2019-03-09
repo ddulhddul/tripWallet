@@ -43,8 +43,8 @@ class Expenses extends DBUtil {
   render() {
     return (
       <SectionList 
-          renderSectionHeader={({section: {yyyymmdd}}) => (
-            <DayHeader item={{yyyymmdd: yyyymmdd}} navigation={this.props.navigation} />
+          renderSectionHeader={({section: {yyyymmdd, sumAmount}}) => (
+            <DayHeader item={{yyyymmdd: yyyymmdd, sumAmount: sumAmount}} navigation={this.props.navigation} />
           )}        
           renderItem={({ item, index, section }) => (
             <TouchableOpacity 

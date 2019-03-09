@@ -46,7 +46,13 @@ export default class ExpensesScreen extends DBUtil {
         }, {})
         this.setState({
           sections: Array.from(Object.keys(objByList)).map((key)=>{
-            return {yyyymmdd: key, data: objByList[key]}
+            return {
+              yyyymmdd: key, 
+              sumAmount: objByList[key].reduce((entry, obj)=>{
+                return entry + Number(obj.amount || 0)
+              }, 0),
+              data: objByList[key]
+            }
           })
         })
       }

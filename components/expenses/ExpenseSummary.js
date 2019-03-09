@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   },
   expenseStyle: {
     marginTop: 3,
+    textAlign: 'right',
     fontWeight: 'bold'
   },
 

@@ -10,7 +10,7 @@ export default class DayHeader extends Component {
   }
 
   render() {
-    const {yyyymmdd} = this.props.item
+    const {yyyymmdd, sumAmount} = this.props.item
     return (
       <View style={styles.container}>
         <View style={styles.dayContainer}>
@@ -19,7 +19,7 @@ export default class DayHeader extends Component {
         </View>
         <View style={styles.totalExpenseContainer}>
           <Text style={styles.expenseTitleStyle}>금액</Text>
-          <Text style={styles.expenseStyle}>{Util.comma(2000)}</Text>
+          <Text style={styles.expenseStyle}>{Util.comma(sumAmount)}</Text>
         </View>
       </View>
     );
