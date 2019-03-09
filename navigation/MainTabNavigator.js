@@ -11,6 +11,8 @@ import ExpensesScreen from '../screens/ExpensesScreen';
 import AddExpensesScreen from '../screens/AddExpensesScreen';
 import UpdateMapScreen from '../screens/UpdateMapScreen';
 
+import MapScreen from '../screens/MapScreen';
+
 // 임시
 const AddExpensesStack = createStackNavigator({
   // AddExpenses: UpdateMapScreen
@@ -30,6 +32,26 @@ AddExpensesStack.navigationOptions = {
     />
   ),
 };
+
+const MapStack = createStackNavigator({
+  Map: MapScreen,
+}, {
+  initialRouteName: "Map"
+})
+
+MapStack.navigationOptions = ({navigation}) => ({
+  tabBarLabel: 'Map',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={
+        Platform.OS === 'ios'
+          ? `ios-information-circle${focused ? '' : '-outline'}`
+          : 'md-information-circle'
+      }
+    />
+  )
+})
 
 const ExpensesStack = createStackNavigator({
   Expenses: ExpensesScreen,
@@ -102,7 +124,7 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  // AddExpensesStack,
+  MapStack,
   ExpensesStack,
   HomeStack,
   LinksStack,

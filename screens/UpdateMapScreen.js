@@ -110,8 +110,10 @@ class UpdateMapScreen extends React.Component {
         </View>
         
         <View style={[styles.column, {flex:1}]}>
-          <TouchableOpacity onPress={()=>this._getLocationAsync()} style={{flexDirection: 'row', marginBottom: 10}}>
-            <Text style={this.state.locationText? {fontSize:14, color: 'black'}: {display: 'none'}}>
+          <TouchableOpacity 
+            onPress={()=>this._getLocationAsync()} 
+            style={{flexDirection: 'row', marginBottom: 10}}>
+            <Text style={{fontSize:14, color: 'black'}}>
               <Icon.MaterialIcons size={14} name='my-location' color="black" style={{marginRight: 5}} />
               현재 위치로
             </Text>
@@ -180,7 +182,7 @@ class UpdateMapScreen extends React.Component {
           <View style={[{width: 0.1}]}></View>
           <View style={[styles.buttonColumn]}>
             <TouchableOpacity onPress={()=>this.save()}>
-              <Text style={[styles.buttonStyle, {color: "rgb(74, 190, 202)"}]}>저장</Text>
+              <Text style={[styles.buttonStyle, {color: "rgb(74, 190, 202)"}]}>확인</Text>
             </TouchableOpacity>
           </View>
         </View>

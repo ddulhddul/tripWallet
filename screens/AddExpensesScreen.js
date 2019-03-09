@@ -45,6 +45,7 @@ export default class AddExpensesScreen extends DBUtil {
         mm: Util.hhmm(currentDate).substring(2,4),
         images: [],
       })
+      this._getLocationAsync()
     }else{
       console.log('item', item)
       Object.assign(defaultSetting, {
@@ -60,6 +61,18 @@ export default class AddExpensesScreen extends DBUtil {
     }
 
     this.state = defaultSetting
+  }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        locationText: 'Permission to access location was denied'
+      })
+    }
+
+    let location = await Location.getCurrentPositionAsync({})
+    this.setMarkerByLocation(location)
   }
 
   setMarkerByLocation= async (location) =>{
