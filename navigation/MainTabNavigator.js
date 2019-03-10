@@ -10,6 +10,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 
 import TripScreen from '../screens/TripScreen';
 import NationScreen from '../screens/NationScreen';
+import SelectNationScreen from '../screens/SelectNationScreen';
 
 import ExpensesScreen from '../screens/ExpensesScreen';
 import AddExpensesScreen from '../screens/AddExpensesScreen';
@@ -56,6 +57,7 @@ MapStack.navigationOptions = ({navigation}) => ({
 const ExpensesStack = createStackNavigator({
   Trip: TripScreen,
   Nation: NationScreen,
+  SelectNation: SelectNationScreen,
   AddExpenses: AddExpensesScreen,
   Expenses: ExpensesScreen,
   UpdateMap: UpdateMapScreen
@@ -73,7 +75,7 @@ ExpensesStack.navigationOptions = ({navigation}) => {
       color={focused? 'blue': 'grey'}
       size={20} name='money' />
     ),
-    tabBarVisible: !['Trip','Nation','AddExpenses','UpdateMap'].includes(routeName)
+    tabBarVisible: !['Trip','Nation','SelectNation','AddExpenses','UpdateMap'].includes(routeName)
   }
 }
 

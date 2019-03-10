@@ -14,6 +14,10 @@ export default class TripScreen extends Component {
     }
   }
 
+  componentDidMount(){
+    this.props.navigation.navigate('Nation')
+  }
+
   _selectTrip(param){
     this.props.navigation.navigate('Expenses')
   }

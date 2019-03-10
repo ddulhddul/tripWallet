@@ -37,18 +37,9 @@ class UpdateMapScreen extends React.Component {
     this.setMarkerByLocation({coords: location})
   }
 
-  setMarkerByLocation= async (location) =>{
-    // const reverseGeocode = (await Location.reverseGeocodeAsync(location.coords || {}) || [])[0] || {}
+  setMarkerByLocation(location){
     this.setState({ 
-      location, 
-      // locationText: [
-      //   reverseGeocode.postalCode,
-      //   reverseGeocode.country,
-      //   reverseGeocode.city,
-      //   reverseGeocode.region,
-      //   reverseGeocode.street,
-      //   reverseGeocode.name,
-      // ].join(' ')
+      location
     });
   }
 
@@ -65,32 +56,16 @@ class UpdateMapScreen extends React.Component {
     this.setMarkerByLocation(location)
   }
 
-  _handleMapRegionChange= async (region)=>{
-    alert('_handleMapRegionChange'+JSON.stringify(region))
-    // const reverseGeocode = (await Location.reverseGeocodeAsync(region) || [])[0] || {}
-    this.setState({
-      location: {
-        ...location,
-        coords: {
-          ...this.state.location.coords,
-          latitude: region.latitude,
-          longitude: region.longitude,
-        }
-      },
-      // locationText: [
-      //   reverseGeocode.postalCode,
-      //   reverseGeocode.country,
-      //   reverseGeocode.city,
-      //   reverseGeocode.region,
-      //   reverseGeocode.street,
-      //   reverseGeocode.name,
-      // ].join(' ')
-    })
+  _handleMapRegionChange(region){
+
+    this.setMarkerByLocation({coords: {
+      latitude: region.latitude,
+      longitude: region.longitude,
+    }})
   }
 
   async _onPressSearch(){
     Keyboard.dismiss()
-    // alert('_onPressSearch'+this.state.searchLocationText)
     const searchLocationText = this.state.searchLocationText
     const result = (await Location.geocodeAsync(searchLocationText))[0]
     if(result){
@@ -168,7 +143,7 @@ class UpdateMapScreen extends React.Component {
                 latitudeDelta: (this.state.location && this.state.location.coords.latitudeDelta) || 0.005,
                 longitudeDelta: (this.state.location && this.state.location.coords.longitudeDelta) || 0.005,
               }}
-              onRegionChangeComplete={this._handleMapRegionChange}
+              onRegionChangeComplete={(param)=>this._handleMapRegionChange(param)}
               >
               <MapView.Marker
                 coordinate={!this.state.location ? null : this.state.location.coords}
