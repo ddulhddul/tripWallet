@@ -63,18 +63,19 @@ const ExpensesStack = createStackNavigator({
   initialRouteName: "Trip"
 })
 
-ExpensesStack.navigationOptions = ({navigation}) => ({
-  tabBarLabel: 'Expenses',
-  tabBarIcon: ({ focused }) => (
-    <Icon.FontAwesome focused={focused} 
-     color={focused? 'blue': 'grey'}
-     size={20} name='money' />
-  ),
-  tabBarVisible: 
-    navigation.state.index!==0 && 
-    navigation.state.index!==1 && 
-    navigation.state.index!==2
-})
+ExpensesStack.navigationOptions = ({navigation}) => {
+  let routes = Object.assign([], navigation.state.routes)
+  let routeName = ((routes.splice(routes.length-1) || [])[0] || {}).routeName
+  return {
+    tabBarLabel: 'Expenses',
+    tabBarIcon: ({ focused }) => (
+      <Icon.FontAwesome focused={focused} 
+      color={focused? 'blue': 'grey'}
+      size={20} name='money' />
+    ),
+    tabBarVisible: !['Trip','Nation','AddExpenses','UpdateMap'].includes(routeName)
+  }
+}
 
 const InfoStack = createStackNavigator({
   Info: InfoScreen,
