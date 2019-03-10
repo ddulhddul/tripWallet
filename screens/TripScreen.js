@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { Icon } from 'expo'
+import DBUtil from '../components/database/DBUtil';
 
-export default class TripScreen extends Component {
+export default class TripScreen extends DBUtil {
 
   static navigationOptions = {
     header: null,
@@ -10,12 +11,27 @@ export default class TripScreen extends Component {
 
   constructor(props) {
     super(props)
+    this.initNationTable()
     this.state = {
+      tripList: []
     }
   }
 
   componentDidMount(){
-    this.props.navigation.navigate('Nation')
+    const { navigation } = this.props
+    this.focusListener = navigation.addListener("didFocus", () => {
+      this.search()
+    })
+  }
+
+  search(){
+    this.listTnTrip({},
+      (tx, res)=>{
+        this.setState({
+          tripList: res.rows._array || []
+        })
+      }
+    )
   }
 
   _selectTrip(param){
@@ -27,13 +43,7 @@ export default class TripScreen extends Component {
   }
 
   render() {
-    const data = [
-      [{},{}],
-      [{},{}],
-      [{},{}],
-      [{},{}],
-      [{}],
-    ]
+    const data = this.state.tripList
     return (
       <View style={{flex:1}}>
         <View style={styles.header}>

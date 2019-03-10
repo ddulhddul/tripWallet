@@ -12,7 +12,10 @@ export default class DBUtil extends React.Component {
   initNationTable() {
     db.transaction((txn)=>{
       txn.executeSql(
-        "SELECT * FROM sqlite_master WHERE type='table' AND name='TN_TRIP'",
+        `SELECT * FROM sqlite_master WHERE type='table' AND name='TN_TRIP'
+        AND EXISTS (
+          SELECT 1 FROM sqlite_master WHERE name='TN_TRIP' AND sql LIKE '%create_date%'
+        )`,
         [],
         (tx, res)=>{
           if (res.rows.length == 0) {
@@ -25,7 +28,8 @@ export default class DBUtil extends React.Component {
                 nation_utc DOUBLE,
                 nation_uri VARCHAR(255),
                 city_name VARCHAR(255),
-                remark VARCHAR(255)
+                remark VARCHAR(255),
+                create_date DATE
               )`,
               [],
               (tx, res)=>{
@@ -49,9 +53,10 @@ export default class DBUtil extends React.Component {
         nation_utc,
         nation_uri,
         city_name,
-        remark
+        remark,
+        create_date
       ) values (
-        ?, ?, ?, ?, ?, ?
+        ?, ?, ?, ?, ?, ?, datetime('now','localtime')
       )`,
       [
         param.nation.id,
@@ -61,6 +66,15 @@ export default class DBUtil extends React.Component {
         param.city_name,
         param.remark,
       ],
+      callback
+    )
+  }
+
+  listTnTrip(param={}, callback= ()=>{}){
+    this.queryExecute(
+      `SELECT * FROM TN_TRIP
+      ORDER BY create_date desc`,
+      [],
       callback
     )
   }
@@ -106,11 +120,14 @@ export default class DBUtil extends React.Component {
     })
   }
 
-  listTnExpense(param=[], callback= ()=>{}){
+  listTnExpense(param={}, callback= ()=>{}){
     this.queryExecute(
       `SELECT * FROM TN_EXPENSE
+      WHERE TRIP_ID = ?
       ORDER BY YYYYMMDD, HH, MM`,
-      param,
+      [
+        param.trip_id
+      ],
       callback
     )
   }
