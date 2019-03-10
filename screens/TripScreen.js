@@ -28,14 +28,24 @@ export default class TripScreen extends DBUtil {
     this.listTnTrip({},
       (tx, res)=>{
         this.setState({
-          tripList: res.rows._array || []
+          tripList: (res.rows._array || []).reduce((entry, obj)=>{
+            obj["uri"] = obj.nation_uri
+            if(entry[entry.length-1].length < 2){
+              entry[entry.length-1].push(obj)
+            }else{
+              entry.push([obj])
+            }
+            return entry
+          }, [[]])
         })
       }
     )
   }
 
   _selectTrip(param){
-    this.props.navigation.navigate('Expenses')
+    this.props.navigation.navigate('Expenses', {
+      trip_id: param.trip_id
+    })
   }
   
   _pressAdd(){
@@ -58,10 +68,12 @@ export default class TripScreen extends DBUtil {
                     return (
                       <TouchableOpacity key={index} onPress={()=>this._selectTrip(obj)} style={styles.componentContainer}>
                         <View>
-                          <View style={{flex: 1, aspectRatio: 1, backgroundColor: 'grey', borderRadius: 20}}></View>
-                          <Text style={{fontSize: 13, textAlign: 'center', marginTop: 5}}>19.01.01~19.03.03</Text>
-                          <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>한국</Text>
-                          <Text style={{fontSize: 11, textAlign: 'center'}}>(부산부산부산)</Text>
+                          <View style={{flex: 1, aspectRatio: 1, backgroundColor: 'grey', borderRadius: 20}}>
+                            {/* <Image source={require(obj.nation_uri)} style={{flex:1, aspectRatio: 1, borderRadius: 20}} /> */}
+                          </View>
+                          {/* <Text style={{fontSize: 13, textAlign: 'center', marginTop: 5}}>19.01.01~19.03.03</Text> */}
+                          <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{obj.nation_title}</Text>
+                          <Text style={{fontSize: 11, textAlign: 'center'}}>{obj.city_name}</Text>
                         </View>
                       </TouchableOpacity>
                     )

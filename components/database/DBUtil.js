@@ -196,7 +196,7 @@ export default class DBUtil extends React.Component {
         longitudeDelta,
         images
       ) values (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
       )`,
       [
         param.trip_id,

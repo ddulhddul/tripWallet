@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native'
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ToastAndroid } from 'react-native'
 import DBUtil from '../components/database/DBUtil'
 
 export default class NationScreen extends DBUtil {

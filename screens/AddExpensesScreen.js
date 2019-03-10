@@ -33,6 +33,7 @@ export default class AddExpensesScreen extends DBUtil {
         amount: 'required'
       },
       focus: '',
+      trip_id: this.props.navigation.getParam('trip_id')
     }
     const item = props.navigation.getParam('item') || {}
     if(!item.expense_id){
@@ -57,6 +58,7 @@ export default class AddExpensesScreen extends DBUtil {
         hh: item.hh,
         mm: item.mm,
         images: String(item.images || '').split('|'),
+        trip_id: item.trip_id
       })
     }
 

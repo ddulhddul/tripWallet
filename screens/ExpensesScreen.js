@@ -22,6 +22,7 @@ export default class ExpensesScreen extends DBUtil {
     this.state = {
       pageIndex: 0,
       sections: [],
+      trip_id: this.props.navigation.getParam('trip_id')
     }
   }
 
@@ -36,7 +37,7 @@ export default class ExpensesScreen extends DBUtil {
   }
 
   search(){
-    this.listTnExpense([],
+    this.listTnExpense(this.state,
       (tx, res)=>{
         const list = res.rows._array || []
         const objByList = list.reduce((entry, obj)=>{
@@ -119,7 +120,9 @@ export default class ExpensesScreen extends DBUtil {
 
   _pressAdd(event){
     event.stopPropagation()
-    this.props.navigation.navigate('AddExpenses')
+    this.props.navigation.navigate('AddExpenses', {
+      trip_id: this.props.navigation.getParam('trip_id')
+    })
   }
 
 }

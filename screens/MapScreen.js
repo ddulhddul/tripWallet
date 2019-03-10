@@ -20,7 +20,8 @@ export default class MapScreen extends DBUtil {
       initialPage: 0,
       pageIndex: 0,
       thisSection: {},
-      sections: []
+      sections: [],
+      trip_id: this.props.navigation.getParam('trip_id')
     }
   }
 
@@ -34,7 +35,7 @@ export default class MapScreen extends DBUtil {
   search(){
     InteractionManager.runAfterInteractions(() => {
 
-      this.listTnExpense([],
+      this.listTnExpense(this.state,
         (tx, res)=>{
           const list = res.rows._array || []
           const objByList = list.reduce((entry, obj)=>{
