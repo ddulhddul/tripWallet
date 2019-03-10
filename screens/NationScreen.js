@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native'
+import DBUtil from '../components/database/DBUtil'
 
-export default class NationScreen extends Component {
+export default class NationScreen extends DBUtil {
   
   static navigationOptions = {
     header: null,
@@ -10,33 +11,73 @@ export default class NationScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      nation: {},
+      city_name: ''
     }
   }
 
+  componentDidMount(){
+    // this._selectNation()    
+  }
+
   _selectNation(){
-    // this.
+    this.props.navigation.navigate('SelectNation', {
+      setNation: (param={})=>{
+        this.setState({nation: param})
+      }
+    })
+  }
+
+  _insertNation(){
+    this.insertTnTrip(this.state, (tx, res)=>{
+      ToastAndroid.showWithGravity(
+        '저장되었습니다.',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM
+      )
+      this.props.navigation.goBack()
+    })
   }
 
   render() {
+    const {nation} = this.state
     return (
-      <View style={{flex:1, justifyContent: 'center'}}>
+      <View style={{flex:1, justifyContent: 'center', marginLeft: 30, marginRight: 30}}>
         <ScrollView>
-          <View style={styles.header}>
-            <Text style={styles.headerText}>국가를 선택해주세요</Text>
-          </View>
-          <View onPress={()=>this._selectNation()} style={[styles.body, {flexDirection: 'row'}]}>
-            <TouchableOpacity onPress={()=>this.props.navigation.navigate('SelectNation')}>
-              {/* <Image source={{uri: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAeCAMAAABpA6zvAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAIRQTFRFAFOlAFOlnZ8//9IA+rkG2Cgt0g400Q0152gc/9AA9ckGPnF9AFGnAFGonZ5A9ckHPm9/AE+qbIdfxrMl/9EA+csEj5hIaoZh/88A2Ckt/84A/skB/soB+bQH5mUd/ssB3kQm3T4n1Bcy0hA00g803kUm30Um30Ula4dgaYZh+rgG////mzb/7wAAAAF0Uk5T/hrjB30AAAABYktHRCskueQIAAAACXBIWXMAAABIAAAASABGyWs+AAAAkUlEQVQ4y2NghAMmZhZWNnYOTi5uHkZMwDCqkDoKeeGAD6qQX0CQFxMwCMGBsAhEoaiYuBAmYJBAAE4WSZBCKQlsgEEaAWRkgSbKyUtjBQwKSEBRSVmFVVUBK2BgRwbKysoq7NgB8QqRTFcDW62Ow2qiPUN08GjAASLANTUwAfFROBTS4xBTKKIlqQIKcGwKGQCIhy8sc3x++AAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxMy0xMC0wN1QxMzoxNToxOSswMjowMC/GJUYAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTMtMTAtMDdUMTM6MTU6MTkrMDI6MDBem536AAAAAElFTkSuQmCC"}} 
-                style={{width: '100%', aspectRatio: 1.4}} /> */}
-              {/* <Image source={require("../assets/images/countries/ca.png")} style={{width: '100%', aspectRatio: 1.4}} /> */}
-              <Image source={require("../assets/images/robot-dev.png")} style={{width: '100%', aspectRatio: 1.4}} />
-              {/* <View style={{flex: 0.6, aspectRatio: 1.4, backgroundColor: 'grey'}}></View> */}
-              <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
-                <Text style={{fontSize: 20, fontWeight: 'bold'}}>대한민국</Text>
-                <Text style={{fontSize: 15, fontWeight: 'bold'}}>UTC-00</Text>
+          {
+            this.state.focus === 'remark'? null: (
+
+              <View>
+                <View style={styles.header}>
+                  <Text style={styles.headerText}>국가를 선택해주세요</Text>
+                </View>
+                <View style={[styles.body, {flexDirection: 'row'}]}>
+                  <TouchableOpacity onPress={()=>this._selectNation()} style={{flex:1}}>
+                    {
+                      !nation.title? (
+                        <View style={{flex:1}}>
+                          <View style={{flex:1, aspectRatio: 1.4, borderRadius: 20, backgroundColor: 'grey'}}></View>
+                          <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{fontSize: 15, fontWeight: 'bold', marginTop: 5, color: "grey"}}>눌러주세요</Text>
+                          </View>
+                        </View>
+                      ) :(
+                        <View style={{flex:1}}>
+                          <View style={{flex:1, aspectRatio: 1.4, borderRadius: 20, elevation: 5}}>
+                            <Image source={nation.requiredUri} style={{flex:1, aspectRatio: 1.4, borderRadius: 20}} />
+                          </View>
+                          <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{fontSize: 15, fontWeight: 'bold', marginTop: 5}}>UTC {nation.utc>0?'+':''}{nation.utc?nation.utc:''}</Text>
+                            <Text style={{fontSize: 25, fontWeight: 'bold', marginTop: 5}}>{nation.title}</Text>
+                          </View>
+                        </View>
+                      )
+                    }
+                  </TouchableOpacity>
+                </View>
               </View>
-            </TouchableOpacity>
-          </View>
+            )
+          }
           <TouchableOpacity 
             style={styles.header}
             onPress={()=>{this.remark && this.remark.focus()}} >
@@ -44,18 +85,33 @@ export default class NationScreen extends Component {
                 styles.headerText,
                 this.state.focus=='remark'? styles.inputTitleFocusStyle: null
               ]}>도시를 입력해주세요</Text>
-            <View>
-              <TextInput 
-                ref={(input)=>{this.remark=input}}
-                onFocus={()=>this.setState({focus: 'remark'})}
-                onBlur={()=>this.setState({focus: ''})}
-                style={[
-                  styles.inputStyle, {height: 30},
-                  this.state.focus=='remark'? styles.inputFocusStyle: null
-                ]} />
-            </View>
+            <TextInput 
+              ref={(input)=>{this.remark=input}}
+              onFocus={()=>this.setState({focus: 'remark'})}
+              onBlur={()=>this.setState({focus: ''})}
+              value={this.state.city_name}
+              onChangeText={(value)=>this.setState({city_name: value})}
+              style={[
+                styles.inputStyle,
+                this.state.focus=='remark'? styles.inputFocusStyle: null
+              ]} />
           </TouchableOpacity>
         </ScrollView>
+
+        {
+          !this.state.nation.id? null: (
+            <View style={[styles.buttonArea]}>
+              <View style={[styles.buttonColumn]}>
+              </View>
+              <View style={[{width: 0.1}]}></View>
+              <View style={[styles.buttonColumn]}>
+                <TouchableOpacity onPress={()=>this._insertNation()}>
+                  <Text style={[styles.buttonStyle, {color: "rgb(74, 190, 202)"}]}>저장</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )
+        }
       </View>
     )
   }
@@ -63,6 +119,7 @@ export default class NationScreen extends Component {
 
 const styles = StyleSheet.create({
   header: {
+    flex:1, 
     marginTop: 50,
     justifyContent: 'center',
     alignItems: 'center',
@@ -78,11 +135,13 @@ const styles = StyleSheet.create({
   },
 
   inputStyle: {
+    width: '90%',
     height: 50,
-    width: 100,
+    marginTop: 10,
     borderBottomWidth: 2,
     borderColor: 'grey',
-    alignItems: 'center'
+    alignItems: 'center',
+    textAlign: 'center'
   },
 
   // focus
@@ -91,6 +150,22 @@ const styles = StyleSheet.create({
   },
   inputFocusStyle: {
     borderColor: "rgb(74, 190, 202)"
+  },
+
+  // button
+  buttonArea: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    borderTopColor: 'rgb(158, 158, 158)',
+    borderTopWidth: 1,
+  },
+  buttonColumn: {
+    marginTop: 20,
+    marginBottom: 20
+  },
+  buttonStyle: {
+    fontSize: 20,
+    color: 'rgb(158, 158, 158)'
   },
   
 })
