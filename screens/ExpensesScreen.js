@@ -28,7 +28,7 @@ class ExpensesScreen extends DBUtil {
       toYyyymmdd: '',
       pageIndex: 0,
       sections: [],
-      trip_id: this.props.trip_id
+      trip_id: '',
     }
   }
 
@@ -37,7 +37,7 @@ class ExpensesScreen extends DBUtil {
     this.focusListener = navigation.addListener("didFocus", () => {
       // The screen is focused
       // Call any action
-      // this.setState({sections: []})
+      this.setState({trip_id: this.props.trip_id})
       this.search()
     })
   }

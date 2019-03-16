@@ -22,13 +22,14 @@ class MapScreen extends DBUtil {
       pageIndex: 0,
       thisSection: {},
       sections: [],
-      trip_id: this.props.trip_id
+      trip_id: ''
     }
   }
 
   componentDidMount(){
     const { navigation } = this.props;
     this.focusListener = navigation.addListener("didFocus", () => {
+      this.setState({trip_id: this.props.trip_id})
       this.search()
     })
   }
