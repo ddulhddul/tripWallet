@@ -28,7 +28,12 @@ class UpdateMapScreen extends React.Component {
     this.state = {
       searchLocationText: '',
       locationText: '',
-      location: {coords: { latitude: 37.78825, longitude: -122.4324}},
+      location: {coords: { 
+        latitude: 37.78825, 
+        longitude: -122.4324,
+        latitudeDelta: 0.005,
+        longitudeDelta: 0.005,
+      }},
     }
   }
 
@@ -39,7 +44,12 @@ class UpdateMapScreen extends React.Component {
 
   setMarkerByLocation(location){
     this.setState({ 
-      location
+      location: {
+        ...location,
+        coords: {
+          ...location.coords
+        }
+      }
     });
   }
 
@@ -59,8 +69,7 @@ class UpdateMapScreen extends React.Component {
   _handleMapRegionChange(region){
 
     this.setMarkerByLocation({coords: {
-      latitude: region.latitude,
-      longitude: region.longitude,
+      ...region
     }})
   }
 
@@ -140,8 +149,8 @@ class UpdateMapScreen extends React.Component {
               region={{ 
                 latitude: !this.state.location? null: this.state.location.coords.latitude, 
                 longitude: !this.state.location? null: this.state.location.coords.longitude, 
-                latitudeDelta: (this.state.location && this.state.location.coords.latitudeDelta) || 0.005,
-                longitudeDelta: (this.state.location && this.state.location.coords.longitudeDelta) || 0.005,
+                latitudeDelta: (this.state.location && this.state.location.coords.latitudeDelta),
+                longitudeDelta: (this.state.location && this.state.location.coords.longitudeDelta),
               }}
               onRegionChangeComplete={(param)=>this._handleMapRegionChange(param)}
               >

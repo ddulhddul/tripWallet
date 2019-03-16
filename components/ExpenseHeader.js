@@ -44,16 +44,20 @@ class ExpenseHeader extends DBUtil {
 
         return (
             <View style={{flexDirection: 'row', alignItems: 'center', borderBottomColor: 'rgb(158, 158, 158)', borderBottomWidth: 1}}>
-                <View style={{flex:1, marginLeft: 10}}>
-                    <Text style={{fontSize: 25, fontWeight: 'bold'}}>{ tripObj.nation_title }</Text>
-                    {
-                    (!yyyymmddObj.toYyyymmdd || !yyyymmddObj.fromYyyymmdd) ? null :
-                    <Text style={{fontSize: 12}}>
-                        {Util.getDateForm(String(yyyymmddObj.fromYyyymmdd||''))} ~ 
-                        {Util.getDateForm(String(yyyymmddObj.toYyyymmdd||''))}
+                <View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={{fontSize: 25, fontWeight: 'bold', margin: 10}}>
+                        { tripObj.nation_title }
                     </Text>
-                    }
-                    <Text style={{fontSize: 15}}>{ tripObj.city_name }</Text>
+                    <View style={{flex:1, marginRight: 15}}>
+                        {(!yyyymmddObj.toYyyymmdd || !yyyymmddObj.fromYyyymmdd) ? null :
+                        <Text style={{fontSize: 10, textAlign: 'right'}}>
+                            {Util.getDateForm(String(yyyymmddObj.fromYyyymmdd||''))} ~ 
+                            {Util.getDateForm(String(yyyymmddObj.toYyyymmdd||''))}
+                        </Text>}
+                        <Text style={{fontSize: 13, textAlign: 'right'}}>
+                            { tripObj.city_name }
+                        </Text>
+                    </View>
                 </View>
                 {
                     isMapView? null: <View style={{flexDirection: 'row'}}>

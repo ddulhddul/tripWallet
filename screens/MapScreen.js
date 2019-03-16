@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { 
   View, Text, Dimensions, StyleSheet, FlatList,
-  ViewPagerAndroid, ScrollView, TouchableWithoutFeedback 
+  ViewPagerAndroid, ScrollView, TouchableWithoutFeedback, TouchableOpacity
 } from 'react-native'
-import { MapView } from 'expo'
+import { Icon, MapView } from 'expo'
 import DBUtil from '../components/database/DBUtil';
 import ExpenseComponent from '../components/daypage/ExpenseComponent';
 import Util from '../components/Util';
@@ -188,8 +188,23 @@ class MapScreen extends DBUtil {
             }</ViewPagerAndroid>
           }
         </View>
+
+        <TouchableOpacity style={styles.plusIcon} onPress={(event)=>this._pressAdd(event)}>
+          <Icon.AntDesign 
+            name="pluscircle" 
+            size={45}
+            color="rgb(74, 190, 202)"
+            />
+        </TouchableOpacity>
       </View>
     )
+  }
+
+  _pressAdd(event){
+    event.stopPropagation()
+    this.props.navigation.navigate('AddExpenses', {
+      trip_id: this.state.trip_id
+    })
   }
 }
 
@@ -201,6 +216,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingTop: 30
+  },
+  plusIcon: {
+    backgroundColor: 'white',
+    borderRadius: 50,
+    position: 'absolute',
+    right: 20,
+    bottom: 20
   },
 
   mapContainer: {

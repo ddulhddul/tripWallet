@@ -137,7 +137,7 @@ export default class AddExpensesScreen extends DBUtil {
     return (
       <View style={{flex:1}}>
         <View style={{marginTop: 30, marginBottom: 20}}>
-          <TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
+          <TouchableOpacity onPress={()=>this.props.navigation.navigate('mainTabStack')}>
             <Icon.MaterialIcons size={40} name='arrow-back' color="black" />
           </TouchableOpacity>
         </View>
@@ -166,6 +166,7 @@ export default class AddExpensesScreen extends DBUtil {
                       amount: Number(String(value || '').replace(/[^0-9]/g,''))
                     })
                   }}
+                  maxLength={10}
                 ></TextInput>
               </View>
             </TouchableOpacity>
@@ -229,6 +230,7 @@ export default class AddExpensesScreen extends DBUtil {
                     remark: String(value || '')
                   })
                 }}
+                maxLength={80}
               ></TextInput>
             </TouchableOpacity>
           </View>
@@ -305,7 +307,7 @@ export default class AddExpensesScreen extends DBUtil {
 
         <View style={[styles.buttonArea]}>
           <View style={[styles.buttonColumn]}>
-            <TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('mainTabStack')}>
               <Text style={styles.buttonStyle}>취소</Text>
             </TouchableOpacity>
           </View>
@@ -346,7 +348,7 @@ export default class AddExpensesScreen extends DBUtil {
             ToastAndroid.SHORT,
             ToastAndroid.BOTTOM
           )
-          this.props.navigation.goBack()
+          this.props.navigation.navigate('mainTabStack')
         }
       )
     }else{
@@ -357,7 +359,7 @@ export default class AddExpensesScreen extends DBUtil {
             ToastAndroid.SHORT,
             ToastAndroid.BOTTOM
           )
-          this.props.navigation.goBack()
+          this.props.navigation.navigate('mainTabStack')
         }
       )
     }

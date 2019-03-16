@@ -147,8 +147,20 @@ export default class DBUtil extends React.Component {
 
   listTnTrip(param={}, callback= ()=>{}){
     this.queryExecute(
-      `SELECT * FROM TN_TRIP
-      ORDER BY create_date desc`,
+      `SELECT 
+        (
+          SELECT MIN(EXP.YYYYMMDD) 
+          FROM TN_EXPENSE EXP
+          WHERE EXP.TRIP_ID = TRIP.TRIP_ID
+        ) min_yyyymmdd,
+        (
+          SELECT MAX(EXP.YYYYMMDD) 
+          FROM TN_EXPENSE EXP
+          WHERE EXP.TRIP_ID = TRIP.TRIP_ID
+        ) max_yyyymmdd,
+        TRIP.*
+      FROM TN_TRIP TRIP
+      ORDER BY TRIP.create_date desc`,
       [],
       callback
     )

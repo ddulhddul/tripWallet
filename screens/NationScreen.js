@@ -91,6 +91,7 @@ export default class NationScreen extends DBUtil {
               onBlur={()=>this.setState({focus: ''})}
               value={this.state.city_name}
               onChangeText={(value)=>this.setState({city_name: value})}
+              maxLength={80}
               style={[
                 styles.inputStyle,
                 this.state.focus=='remark'? styles.inputFocusStyle: null

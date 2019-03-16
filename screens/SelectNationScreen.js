@@ -4,6 +4,11 @@ import DBUtil, {getNationList} from '../components/database/DBUtil'
 import { AppLoading, Asset } from 'expo'
 
 export default class SelectNationScreen extends DBUtil {
+  
+  static navigationOptions = {
+    header: null,
+  }
+  
   constructor(props) {
     super(props)
     this.state = {
@@ -72,7 +77,7 @@ const styles = StyleSheet.create({
     flex:1,
     marginLeft: 30,
     marginRight: 30,
-    marginTop: 20,
+    marginTop: 40,
   },
   
   searchInputContainer: {
@@ -81,7 +86,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10, 
     paddingRight: 10,
     borderRadius: 20,
-    borderColor: "rgb(74, 190, 202)",
+    // borderColor: "rgb(74, 190, 202)",
+    borderColor: "rgb(158, 158, 158)",
     borderWidth: 3
   },
 

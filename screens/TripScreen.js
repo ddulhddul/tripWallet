@@ -4,6 +4,7 @@ import { Icon } from 'expo'
 import DBUtil from '../components/database/DBUtil'
 import { connect } from 'react-redux'
 import { setTripId } from '../actions/action'
+import Util from '../components/Util'
 
 class TripScreen extends DBUtil {
 
@@ -49,7 +50,7 @@ class TripScreen extends DBUtil {
   _selectTrip(param){
     const { dispatch } = this.props
     dispatch(setTripId(param.trip_id))
-    this.props.navigation.navigate('Expenses')
+    this.props.navigation.navigate('mainTabStack')
   }
 
   _deleteTrip(param){
@@ -100,9 +101,14 @@ class TripScreen extends DBUtil {
                           <View style={{flex: 1, aspectRatio: 1, backgroundColor: 'grey', borderRadius: 20}}>
                             <Image source={obj.requiredUri} style={{flex:1, aspectRatio: 1, borderRadius: 20}} />
                           </View>
-                          {/* <Text style={{fontSize: 13, textAlign: 'center', marginTop: 5}}>19.01.01~19.03.03</Text> */}
+                          {
+                            (!obj.min_yyyymmdd || !obj.max_yyyymmdd) ? null :
+                            <Text style={{fontSize: 11, textAlign: 'center'}}>
+                              {Util.getDateForm(obj.min_yyyymmdd)} ~ {Util.getDateForm(obj.max_yyyymmdd)}
+                            </Text>
+                          }
                           <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{obj.nation_title}</Text>
-                          <Text style={{fontSize: 11, textAlign: 'center'}}>{obj.city_name}</Text>
+                          <Text style={{fontSize: 12, textAlign: 'center'}}>{obj.city_name}</Text>
                         </View>
                       </TouchableOpacity>
                     )
