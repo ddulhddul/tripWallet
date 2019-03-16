@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
 import { Icon } from 'expo'
-import DBUtil from '../components/database/DBUtil';
+import DBUtil from '../components/database/DBUtil'
+import { connect } from 'react-redux'
+import { setTripId } from '../actions/action'
 
-export default class TripScreen extends DBUtil {
+class TripScreen extends DBUtil {
 
   static navigationOptions = {
     header: null,
@@ -45,9 +47,9 @@ export default class TripScreen extends DBUtil {
   }
 
   _selectTrip(param){
-    this.props.navigation.navigate('Expenses', {
-      trip_id: param.trip_id
-    })
+    const { dispatch } = this.props
+    dispatch(setTripId(param.trip_id))
+    this.props.navigation.navigate('Expenses')
   }
   
   _pressAdd(){
@@ -125,3 +127,5 @@ const styles = StyleSheet.create({
     bottom: 20
   }
 })
+
+export default connect()(TripScreen)

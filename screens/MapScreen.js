@@ -1,14 +1,15 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { 
   View, Text, Dimensions, StyleSheet, FlatList,
-  ViewPagerAndroid, ScrollView, InteractionManager, TouchableWithoutFeedback 
+  ViewPagerAndroid, ScrollView, TouchableWithoutFeedback 
 } from 'react-native'
 import { MapView } from 'expo'
 import DBUtil from '../components/database/DBUtil';
 import ExpenseComponent from '../components/daypage/ExpenseComponent';
 import Util from '../components/Util';
 
-export default class MapScreen extends DBUtil {
+class MapScreen extends DBUtil {
   
   static navigationOptions = {
     title: '지도',
@@ -21,7 +22,7 @@ export default class MapScreen extends DBUtil {
       pageIndex: 0,
       thisSection: {},
       sections: [],
-      trip_id: this.props.navigation.getParam('trip_id')
+      trip_id: this.props.trip_id
     }
   }
 
@@ -33,47 +34,44 @@ export default class MapScreen extends DBUtil {
   }
 
   search(){
-    InteractionManager.runAfterInteractions(() => {
-
-      this.listTnExpense(this.state,
-        (tx, res)=>{
-          const list = res.rows._array || []
-          const objByList = list.reduce((entry, obj)=>{
-            entry[obj.yyyymmdd] = entry[obj.yyyymmdd] || []
-            entry[obj.yyyymmdd].push(obj)
-            return entry
-          }, {})
+    this.listTnExpense(this.state,
+      (tx, res)=>{
+        const list = res.rows._array || []
+        const objByList = list.reduce((entry, obj)=>{
+          entry[obj.yyyymmdd] = entry[obj.yyyymmdd] || []
+          entry[obj.yyyymmdd].push(obj)
+          return entry
+        }, {})
         
-          this.setState({
-            sections: Array.from(Object.keys(objByList)).map((key)=>{
+        this.setState({
+          sections: Array.from(Object.keys(objByList)).map((key)=>{
 
-              const locationObj = objByList[key].reduce((entry, obj)=>{
-                return {
-                  minLatitude: Math.min(obj.latitude, entry.minLatitude),
-                  minLongitude: Math.min(obj.longitude, entry.minLongitude),
-                  maxLatitude: Math.max(obj.latitude, entry.maxLatitude),
-                  maxLongitude: Math.max(obj.longitude, entry.maxLongitude),  
-                }
-              }, {
-                minLatitude: 99999999999999,
-                minLongitude: 99999999999999,
-                maxLatitude: 0,
-                maxLongitude: 0,
-              })
-
+            const locationObj = objByList[key].reduce((entry, obj)=>{
               return {
-                yyyymmdd: key, 
-                sumAmount: objByList[key].reduce((entry, obj)=>{
-                  return entry + Number(obj.amount || 0)
-                }, 0),
-                data: objByList[key],
-                ...locationObj
+                minLatitude: Math.min(obj.latitude, entry.minLatitude),
+                minLongitude: Math.min(obj.longitude, entry.minLongitude),
+                maxLatitude: Math.max(obj.latitude, entry.maxLatitude),
+                maxLongitude: Math.max(obj.longitude, entry.maxLongitude),  
               }
+            }, {
+              minLatitude: 99999999999999,
+              minLongitude: 99999999999999,
+              maxLatitude: 0,
+              maxLongitude: 0,
             })
+
+            return {
+              yyyymmdd: key, 
+              sumAmount: objByList[key].reduce((entry, obj)=>{
+                return entry + Number(obj.amount || 0)
+              }, 0),
+              data: objByList[key],
+              ...locationObj
+            }
           })
-        }
-      )
-    })
+        })
+      }
+    )
   }
 
   onPageSelected(event){
@@ -204,3 +202,11 @@ const styles = StyleSheet.create({
     marginBottom: 5
   }
 })
+
+function select(state) {
+  return {
+    trip_id: state.tripReducer.trip_id
+  }
+}
+
+export default connect(select)(MapScreen)

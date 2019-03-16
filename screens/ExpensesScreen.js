@@ -9,9 +9,10 @@ import {
 import Expenses from '../components/expenses/Expenses'
 import DayPage from '../components/daypage/DayPage'
 import { Icon } from 'expo'
-import DBUtil from '../components/database/DBUtil';
+import DBUtil from '../components/database/DBUtil'
+import { connect } from 'react-redux'
 
-export default class ExpensesScreen extends DBUtil {
+class ExpensesScreen extends DBUtil {
   static navigationOptions = {
     header: null,
   }
@@ -22,7 +23,7 @@ export default class ExpensesScreen extends DBUtil {
     this.state = {
       pageIndex: 0,
       sections: [],
-      trip_id: this.props.navigation.getParam('trip_id')
+      trip_id: this.props.trip_id
     }
   }
 
@@ -121,7 +122,7 @@ export default class ExpensesScreen extends DBUtil {
   _pressAdd(event){
     event.stopPropagation()
     this.props.navigation.navigate('AddExpenses', {
-      trip_id: this.props.navigation.getParam('trip_id')
+      trip_id: this.state.trip_id
     })
   }
 
@@ -141,3 +142,11 @@ const styles = StyleSheet.create({
     bottom: 20
   }
 })
+
+function select(state) {
+  return {
+    trip_id: state.tripReducer.trip_id
+  }
+}
+
+export default connect(select)(ExpensesScreen)
