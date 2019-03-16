@@ -8,11 +8,12 @@ import { MapView } from 'expo'
 import DBUtil from '../components/database/DBUtil';
 import ExpenseComponent from '../components/daypage/ExpenseComponent';
 import Util from '../components/Util';
+import ExpenseHeader from '../components/ExpenseHeader'
 
 class MapScreen extends DBUtil {
   
   static navigationOptions = {
-    title: '지도',
+    header: null,
   }
   
   constructor(props) {
@@ -35,7 +36,7 @@ class MapScreen extends DBUtil {
   }
 
   search(){
-    this.listTnExpense(this.state,
+    this.listTnExpense({trip_id: this.props.trip_id},
       (tx, res)=>{
         const list = res.rows._array || []
         const objByList = list.reduce((entry, obj)=>{
@@ -98,86 +99,95 @@ class MapScreen extends DBUtil {
     const {sections, thisSection, pageIndex} = this.state
     return (
       <View style={styles.container}>
-        <MapView 
-          // onMapReady = { () => console.log('map ready...') }
-          style={{ alignSelf: 'stretch', flex:1, maxHeight: Dimensions.get('window').height * 0.5 }}
-          region={{ 
-            latitude: (thisSection.maxLatitude + thisSection.minLatitude)/2,
-            longitude: (thisSection.maxLongitude + thisSection.minLongitude)/2,
-            latitudeDelta: Math.max((thisSection.maxLatitude - thisSection.minLatitude) * 1.5, 0.01),
-            longitudeDelta: Math.max((thisSection.maxLongitude - thisSection.minLongitude) * 1.5, 0.01),
-          }}
-          >{
-            ((thisSection || {}).data || []).map((sectionData, sectionIndex)=>{
-              return (
-                <MapView.Marker
-                  key={sectionIndex}
-                  coordinate={{
-                    latitude: sectionData.latitude, 
-                    longitude: sectionData.longitude, 
-                }}/>
-              )
-            })
-          }
-        </MapView>
-        <View 
-          // pointerEvents="none"
-          style={styles.dayContainer}>
-          <FlatList horizontal={true}
-            ref={(refs)=>this.flatlist=refs}
-            data={sections}
-            keyExtractor={(item, index)=>JSON.stringify(item)}
-            renderItem={({item, index})=>(
-              <View key={index} 
-                style={[styles.dayStyle]}>
-                <TouchableWithoutFeedback onPress={()=>{
-                  this.onPageSelected(index)
-                  this.viewPager.setPage(index)
-                  }}>
-                  <View>
-                    <Text style={this.state.pageIndex == index
-                      ? {fontSize: 10, fontWeight: 'bold'}
-                      : {fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>{
-                      Util.getDateForm(item.yyyymmdd)
-                    }</Text>
-                    <Text style={this.state.pageIndex == index
-                      ? {fontSize: 20, fontWeight: 'bold'}
-                      : {fontSize: 13, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>
-                      Day {index+1}
-                    </Text>
-                  </View>
-                </TouchableWithoutFeedback>
-              </View>
-            )}
+        
+        <ExpenseHeader 
+          trip_id={this.props.trip_id}
+          sections={sections}
+          isMapView={true}
           />
-        </View>
-        {
-          !sections || !sections.length ? undefined :
-          <ViewPagerAndroid 
-            style={{flex:1}} 
-            ref={(refs=>this.viewPager=refs)}
-            initialPage={this.state.initialPage} 
-            onPageSelected={(event)=>this.onPageSelected(event)}>{
-            (sections || []).map((sectionObj, index)=>{
-              return (
-                <View key={index}>
-                  <ScrollView>{
-                    (sectionObj.data || []).map((obj, sectionIndex)=>{
-                      return (
-                        <ExpenseComponent 
-                          key={sectionIndex} 
-                          style={styles.smallContent}
-                          search={()=>this.props.search()}
-                          item={obj}
-                        ></ExpenseComponent>
-                      )
-                    })
-                  }</ScrollView>
+
+        <View style={styles.mapContainer}>
+          <MapView 
+            // onMapReady = { () => console.log('map ready...') }
+            style={{ alignSelf: 'stretch', flex:1, maxHeight: Dimensions.get('window').height * 0.5 }}
+            region={{ 
+              latitude: (thisSection.maxLatitude + thisSection.minLatitude)/2,
+              longitude: (thisSection.maxLongitude + thisSection.minLongitude)/2,
+              latitudeDelta: Math.max((thisSection.maxLatitude - thisSection.minLatitude) * 1.5, 0.01),
+              longitudeDelta: Math.max((thisSection.maxLongitude - thisSection.minLongitude) * 1.5, 0.01),
+            }}
+            >{
+              ((thisSection || {}).data || []).map((sectionData, sectionIndex)=>{
+                return (
+                  <MapView.Marker
+                    key={sectionIndex}
+                    coordinate={{
+                      latitude: sectionData.latitude, 
+                      longitude: sectionData.longitude, 
+                  }}/>
+                )
+              })
+            }
+          </MapView>
+          <View 
+            // pointerEvents="none"
+            style={styles.dayContainer}>
+            <FlatList horizontal={true}
+              ref={(refs)=>this.flatlist=refs}
+              data={sections}
+              keyExtractor={(item, index)=>JSON.stringify(item)}
+              renderItem={({item, index})=>(
+                <View key={index} 
+                  style={[styles.dayStyle]}>
+                  <TouchableWithoutFeedback onPress={()=>{
+                    this.onPageSelected(index)
+                    this.viewPager.setPage(index)
+                    }}>
+                    <View>
+                      <Text style={this.state.pageIndex == index
+                        ? {fontSize: 10, fontWeight: 'bold'}
+                        : {fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>{
+                        Util.getDateForm(item.yyyymmdd)
+                      }</Text>
+                      <Text style={this.state.pageIndex == index
+                        ? {fontSize: 20, fontWeight: 'bold'}
+                        : {fontSize: 13, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>
+                        Day {index+1}
+                      </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
                 </View>
-              )
-            })
-          }</ViewPagerAndroid>
-        }
+              )}
+            />
+          </View>
+          {
+            !sections || !sections.length ? undefined :
+            <ViewPagerAndroid 
+              style={{flex:1}} 
+              ref={(refs=>this.viewPager=refs)}
+              initialPage={this.state.initialPage} 
+              onPageSelected={(event)=>this.onPageSelected(event)}>{
+              (sections || []).map((sectionObj, index)=>{
+                return (
+                  <View key={index}>
+                    <ScrollView>{
+                      (sectionObj.data || []).map((obj, sectionIndex)=>{
+                        return (
+                          <ExpenseComponent 
+                            key={sectionIndex} 
+                            style={styles.smallContent}
+                            search={()=>this.props.search()}
+                            item={obj}
+                          ></ExpenseComponent>
+                        )
+                      })
+                    }</ScrollView>
+                  </View>
+                )
+              })
+            }</ViewPagerAndroid>
+          }
+        </View>
       </View>
     )
   }
@@ -186,7 +196,14 @@ class MapScreen extends DBUtil {
 
 
 const styles = StyleSheet.create({
+  
   container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingTop: 30
+  },
+
+  mapContainer: {
     flex: 1,
     marginTop: 20
   },

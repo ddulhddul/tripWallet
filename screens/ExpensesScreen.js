@@ -12,6 +12,7 @@ import { Icon } from 'expo'
 import DBUtil from '../components/database/DBUtil'
 import Util from '../components/Util'
 import { connect } from 'react-redux'
+import ExpenseHeader from '../components/ExpenseHeader'
 
 class ExpensesScreen extends DBUtil {
   static navigationOptions = {
@@ -22,10 +23,6 @@ class ExpensesScreen extends DBUtil {
     super(props)
     this.initTable()
     this.state = {
-      nation_title: '',
-      city_name: '',
-      fromYyyymmdd: '',
-      toYyyymmdd: '',
       pageIndex: 0,
       sections: [],
       trip_id: '',
@@ -43,31 +40,16 @@ class ExpensesScreen extends DBUtil {
   }
 
   search(){
-    this.listTnTrip(this.state, 
+    
+    this.listTnExpense({trip_id: this.props.trip_id},
       (tx, res)=>{
         const list = res.rows._array || []
-        const tripObj = list.find((obj)=>obj.trip_id===this.state.trip_id)||{}
-        console.log('tripObj',tripObj)
-        this.setState({
-          nation_title: tripObj.nation_title,
-          city_name: tripObj.city_name,
-        })
-      }
-    )
-    this.listTnExpense(this.state,
-      (tx, res)=>{
-        const list = res.rows._array || []
-        let fromYyyymmdd = 99999999, toYyyymmdd = 0
         const objByList = list.reduce((entry, obj)=>{
           entry[obj.yyyymmdd] = entry[obj.yyyymmdd] || []
           entry[obj.yyyymmdd].push(obj)
-          fromYyyymmdd = Math.min(fromYyyymmdd, obj.yyyymmdd)
-          toYyyymmdd = Math.max(toYyyymmdd, obj.yyyymmdd)
           return entry
         }, {})
         this.setState({
-          fromYyyymmdd: String(fromYyyymmdd||''),
-          toYyyymmdd: String(toYyyymmdd||''),
           sections: Array.from(Object.keys(objByList)).map((key)=>{
             return {
               yyyymmdd: key, 
@@ -76,7 +58,7 @@ class ExpensesScreen extends DBUtil {
               }, 0),
               data: objByList[key],
             }
-          })
+          }).reverse()
         })
       }
     )
@@ -100,24 +82,13 @@ class ExpensesScreen extends DBUtil {
   render() {
     return (
       <View style={styles.container}> 
-        <View style={{flexDirection: 'row', alignItems: 'center', borderBottomColor: 'rgb(158, 158, 158)', borderBottomWidth: 1}}>
-          <View style={{flex:1, marginLeft: 10}}>
-            <Text style={{fontSize: 25, fontWeight: 'bold'}}>{ this.state.nation_title }</Text>
-            {
-              !this.state.toYyyymmdd ? null :
-              <Text style={{fontSize: 12}}>
-                {Util.getDateForm(this.state.fromYyyymmdd)} ~ {Util.getDateForm(this.state.toYyyymmdd)}
-              </Text>
-            }
-            <Text style={{fontSize: 15}}>{ this.state.city_name }</Text>
-          </View>
-          <TouchableOpacity onPress={()=>this.showTypeChange(0)} style={{marginRight: 10}}>
-            <Icon.AntDesign name="profile" size={30} color={this.state.pageIndex===0?'blue':null} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={()=>this.showTypeChange(1)} style={{marginRight: 10}}>
-            <Icon.AntDesign name="switcher" size={30} color={this.state.pageIndex===1?'blue':null} />
-          </TouchableOpacity>
-        </View>
+        
+        <ExpenseHeader 
+          trip_id={this.props.trip_id}
+          sections={this.state.sections}
+          pageIndex={this.state.pageIndex}
+          showTypeChange={(pageIndex)=>this.showTypeChange(pageIndex)}
+          />
 
         <ViewPagerAndroid 
           ref={(ref)=>this.viewPager=ref}

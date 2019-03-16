@@ -1,5 +1,6 @@
 import { SQLite } from 'expo'
 import React from 'react';
+import { InteractionManager } from 'react-native'
 const db = SQLite.openDatabase('tripWallet.db')
 const nationList = [
   { id: 'ca',title: "캐나다", utc: -3.5, "requiredUri": require("../../assets/images/countries/ca.png"), uri: ("../../assets/images/countries/ca.png"), webSrc: "https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/2.9.0/flags/4x3/ca.svg" },
@@ -198,7 +199,7 @@ export default class DBUtil extends React.Component {
     this.queryExecute(
       `SELECT * FROM TN_EXPENSE
       WHERE TRIP_ID = ?
-      ORDER BY YYYYMMDD, HH, MM`,
+      ORDER BY YYYYMMDD DESC, HH DESC, MM DESC`,
       [
         param.trip_id
       ],
@@ -302,21 +303,23 @@ export default class DBUtil extends React.Component {
   }
 
   queryExecute(sql='', param=[], callback=()=>{}) {
-    db.transaction(tx => {
-      tx.executeSql(
-        sql,
-        param,
-        callback,
+    InteractionManager.runAfterInteractions(() => {
+      db.transaction(tx => {
+        tx.executeSql(
+          sql,
+          param,
+          callback,
 
-        // `select * from items where done = ?`,
-        // [this.props.done ? 1 : 0],
-        // function(tx, res) {}  
-        // (_, { rows: { _array } }) => this.setState({ items: _array })
-        (...params)=>{
-          console.log('db error', ...params)
-          alert('error')
-        }
-      )
+          // `select * from items where done = ?`,
+          // [this.props.done ? 1 : 0],
+          // function(tx, res) {}  
+          // (_, { rows: { _array } }) => this.setState({ items: _array })
+          (...params)=>{
+            console.log('db error', ...params)
+            alert('error')
+          }
+        )
+      })
     })
   }
 
