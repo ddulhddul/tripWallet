@@ -61,7 +61,7 @@ class TripScreen extends DBUtil {
     return (
       <View style={{flex:1}}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>나의 여행 기록</Text>
+          <Text style={styles.headerText}>여행 기록</Text>
         </View>
         <View style={styles.body}>
           <ScrollView>{
