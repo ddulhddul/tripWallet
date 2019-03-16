@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
 import { Icon } from 'expo'
 import DBUtil from '../components/database/DBUtil';
 
@@ -13,6 +13,7 @@ export default class TripScreen extends DBUtil {
     super(props)
     this.initNationTable()
     this.state = {
+      nationList: this.getNationList(),
       tripList: []
     }
   }
@@ -27,9 +28,10 @@ export default class TripScreen extends DBUtil {
   search(){
     this.listTnTrip({},
       (tx, res)=>{
+        const nationList = this.state.nationList||[]
         this.setState({
           tripList: (res.rows._array || []).reduce((entry, obj)=>{
-            obj["uri"] = obj.nation_uri
+            obj.requiredUri = (nationList.find((nation)=>nation.id==obj.nation_id) || {}).requiredUri
             if(entry[entry.length-1].length < 2){
               entry[entry.length-1].push(obj)
             }else{
@@ -69,7 +71,7 @@ export default class TripScreen extends DBUtil {
                       <TouchableOpacity key={index} onPress={()=>this._selectTrip(obj)} style={styles.componentContainer}>
                         <View>
                           <View style={{flex: 1, aspectRatio: 1, backgroundColor: 'grey', borderRadius: 20}}>
-                            {/* <Image source={require(obj.nation_uri)} style={{flex:1, aspectRatio: 1, borderRadius: 20}} /> */}
+                            <Image source={obj.requiredUri} style={{flex:1, aspectRatio: 1, borderRadius: 20}} />
                           </View>
                           {/* <Text style={{fontSize: 13, textAlign: 'center', marginTop: 5}}>19.01.01~19.03.03</Text> */}
                           <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{obj.nation_title}</Text>

@@ -5,6 +5,20 @@
 $ expo build:android 
 ```
 
+## android permissions
+    ```json
+    {
+        "android": {
+            "permissions": [
+                "ACCESS_COARSE_LOCATION",
+                "ACCESS_FINE_LOCATION",
+                "READ_EXTERNAL_STORAGE",
+                "WRITE_EXTERNAL_STORAGE"  
+            ],
+        },
+    }
+    ```
+
 ## Sqlite
 - [Data types](https://sqlite.org/datatype3.html)
 
