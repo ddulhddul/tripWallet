@@ -220,6 +220,18 @@ export default class DBUtil extends React.Component {
     )
   }
 
+  deleteTnTrip(param={}, callback= ()=>{}){
+    this.queryExecute(
+      `DELETE FROM TN_TRIP 
+        WHERE trip_id = ?
+      `,
+      [
+        param.trip_id,
+      ],
+      callback
+    )
+  }
+
   updateTnExpense(param={}, callback= ()=>{}){
     this.queryExecute(
       `UPDATE TN_EXPENSE 

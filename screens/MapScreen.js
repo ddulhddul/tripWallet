@@ -71,7 +71,7 @@ class MapScreen extends DBUtil {
           })
         })
 
-        this.onPageSelected(this.state.pageIndex)
+        list.length && this.onPageSelected(this.state.pageIndex)
       }
     )
   }

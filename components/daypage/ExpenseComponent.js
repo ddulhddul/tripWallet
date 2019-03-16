@@ -56,7 +56,7 @@ class ExpenseComponent extends DBUtil {
           {
             imageList && imageList[0]
             ? <TouchableOpacity 
-                delayLongPress={1500}  
+                delayLongPress={1000}  
                 onLongPress={()=>this._onDelete(item)}
                 onPress={()=>this.changeExpand()} 
                 style={[{flex:0.3}]}>
@@ -70,7 +70,7 @@ class ExpenseComponent extends DBUtil {
             : undefined
           }
           <TouchableOpacity 
-            delayLongPress={1500}  
+            delayLongPress={1000}  
             onLongPress={()=>this._onDelete(item)}
             onPress={()=>this.changeExpand()} 
             style={[{flex:1, flexDirection: 'column', marginLeft: 20}]}>

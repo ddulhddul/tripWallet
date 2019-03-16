@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, ToastAndroid } from 'react-native'
 import { Icon } from 'expo'
 import DBUtil from '../components/database/DBUtil'
 import { connect } from 'react-redux'
@@ -51,6 +51,27 @@ class TripScreen extends DBUtil {
     dispatch(setTripId(param.trip_id))
     this.props.navigation.navigate('Expenses')
   }
+
+  _deleteTrip(param){
+    Alert.alert(
+      '경고',
+      '삭제하시겠습니까?',
+      [
+        {text: '취소', style: 'cancel'},
+        {text: '삭제', onPress: () => {
+          this.deleteTnTrip(param, (tx, res)=>{
+            ToastAndroid.showWithGravity(
+              '삭제되었습니다.',
+              ToastAndroid.SHORT,
+              ToastAndroid.BOTTOM
+            )
+            this.search()
+          })
+        }},
+      ],
+      { cancelable: true }
+    )
+  }
   
   _pressAdd(){
     this.props.navigation.navigate('Nation')
@@ -70,7 +91,11 @@ class TripScreen extends DBUtil {
                 <View key={itemIndex} style={{flexDirection: 'row'}}>{
                   (item || []).map((obj, index)=>{
                     return (
-                      <TouchableOpacity key={index} onPress={()=>this._selectTrip(obj)} style={styles.componentContainer}>
+                      <TouchableOpacity key={index} 
+                        delayLongPress={1000}
+                        onPress={()=>this._selectTrip(obj)} 
+                        onLongPress={()=>this._deleteTrip(obj)} 
+                        style={styles.componentContainer}>
                         <View>
                           <View style={{flex: 1, aspectRatio: 1, backgroundColor: 'grey', borderRadius: 20}}>
                             <Image source={obj.requiredUri} style={{flex:1, aspectRatio: 1, borderRadius: 20}} />
