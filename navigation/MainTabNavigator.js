@@ -19,66 +19,6 @@ import UpdateMapScreen from '../screens/UpdateMapScreen';
 import MapScreen from '../screens/MapScreen';
 import InfoScreen from '../screens/InfoScreen';
 
-// 임시
-const AddExpensesStack = createStackNavigator({
-  // AddExpenses: UpdateMapScreen
-  AddExpenses: AddExpensesScreen
-})
-
-AddExpensesStack.navigationOptions = {
-  tabBarLabel: 'AddExpenses',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
-};
-
-const MapStack = createStackNavigator({
-  Map: MapScreen,
-}, {
-  initialRouteName: "Map"
-})
-
-MapStack.navigationOptions = ({navigation}) => ({
-  tabBarLabel: 'Map',
-  tabBarIcon: ({ focused }) => (
-    <Icon.Entypo focused={focused} 
-     color={focused? 'blue': 'grey'}
-     size={20} name='map' />
-  )
-})
-
-const ExpensesStack = createStackNavigator({
-  Trip: TripScreen,
-  Nation: NationScreen,
-  SelectNation: SelectNationScreen,
-  AddExpenses: AddExpensesScreen,
-  Expenses: ExpensesScreen,
-  UpdateMap: UpdateMapScreen
-}, {
-  initialRouteName: "Trip"
-})
-
-ExpensesStack.navigationOptions = ({navigation}) => {
-  let routes = Object.assign([], navigation.state.routes)
-  let routeName = ((routes.splice(routes.length-1) || [])[0] || {}).routeName
-  return {
-    tabBarLabel: 'Expenses',
-    tabBarIcon: ({ focused }) => (
-      <Icon.FontAwesome focused={focused} 
-      color={focused? 'blue': 'grey'}
-      size={20} name='money' />
-    ),
-    tabBarVisible: !['Trip','Nation','SelectNation','AddExpenses','UpdateMap'].includes(routeName)
-  }
-}
-
 const InfoStack = createStackNavigator({
   Info: InfoScreen,
 }, {
@@ -98,10 +38,6 @@ InfoStack.navigationOptions = ({navigation}) => ({
     />
   )
 })
-
-
-// // // // // // // // // // // // // // 
-// // // // // // // // // // // // // // 
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -149,8 +85,59 @@ SettingsStack.navigationOptions = {
   ),
 };
 
-export default createBottomTabNavigator({
-  ExpensesStack,
-  MapStack,
-  // InfoStack
+// // // // // // // // // // // // // // 
+// // // // // // // // // // // // // // 
+
+export default createStackNavigator({
+
+  TripStack: createStackNavigator({
+    Trip: TripScreen,
+    Nation: NationScreen,
+    SelectNation: SelectNationScreen
+  }, {
+    navigationOptions: ({navigation}) => ({
+      header: null
+    })
+  }),
+
+  AddExpensesStack: createStackNavigator({
+    AddExpenses: AddExpensesScreen,
+    UpdateMap: UpdateMapScreen
+  }, {
+    navigationOptions: ({navigation}) => ({
+      header: null
+    })
+  }),
+  
+  mainTabStack: createBottomTabNavigator({
+    ExpensesStack: createStackNavigator({
+      Expenses: ExpensesScreen
+    }, {
+      navigationOptions: ({navigation}) => ({
+        tabBarLabel: 'Expenses',
+        tabBarIcon: ({ focused }) => (
+          <Icon.FontAwesome focused={focused} 
+          color={focused? 'blue': 'grey'}
+          size={20} name='money' />
+        ),
+      })
+    }),
+    MapStack: createStackNavigator({
+      Map: MapScreen,
+    }, {
+      navigationOptions: ({navigation}) => ({
+        tabBarLabel: 'Map',
+        tabBarIcon: ({ focused }) => (
+          <Icon.Entypo focused={focused} 
+          color={focused? 'blue': 'grey'}
+          size={20} name='map' />
+        )
+      })
+    }),
+  }, {
+    initialRouteName: "ExpensesStack",
+    navigationOptions: ({navigation}) => ({
+      header: null,
+    })
+  })
 })
