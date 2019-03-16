@@ -70,6 +70,8 @@ class MapScreen extends DBUtil {
             }
           })
         })
+
+        this.onPageSelected(this.state.pageIndex)
       }
     )
   }
@@ -96,6 +98,7 @@ class MapScreen extends DBUtil {
     return (
       <View style={styles.container}>
         <MapView 
+          // onMapReady = { () => console.log('map ready...') }
           style={{ alignSelf: 'stretch', flex:1, maxHeight: Dimensions.get('window').height * 0.5 }}
           region={{ 
             latitude: (thisSection.maxLatitude + thisSection.minLatitude)/2,
