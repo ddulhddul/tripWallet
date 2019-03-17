@@ -1,14 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { 
-  View, Text, Dimensions, StyleSheet, FlatList,
-  ViewPagerAndroid, ScrollView, TouchableWithoutFeedback, TouchableOpacity
+  View, Dimensions, StyleSheet, TouchableOpacity
 } from 'react-native'
 import { Icon, MapView } from 'expo'
 import DBUtil from '../components/database/DBUtil';
-import ExpenseComponent from '../components/daypage/ExpenseComponent';
-import Util from '../components/Util';
 import ExpenseHeader from '../components/ExpenseHeader'
+import ExpenseListComponent from '../components/daypage/ExpenseListComponent';
 
 class MapScreen extends DBUtil {
   
@@ -19,8 +17,6 @@ class MapScreen extends DBUtil {
   constructor(props) {
     super(props)
     this.state = {
-      initialPage: 0,
-      pageIndex: 0,
       thisSection: {},
       sections: [],
       trip_id: ''
@@ -45,58 +41,45 @@ class MapScreen extends DBUtil {
           return entry
         }, {})
         
-        this.setState({
-          sections: Array.from(Object.keys(objByList)).map((key)=>{
+        const sections = Array.from(Object.keys(objByList)).map((key)=>{
 
-            const locationObj = objByList[key].reduce((entry, obj)=>{
-              return {
-                minLatitude: Math.min(obj.latitude, entry.minLatitude),
-                minLongitude: Math.min(obj.longitude, entry.minLongitude),
-                maxLatitude: Math.max(obj.latitude, entry.maxLatitude),
-                maxLongitude: Math.max(obj.longitude, entry.maxLongitude),  
-              }
-            }, {
-              minLatitude: 99999999999999,
-              minLongitude: 99999999999999,
-              maxLatitude: 0,
-              maxLongitude: 0,
-            })
-
+          const locationObj = objByList[key].reduce((entry, obj)=>{
             return {
-              yyyymmdd: key, 
-              sumAmount: objByList[key].reduce((entry, obj)=>{
-                return entry + Number(obj.amount || 0)
-              }, 0),
-              data: objByList[key],
-              ...locationObj
+              minLatitude: Math.min(obj.latitude, entry.minLatitude),
+              minLongitude: Math.min(obj.longitude, entry.minLongitude),
+              maxLatitude: Math.max(obj.latitude, entry.maxLatitude),
+              maxLongitude: Math.max(obj.longitude, entry.maxLongitude),  
             }
+          }, {
+            minLatitude: 99999999999999,
+            minLongitude: 99999999999999,
+            maxLatitude: 0,
+            maxLongitude: 0,
           })
+
+          return {
+            yyyymmdd: key, 
+            sumAmount: objByList[key].reduce((entry, obj)=>{
+              return entry + Number(obj.amount || 0)
+            }, 0),
+            data: objByList[key],
+            ...locationObj
+          }
         })
 
-        list.length && this.onPageSelected(this.state.pageIndex)
+        console.log('sections',sections)
+
+        this.setState({
+          sections: sections
+        })
+        // list.length && this.onPageSelected(this.state.pageIndex)
       }
     )
   }
 
-  onPageSelected(event){
-    let pageIndex = 0
-    if(typeof event === 'number') pageIndex = event
-    else{
-      if(!event || !event.nativeEvent) return
-      pageIndex = event.nativeEvent.position
-    }
-    
-    this.flatlist.scrollToIndex({animated: true, index: pageIndex, viewPosition: 1})
-    this.setState({
-      pageIndex: pageIndex,
-      thisSection: this.state.sections[pageIndex],
-      sections: Object.assign([], this.state.sections)
-    })
-  }
-
   render() {
 
-    const {sections, thisSection, pageIndex} = this.state
+    const {sections, thisSection } = this.state
     return (
       <View style={styles.container}>
         
@@ -129,64 +112,13 @@ class MapScreen extends DBUtil {
               })
             }
           </MapView>
-          <View 
-            // pointerEvents="none"
-            style={styles.dayContainer}>
-            <FlatList horizontal={true}
-              ref={(refs)=>this.flatlist=refs}
-              data={sections}
-              keyExtractor={(item, index)=>JSON.stringify(item)}
-              renderItem={({item, index})=>(
-                <View key={index} 
-                  style={[styles.dayStyle]}>
-                  <TouchableWithoutFeedback onPress={()=>{
-                    this.onPageSelected(index)
-                    this.viewPager.setPage(index)
-                    }}>
-                    <View>
-                      <Text style={this.state.pageIndex == index
-                        ? {fontSize: 10, fontWeight: 'bold'}
-                        : {fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>{
-                        Util.getDateForm(item.yyyymmdd)
-                      }</Text>
-                      <Text style={this.state.pageIndex == index
-                        ? {fontSize: 20, fontWeight: 'bold'}
-                        : {fontSize: 13, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>
-                        Day {index+1}
-                      </Text>
-                    </View>
-                  </TouchableWithoutFeedback>
-                </View>
-              )}
+
+          <ExpenseListComponent 
+            search={()=>this.search()}
+            onPageSelected={(thisSection={})=>this.setState({thisSection: thisSection})}
+            sections={sections}
             />
-          </View>
-          {
-            !sections || !sections.length ? undefined :
-            <ViewPagerAndroid 
-              style={{flex:1}} 
-              ref={(refs=>this.viewPager=refs)}
-              initialPage={this.state.initialPage} 
-              onPageSelected={(event)=>this.onPageSelected(event)}>{
-              (sections || []).map((sectionObj, index)=>{
-                return (
-                  <View key={index}>
-                    <ScrollView>{
-                      (sectionObj.data || []).map((obj, sectionIndex)=>{
-                        return (
-                          <ExpenseComponent 
-                            key={sectionIndex} 
-                            style={styles.smallContent}
-                            search={()=>this.props.search()}
-                            item={obj}
-                          ></ExpenseComponent>
-                        )
-                      })
-                    }</ScrollView>
-                  </View>
-                )
-              })
-            }</ViewPagerAndroid>
-          }
+            
         </View>
 
         <TouchableOpacity style={styles.plusIcon} onPress={(event)=>this._pressAdd(event)}>
@@ -229,21 +161,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 20
   },
-
-  dayContainer: {
-    marginLeft: 30, 
-    marginRight: 30,
-    marginTop: 20,
-    marginBottom: 20,
-    borderBottomColor: 'rgb(190, 190, 190)',
-    borderBottomWidth: 2,
-  },
-  dayStyle: {
-    marginRight: 20,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    marginBottom: 5
-  }
 })
 
 function select(state) {

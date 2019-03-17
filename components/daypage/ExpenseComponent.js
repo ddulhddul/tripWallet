@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, Dimensions, ToastAndroid, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback,
+  FlatList, Dimensions, ToastAndroid, Alert } from 'react-native';
 import Util from '../Util'
 import { MapView, Icon } from 'expo';
 import { withNavigation } from 'react-navigation';
@@ -55,7 +56,7 @@ class ExpenseComponent extends DBUtil {
         <View style={[styles.smallContent]}>
           {
             imageList && imageList[0]
-            ? <TouchableOpacity 
+            ? <TouchableWithoutFeedback 
                 delayLongPress={1000}  
                 onLongPress={()=>this._onDelete(item)}
                 onPress={()=>this.changeExpand()} 
@@ -66,71 +67,75 @@ class ExpenseComponent extends DBUtil {
                     ? {uri: imageList[0]}
                     : require('../../assets/images/robot-dev.png')}
                   style={styles.smallContentThumbnailImg} />
-              </TouchableOpacity>
+              </TouchableWithoutFeedback>
             : undefined
           }
-          <TouchableOpacity 
+          <TouchableWithoutFeedback 
             delayLongPress={1000}  
             onLongPress={()=>this._onDelete(item)}
             onPress={()=>this.changeExpand()} 
             style={[{flex:1, flexDirection: 'column', marginLeft: 20}]}>
-            <View style={[{flexDirection: 'row', justifyContent: 'space-between'}]}>
-              <Text style={{fontSize: 15, fontWeight: 'bold'}}>{Util.comma(item.amount)} {Util.amountUnit}</Text>
-              <Text style={{fontSize: 12, color:'grey'}}>
-              {item.hh}:{item.mm} {Util.getNoon(Number(item.hh))}
-              </Text>
-            </View>
-            <View style={[{marginTop: 10, flexDirection: 'row'}]}>
-              <View style={[{flex:0.8}]}>
-                {/* <Text numberOfLines={1} style={{color: 'rgb(192, 57, 43)', fontSize: 12, marginBottom: 3}}>
-                  <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
-                  수원시 영통구 삼성사거리 111-11
-                  {item.latitude} {item.longitude}
-                </Text> */}
-                <Text numberOfLines={1} style={{color: 'grey', fontSize: 12}}>{item.remark.replace(/\n/g, ' ')}</Text>
+            <View style={{flex:1}}>
+              <View style={[{flexDirection: 'row', justifyContent: 'space-between'}]}>
+                <Text style={{fontSize: 15, fontWeight: 'bold'}}>{Util.comma(item.amount)} {Util.amountUnit}</Text>
+                <Text style={{fontSize: 12, color:'grey'}}>
+                {item.hh}:{item.mm} {Util.getNoon(Number(item.hh))}
+                </Text>
+              </View>
+              <View style={[{marginTop: 10, flexDirection: 'row'}]}>
+                <View style={[{flex:0.8}]}>
+                  {/* <Text numberOfLines={1} style={{color: 'rgb(192, 57, 43)', fontSize: 12, marginBottom: 3}}>
+                    <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
+                    수원시 영통구 삼성사거리 111-11
+                    {item.latitude} {item.longitude}
+                  </Text> */}
+                  <Text numberOfLines={1} style={{color: 'grey', fontSize: 12}}>{item.remark.replace(/\n/g, ' ')}</Text>
+                </View>
               </View>
             </View>
-          </TouchableOpacity>
+          </TouchableWithoutFeedback>
         </View>
       )
     }else{
       return (
         <View style={[styles.smallContent, {flexDirection: 'column'}]}>
-          <TouchableOpacity onPress={()=>this.changeExpand()}>
-            <View style={[{flexDirection: 'row', justifyContent: 'space-between'}]}>
-              <Text style={{fontSize: 15, marginTop: 5, fontWeight: 'bold'}}>{Util.comma(item.amount)} {Util.amountUnit}</Text>
-              <Text style={{fontSize: 12, marginTop: 5, color:'grey'}}>
-                {item.hh}:{item.mm} {Util.getNoon(Number(item.hh))}
-              </Text>
-            </View>
-            <Text style={{color: 'grey', marginTop: 5, fontSize: 12}}>{item.remark}</Text>
-            {/* <Text style={{color: 'rgb(192, 57, 43)', marginTop: 10, fontSize: 12, marginBottom: 3}}>
-              <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
-              수원시 영통구 삼성사거리 111-11
-              {item.latitude} {item.longitude}
-            </Text> */}
-            <View pointerEvents="none" style={{marginTop: 10}}>
-            {
-              item.latitude && item.longitude && <MapView
-                style={{ alignSelf: 'stretch', height: Dimensions.get('window').width * 0.4 }}
-                provider={MapView.PROVIDER_GOOGLE}
-                region={{ 
-                  latitude: item.latitude, 
-                  longitude: item.longitude, 
-                  latitudeDelta: 0.005,
-                  longitudeDelta: 0.005
-                }}
-                >
-                <MapView.Marker
-                  coordinate={{
+          <TouchableWithoutFeedback onPress={()=>this.changeExpand()}>
+            <View style={{flex:1}}>
+              <View style={[{flexDirection: 'row', justifyContent: 'space-between'}]}>
+                <Text style={{fontSize: 15, marginTop: 5, fontWeight: 'bold'}}>{Util.comma(item.amount)} {Util.amountUnit}</Text>
+                <Text style={{fontSize: 12, marginTop: 5, color:'grey'}}>
+                  {item.hh}:{item.mm} {Util.getNoon(Number(item.hh))}
+                </Text>
+              </View>
+              <Text style={{color: 'grey', marginTop: 5, fontSize: 12}}>{item.remark}</Text>
+              {/* <Text style={{color: 'rgb(192, 57, 43)', marginTop: 10, fontSize: 12, marginBottom: 3}}>
+                <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
+                수원시 영통구 삼성사거리 111-11
+                {item.latitude} {item.longitude}
+              </Text> */}
+              <View pointerEvents="none" style={{marginTop: 10}}>
+              {
+                item.latitude && item.longitude && <MapView
+                  style={{ alignSelf: 'stretch', height: Dimensions.get('window').width * 0.4 }}
+                  provider={MapView.PROVIDER_GOOGLE}
+                  region={{ 
                     latitude: item.latitude, 
                     longitude: item.longitude, 
+                    latitudeDelta: 0.005,
+                    longitudeDelta: 0.005
                   }}
-                />
-              </MapView>
-            }
+                  >
+                  <MapView.Marker
+                    coordinate={{
+                      latitude: item.latitude, 
+                      longitude: item.longitude, 
+                    }}
+                  />
+                </MapView>
+              }
+              </View>
             </View>
-          </TouchableOpacity>
+          </TouchableWithoutFeedback>
           {
             (imageList && imageList.length && imageList[0])
             ? <FlatList

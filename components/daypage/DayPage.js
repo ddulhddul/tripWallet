@@ -1,84 +1,41 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, Text, ViewPagerAndroid, ScrollView, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import Util from '../Util'
-import { Icon } from 'expo'
-import ExpenseComponent from './ExpenseComponent'
+import ExpenseListComponent from './ExpenseListComponent'
 
 export default class DayPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      initialPage: 0,
-      pageIndex: 0
+      thisSection: {}
     }
   }
 
-  onPageSelected(event){
-    if(!event || !event.nativeEvent) return
-    const pageIndex = event.nativeEvent.position
-    this.setState({
-      pageIndex: pageIndex
-    })
-  }
-
   render() {
-    const { pageIndex } = this.state
+    const { thisSection } = this.state
     const { sections } = this.props
-    const yyyymmdd = (sections[pageIndex] || {}).yyyymmdd
-    const sumAmount = (sections[pageIndex] || {}).sumAmount
+    const yyyymmdd = (thisSection || {}).yyyymmdd
+    const sumAmount = (thisSection || {}).sumAmount
     return (
       <View style={{flex:1, marginTop: 20}}>
-        <View style={styles.dayContainer}>
-          <Text style={styles.dayStyle}>{Util.getDateForm(yyyymmdd)}</Text>
-          <Text style={styles.weekStyle}>({Util.getDay(yyyymmdd)})</Text>
-        </View>
+        {
+          !yyyymmdd? null:
+          <View style={styles.dayContainer}>
+            <Text style={styles.dayStyle}>{Util.getDateForm(yyyymmdd)}</Text>
+            <Text style={styles.weekStyle}>({Util.getDay(yyyymmdd)})</Text>
+          </View>
+        }
         <View style={styles.totalExpensesContainer}>
           <Text style={styles.totalExpenseTitle}>총 사용 금액 : </Text>
-          <Text style={styles.totalExpense}>{Util.comma(sumAmount)} 원</Text>
-        </View>
-        <View>
-          <View style={styles.pagingContainer}>
-          {
-            (sections || []).map((obj, index)=>{
-              return (
-                <View 
-                  style={[
-                    styles.circle, 
-                    {justifyContent: 'center', alignItems: 'center'},
-                    index===pageIndex? {backgroundColor: 'rgb(52, 152, 219)', opacity: 1} : {},
-                    ((index < Math.max(0, Math.floor(index/10)*10)) || (index > Math.max(0, Math.floor(index/10)*10)+9)) 
-                      ? {display: 'none'}: {}
-                  ]} 
-                  key={index}>
-                </View>
-              )
-            })
-          }
-          </View>
+          <Text style={styles.totalExpense}>{Util.comma(sumAmount) || 0} 원</Text>
         </View>
         
-        <ViewPagerAndroid style={{flex:1}} initialPage={this.state.initialPage} onPageSelected={(event)=>this.onPageSelected(event)}>
-        {
-          (sections || []).map((sectionObj, index)=>{
-            return (
-              <View key={index}>
-                <ScrollView style={{width: '100%'}}>{
-                  (sectionObj.data || []).map((obj, sectionIndex)=>{
-                    return (
-                      <ExpenseComponent 
-                        key={sectionIndex} 
-                        style={styles.smallContent}
-                        search={()=>this.props.search()}
-                        item={obj}
-                      ></ExpenseComponent>
-                    )
-                  })
-                }</ScrollView>
-              </View>
-            )
-          })
-        }
-        </ViewPagerAndroid>
+        <ExpenseListComponent 
+            search={()=>this.props.search()}
+            onPageSelected={(thisSection={})=>this.setState({thisSection: thisSection})}
+            sections={sections}
+            />
+
       </View>
     )
   }
@@ -138,23 +95,5 @@ const styles = StyleSheet.create({
     opacity: 0.3,
     backgroundColor: 'grey'
   },
-
-
-  // smallContent: {
-  //   width: '90%',
-  //   padding: 15,
-  //   elevation: 5,
-  //   backgroundColor: 'white',
-
-  //   flexDirection: 'row'
-  // },
-
-  viewPager: {
-    flex: 1
-  },
-  pageStyle: {
-    alignItems: 'center',
-    padding: 20,
-  }
 
 })
