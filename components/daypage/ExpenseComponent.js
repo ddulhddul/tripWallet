@@ -145,11 +145,14 @@ class ExpenseComponent extends DBUtil {
             (imageList && imageList.length && imageList[0])
             ? <FlatList
               style={{marginTop: 15}}
+              snapToAlignment={"center"}
               horizontal={true}
               data={imageList}
               key={JSON.stringify(item)}
               renderItem={({item, index}) => (
-                <Image key={[JSON.stringify(item),index].join('_')} source={{uri:item}} style={styles.bigContentThumbnailImg} />
+                <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate('Image', {uri: item})}>
+                  <Image key={[JSON.stringify(item),index].join('_')} source={{uri:item}} style={styles.bigContentThumbnailImg} />
+                </TouchableWithoutFeedback>
               )}
               keyExtractor={(item, index) => item + index}
             />

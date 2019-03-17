@@ -13,6 +13,7 @@ import NationScreen from '../screens/NationScreen';
 import SelectNationScreen from '../screens/SelectNationScreen';
 
 import ExpensesScreen from '../screens/ExpensesScreen';
+import ImageScreen from '../screens/ImageScreen';
 import AddExpensesScreen from '../screens/AddExpensesScreen';
 import UpdateMapScreen from '../screens/UpdateMapScreen';
 
@@ -111,7 +112,8 @@ export default createStackNavigator({
   
   mainTabStack: createBottomTabNavigator({
     ExpensesStack: createStackNavigator({
-      Expenses: ExpensesScreen
+      Expenses: ExpensesScreen,
+      Image: ImageScreen
     }, {
       navigationOptions: ({navigation}) => ({
         tabBarLabel: 'Expenses',
