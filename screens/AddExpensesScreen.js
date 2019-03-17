@@ -136,12 +136,14 @@ export default class AddExpensesScreen extends DBUtil {
 
     return (
       <View style={{flex:1}}>
-        <View style={{marginTop: 30, marginBottom: 20, flexDirection: 'row'}}>
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate('mainTabStack')}>
+        <View style={{marginTop: 30, marginBottom: 30, flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity 
+            style={{justifyContent: 'center'}}
+            onPress={()=>this.props.navigation.navigate('mainTabStack')}>
             <Icon.MaterialIcons size={40} name='arrow-back' color="black" />
           </TouchableOpacity>
-          <View style={{flex:1, justifyContent: 'center', alignItems: 'flex-end'}}>
-            <Text style={{fontSize: 25, fontWeight: 'bold', marginRight: 20}}>
+          <View style={{flex:1, justifyContent: 'center', alignItems: 'flex-start'}}>
+            <Text style={{fontSize: 22, fontWeight: 'bold', marginLeft: 10}}>
             {
               item.copy? '복사':
               item.expense_id? '수정':
