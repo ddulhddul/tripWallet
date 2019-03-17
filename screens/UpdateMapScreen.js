@@ -89,6 +89,7 @@ class UpdateMapScreen extends React.Component {
   }
 
   render() {
+    const { location } = this.state
     return (
       <View style={{flex:1}}>
         <View style={{marginTop: 30, marginBottom: 20}}>
@@ -116,14 +117,14 @@ class UpdateMapScreen extends React.Component {
             </TouchableOpacity>
           </View> */}
           {
-            this.state.location && this.state.location.coords && <View style={{marginBottom: 10}}>
+            location && location.coords && <View style={{marginBottom: 10}}>
               <Text style={[
                 {fontSize:12, color: 'rgb(231, 76, 60)'},
                 {minHeight: 40}
                 ]}>
                 <Icon.MaterialIcons size={12} name='location-on' color="rgb(231, 76, 60)" />
-                {/* {this.state.locationText} */}
-                {this.state.location.coords.latitude} {this.state.location.coords.longitude}
+                {/* {locationText} */}
+                {location.coords.latitude} {location.coords.longitude}
               </Text>
             </View>
           }
@@ -144,20 +145,23 @@ class UpdateMapScreen extends React.Component {
               zIndex: 999999, 
               backgroundColor:'black'
             }}></View>
-            <MapView 
-              style={{ alignSelf: 'stretch', flex:1 }}
-              region={{ 
-                latitude: !this.state.location? null: this.state.location.coords.latitude, 
-                longitude: !this.state.location? null: this.state.location.coords.longitude, 
-                latitudeDelta: (this.state.location && this.state.location.coords.latitudeDelta),
-                longitudeDelta: (this.state.location && this.state.location.coords.longitudeDelta),
-              }}
-              onRegionChangeComplete={(param)=>this._handleMapRegionChange(param)}
-              >
-              <MapView.Marker
-                coordinate={!this.state.location ? null : this.state.location.coords}
-              />
-            </MapView>
+            {
+              !location? null:
+              <MapView 
+                style={{ alignSelf: 'stretch', flex:1 }}
+                region={{ 
+                  latitude: location.coords.latitude, 
+                  longitude: location.coords.longitude, 
+                  latitudeDelta: location.coords.latitudeDelta || 0.005,
+                  longitudeDelta: location.coords.longitudeDelta || 0.005,
+                }}
+                onRegionChangeComplete={(param)=>this._handleMapRegionChange(param)}
+                >
+                <MapView.Marker
+                  coordinate={Object.assign({}, location.coords)}
+                />
+              </MapView>
+            }
           </View>
         </View>
         
