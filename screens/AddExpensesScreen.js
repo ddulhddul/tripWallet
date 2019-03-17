@@ -108,7 +108,6 @@ export default class AddExpensesScreen extends DBUtil {
   _pickImage= async ()=>{
     let { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status !== 'granted') return
-
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: false,
       aspect: [4, 3],
@@ -286,7 +285,7 @@ export default class AddExpensesScreen extends DBUtil {
                   this.state.images.map((uri, index)=>{
                     if(!uri) return undefined
                     return (
-                      <View key={['image',index].join('_')} style={{flex: 1, flexDirection: 'row', margin: 20}}>
+                      <View key={['image',uri,index].join('_')} style={{flex: 1, flexDirection: 'row', margin: 20}}>
                         <Image source={{uri: uri}} 
                           style={{
                             width: Dimensions.get('window').width * 3 / 4, 

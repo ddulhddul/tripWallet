@@ -12,6 +12,7 @@ $ expo build:android
             "permissions": [
                 "ACCESS_COARSE_LOCATION",
                 "ACCESS_FINE_LOCATION",
+                "READ_INTERNAL_STORAGE",
                 "READ_EXTERNAL_STORAGE",
                 "WRITE_EXTERNAL_STORAGE"  
             ],

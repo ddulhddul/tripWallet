@@ -56,51 +56,50 @@ class ExpenseComponent extends DBUtil {
   render() {
     const { expand } = this.state
     const item = this.props.item || {}
-    const imageList = String(item.images || '').split('|') || []
+    const imageList = (String(item.images || '').split('|') || []).filter((obj)=>obj)
     if(!expand){
       return (
-        <View style={[styles.smallContent]}>
-          {
-            imageList && imageList[0]
-            ? <TouchableWithoutFeedback 
-                delayLongPress={1000}  
-                onLongPress={()=>this._onDelete(item)}
-                onPress={()=>this.changeExpand()} 
-                style={[{flex:0.3}]}>
-                <Image 
-                  source={
-                    imageList[0]
-                    ? {uri: imageList[0]}
-                    : require('../../assets/images/robot-dev.png')}
-                  style={styles.smallContentThumbnailImg} />
-              </TouchableWithoutFeedback>
-            : undefined
-          }
-          <TouchableWithoutFeedback 
+        <TouchableWithoutFeedback 
             delayLongPress={1000}  
             onLongPress={()=>this._onDelete(item)}
-            onPress={()=>this.changeExpand()} 
-            style={[{flex:1, flexDirection: 'column', marginLeft: 20}]}>
-            <View style={{flex:1}}>
-              <View style={[{flexDirection: 'row', justifyContent: 'space-between'}]}>
-                <Text style={{fontSize: 15, fontWeight: 'bold'}}>{Util.comma(item.amount)} {Util.amountUnit}</Text>
-                <Text style={{fontSize: 12, color:'grey'}}>
-                {item.hh}:{item.mm} {Util.getNoon(Number(item.hh))}
-                </Text>
-              </View>
-              <View style={[{marginTop: 10, flexDirection: 'row'}]}>
-                <View style={[{flex:0.8}]}>
-                  {/* <Text numberOfLines={1} style={{color: 'rgb(192, 57, 43)', fontSize: 12, marginBottom: 3}}>
-                    <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
-                    수원시 영통구 삼성사거리 111-11
-                    {item.latitude} {item.longitude}
-                  </Text> */}
-                  <Text numberOfLines={1} style={{color: 'grey', fontSize: 12}}>{item.remark.replace(/\n/g, ' ')}</Text>
+            onPress={()=>this.changeExpand()}>
+          <View style={[styles.smallContent]}>
+            <View style={{flex:1, flexDirection: 'column', marginLeft: 10}}>
+              <View style={[{flexDirection: 'row', alignItems: 'center'}]}>
+                <View style={{flex:1}}>
+                  <Text style={{fontSize: 15, fontWeight: 'bold'}}>
+                    {Util.comma(item.amount)} {Util.amountUnit}
+                  </Text>
                 </View>
+                <View style={{width: 70, marginRight: 5}}>
+                  <Text style={{fontSize: 12, color:'grey'}}>
+                    {item.hh}:{item.mm} {Util.getNoon(Number(item.hh))}
+                  </Text>
+                </View>
+                {
+                  imageList && imageList[0]
+                  ? <Image 
+                      source={{uri: imageList[0]}}
+                      style={styles.smallContentThumbnailImg} />
+                  : undefined
+                }
               </View>
+              {
+                !item.remark? null:
+                <View style={[{marginTop: 10, flexDirection: 'row'}]}>
+                  <View style={[{flex:0.8}]}>
+                    {/* <Text numberOfLines={1} style={{color: 'rgb(192, 57, 43)', fontSize: 12, marginBottom: 3}}>
+                      <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
+                      수원시 영통구 삼성사거리 111-11
+                      {item.latitude} {item.longitude}
+                    </Text> */}
+                    <Text numberOfLines={1} style={{color: 'grey', fontSize: 12}}>{item.remark.replace(/\n/g, ' ')}</Text>
+                  </View>
+                </View>
+              }
             </View>
-          </TouchableWithoutFeedback>
-        </View>
+          </View>
+        </TouchableWithoutFeedback>
       )
     }else{
       return (
@@ -148,8 +147,9 @@ class ExpenseComponent extends DBUtil {
               style={{marginTop: 15}}
               horizontal={true}
               data={imageList}
+              key={JSON.stringify(item)}
               renderItem={({item, index}) => (
-                <Image source={item? {uri:item}: require('../../assets/images/robot-dev.png')} style={styles.bigContentThumbnailImg} />
+                <Image key={[JSON.stringify(item),index].join('_')} source={{uri:item}} style={styles.bigContentThumbnailImg} />
               )}
               keyExtractor={(item, index) => item + index}
             />
@@ -185,15 +185,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   smallContentThumbnailImg: {
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     resizeMode: 'stretch',
-    borderRadius: 50,
+    borderRadius: 100,
   },
   bigContentThumbnailImg: {
     width: 200,
     height: 200,
     resizeMode: 'stretch',
+    borderRadius: 30,
     marginRight: 5
   },
 
