@@ -93,6 +93,7 @@ export default class DBUtil extends React.Component {
         )`,
         [],
         (tx, res)=>{
+          this.initTable()
           if (res.rows.length == 0) {
             txn.executeSql('DROP TABLE IF EXISTS TN_TRIP', [])
             txn.executeSql(
@@ -328,7 +329,8 @@ export default class DBUtil extends React.Component {
           // (_, { rows: { _array } }) => this.setState({ items: _array })
           (...params)=>{
             console.log('db error', ...params)
-            alert('error')
+            alert(`관리자에게 문의하세요\n이메일: ddulhddul@gmail.com`)
+            // alert(JSON.stringify({...params}))
           }
         )
       })

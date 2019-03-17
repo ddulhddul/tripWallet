@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, ToastAndroid } from 'react-native'
-import { Icon } from 'expo'
+import { Icon, AppLoading } from 'expo'
 import DBUtil from '../components/database/DBUtil'
 import { connect } from 'react-redux'
 import { setTripId } from '../actions/action'
@@ -16,6 +16,7 @@ class TripScreen extends DBUtil {
     super(props)
     this.initNationTable()
     this.state = {
+      isReady: false,
       nationList: this.getNationList(),
       tripList: []
     }
@@ -27,12 +28,14 @@ class TripScreen extends DBUtil {
       this.search()
     })
   }
-
+  
   search(){
+    this.setState({isReady: false})
     this.listTnTrip({},
       (tx, res)=>{
         const nationList = this.state.nationList||[]
         this.setState({
+          isReady: true,
           tripList: (res.rows._array || []).reduce((entry, obj)=>{
             obj.requiredUri = (nationList.find((nation)=>nation.id==obj.nation_id) || {}).requiredUri
             if(entry[entry.length-1].length < 2){
@@ -79,6 +82,7 @@ class TripScreen extends DBUtil {
   }
 
   render() {
+    if(!this.state.isReady) return <AppLoading />
     const data = this.state.tripList
     return (
       <View style={{flex:1}}>
