@@ -40,9 +40,16 @@ class Expenses extends DBUtil {
     )    
   }
 
+  _onScroll(event){
+    // console.log('event',event, event.nativeEvent.contentOffset.y)
+    if(event.nativeEvent.contentOffset.y <= 0) this.props.updateShowTotal(true)
+    else this.props.updateShowTotal(false)
+  }
+
   render() {
     return (
       <SectionList 
+          onScroll={(event)=>this._onScroll(event)}
           renderSectionHeader={({section: {yyyymmdd, sumAmount}}) => (
             <DayHeader item={{yyyymmdd: yyyymmdd, sumAmount: sumAmount}} navigation={this.props.navigation} />
           )}        

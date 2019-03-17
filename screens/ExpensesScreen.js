@@ -26,6 +26,7 @@ class ExpensesScreen extends DBUtil {
       pageIndex: 0,
       sections: [],
       trip_id: '',
+      showTotal: true
     }
   }
 
@@ -49,16 +50,22 @@ class ExpensesScreen extends DBUtil {
           entry[obj.yyyymmdd].push(obj)
           return entry
         }, {})
+        
+        const sections = Array.from(Object.keys(objByList)).map((key)=>{
+          return {
+            yyyymmdd: key, 
+            sumAmount: objByList[key].reduce((entry, obj)=>{
+              return entry + Number(obj.amount || 0)
+            }, 0),
+            data: objByList[key],
+          }
+        }).reverse()
+
         this.setState({
-          sections: Array.from(Object.keys(objByList)).map((key)=>{
-            return {
-              yyyymmdd: key, 
-              sumAmount: objByList[key].reduce((entry, obj)=>{
-                return entry + Number(obj.amount || 0)
-              }, 0),
-              data: objByList[key],
-            }
-          }).reverse()
+          sections: sections,
+          totalExpense: sections.reduce((entry, obj)=>{
+            return entry + obj.sumAmount
+          }, 0)
         })
       }
     )
@@ -90,11 +97,25 @@ class ExpensesScreen extends DBUtil {
           showTypeChange={(pageIndex)=>this.showTypeChange(pageIndex)}
           />
 
+        {
+          (!this.state.totalExpense || !this.state.showTotal)? null:
+          <View style={{flexDirection: 'row', justifyContent: 'center', height: 50, alignItems: 'center', 
+            // borderBottomColor: 'rgb(158, 158, 158)', borderBottomWidth: 1
+            }}>
+            <View style={styles.totalExpensesContainer}>
+              <Text style={styles.totalExpenseTitle}>총 사용 금액 : </Text>
+              {/* <Text style={styles.totalExpense}>{Util.comma(sumAmount) || 0} 원</Text> */}
+              <Text style={styles.totalExpense}>{Util.comma(this.state.totalExpense) || 0} 원</Text>
+            </View>
+          </View>
+        }
+
         <ViewPagerAndroid 
           ref={(ref)=>this.viewPager=ref}
           style={{flex:1}} initialPage={this.state.pageIndex} onPageSelected={(event)=>this.onPageSelected(event)}>
           <View key={0}>
             <Expenses
+              updateShowTotal={(value)=>this.setState({showTotal: value})}
               sections={this.state.sections}
               search={()=>this.search()}
             />
@@ -132,6 +153,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingTop: 30
   },
+
+  // 총 사용금액
+  totalExpensesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  totalExpenseTitle: {
+    color: 'grey',
+  },
+  totalExpense: {
+    fontWeight: 'bold'
+  },
+
   plusIcon: {
     backgroundColor: 'white',
     borderRadius: 50,

@@ -17,7 +17,7 @@ export default class DayPage extends Component {
     const yyyymmdd = (thisSection || {}).yyyymmdd
     const sumAmount = (thisSection || {}).sumAmount
     return (
-      <View style={{flex:1, marginTop: 20}}>
+      <View style={{flex:1}}>
         {
           !yyyymmdd? null:
           <View style={styles.dayContainer}>
@@ -26,7 +26,7 @@ export default class DayPage extends Component {
           </View>
         }
         <View style={styles.totalExpensesContainer}>
-          <Text style={styles.totalExpenseTitle}>총 사용 금액 : </Text>
+          <Text style={styles.totalExpenseTitle}>사용 금액 : </Text>
           <Text style={styles.totalExpense}>{Util.comma(sumAmount) || 0} 원</Text>
         </View>
         
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 30,
+    // paddingTop: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },

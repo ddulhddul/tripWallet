@@ -36,6 +36,10 @@ class ExpenseHeader extends DBUtil {
     render() {
         const { sections, isMapView, pageIndex, showTypeChange } = this.props
         const { tripObj } = this.state
+        if(!tripObj.nation_id){
+            return null
+        }
+
         let yyyymmddObj = (sections || []).reduce((entry, obj)=>{
             entry.fromYyyymmdd = Math.min(entry.fromYyyymmdd, obj.yyyymmdd)
             entry.toYyyymmdd = Math.max(entry.toYyyymmdd, obj.yyyymmdd)
