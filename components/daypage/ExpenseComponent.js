@@ -20,6 +20,12 @@ class ExpenseComponent extends DBUtil {
     })
   }
 
+  _onPressCopy(item={}){
+    this.props.navigation.navigate('AddExpenses', {
+      item: Object.assign({copy: true}, item)
+    })
+  }
+
   _onDelete(item){
     Alert.alert(
       '경고',
@@ -150,6 +156,9 @@ class ExpenseComponent extends DBUtil {
             : undefined
           }
           <View style={[{flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'flex-end', marginTop: 15}]}>
+            <TouchableOpacity style={[styles.editButtonArea, {height:20, width: 40, backgroundColor: 'green'}]} onPress={()=>this._onPressCopy(item)}>
+              <Text style={{color: 'white', fontSize: 11}}>복사</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={[styles.editButtonArea, {height:20, width: 40}]} onPress={()=>this._onPressEdit(item)}>
               <Text style={{color: 'white', fontSize: 11}}>수정</Text>
             </TouchableOpacity>

@@ -48,9 +48,8 @@ export default class AddExpensesScreen extends DBUtil {
       })
       this._getLocationAsync()
     }else{
-      console.log('item', item)
       Object.assign(defaultSetting, {
-        expense_id: item.expense_id,
+        expense_id: item.copy? '': item.expense_id,
         location: {coords: { latitude: item.latitude, longitude: item.longitude}},
         amount: item.amount || 0,
         remark: item.remark || '',
@@ -133,13 +132,23 @@ export default class AddExpensesScreen extends DBUtil {
       entry++
     }
     entry = (entry || 1) * 25 + 30
+    const item = this.props.navigation.getParam('item') || {}
 
     return (
       <View style={{flex:1}}>
-        <View style={{marginTop: 30, marginBottom: 20}}>
+        <View style={{marginTop: 30, marginBottom: 20, flexDirection: 'row'}}>
           <TouchableOpacity onPress={()=>this.props.navigation.navigate('mainTabStack')}>
             <Icon.MaterialIcons size={40} name='arrow-back' color="black" />
           </TouchableOpacity>
+          <View style={{flex:1, justifyContent: 'center', alignItems: 'flex-end'}}>
+            <Text style={{fontSize: 25, fontWeight: 'bold', marginRight: 20}}>
+            {
+              item.copy? '복사':
+              item.expense_id? '수정':
+              '신규'
+            }
+            </Text>
+          </View>
         </View>
         
         <ScrollView
