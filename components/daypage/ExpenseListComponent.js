@@ -78,15 +78,16 @@ class ExpenseListComponent extends Component {
                   this.viewPager.setPage(index)
                   }}>
                   <View>
-                    <Text style={pageIndex === index
+                    <Text style={[pageIndex === index
                       ? {fontSize: 10, fontWeight: 'bold'}
-                      : {fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>{
+                      : {fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'},
+                      {textAlign: 'center'}]}>{
                       Util.getDateForm(item.yyyymmdd)
                     }</Text>
                     <Text style={pageIndex === index
                       ? {fontSize: 20, fontWeight: 'bold'}
                       : {fontSize: 13, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>
-                      Day {index+1}
+                      Day {sections.length-index}
                     </Text>
                   </View>
                 </TouchableWithoutFeedback>

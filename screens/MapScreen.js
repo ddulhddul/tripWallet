@@ -67,10 +67,8 @@ class MapScreen extends DBUtil {
           }
         })
 
-        console.log('sections',sections)
-
         this.setState({
-          sections: sections
+          sections: sections.reverse()
         })
         // list.length && this.onPageSelected(this.state.pageIndex)
       }

@@ -87,13 +87,13 @@ export default class DBUtil extends React.Component {
   initNationTable() {
     db.transaction((txn)=>{
       txn.executeSql(
-        `SELECT * FROM sqlite_master WHERE type='table' AND name='TN_TRIP'
-        AND EXISTS (
-          SELECT 1 FROM sqlite_master WHERE name='TN_TRIP' AND sql LIKE '%create_date%'
-        )`,
+        // `SELECT * FROM sqlite_master WHERE type='table' AND name='TN_TRIP'
+        // AND EXISTS (
+        //   SELECT 1 FROM sqlite_master WHERE name='TN_TRIP' AND sql LIKE '%create_date%'
+        // )`,
+        `SELECT * FROM sqlite_master WHERE type='table' AND name='TN_TRIP'`,
         [],
         (tx, res)=>{
-          this.initTable()
           if (res.rows.length == 0) {
             txn.executeSql('DROP TABLE IF EXISTS TN_TRIP', [])
             txn.executeSql(
@@ -116,6 +116,7 @@ export default class DBUtil extends React.Component {
               }
             )
           }
+          this.initTable()
         }
       )
     })
@@ -195,10 +196,11 @@ export default class DBUtil extends React.Component {
   initTable() {
     db.transaction((txn)=>{
       txn.executeSql(
-        `SELECT * FROM sqlite_master MA WHERE type='table' AND name='TN_EXPENSE'
-        AND EXISTS (
-          SELECT 1 FROM sqlite_master WHERE name='TN_EXPENSE' AND sql LIKE '%trip_id%'
-        )`,
+        // `SELECT * FROM sqlite_master MA WHERE type='table' AND name='TN_EXPENSE'
+        // AND EXISTS (
+        //   SELECT 1 FROM sqlite_master WHERE name='TN_EXPENSE' AND sql LIKE '%trip_id%'
+        // )`,
+        `SELECT * FROM sqlite_master MA WHERE type='table' AND name='TN_EXPENSE'`,
         [],
         (tx, res)=>{
           console.log('res.rows', res.rows)
@@ -237,7 +239,7 @@ export default class DBUtil extends React.Component {
     this.queryExecute(
       `SELECT * FROM TN_EXPENSE
       WHERE TRIP_ID = ?
-      ORDER BY YYYYMMDD DESC, HH DESC, MM DESC`,
+      ORDER BY YYYYMMDD DESC, HH DESC, MM DESC, AMOUNT DESC, EXPENSE_ID DESC`,
       [
         param.trip_id
       ],
