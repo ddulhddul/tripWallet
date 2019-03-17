@@ -10,9 +10,22 @@ export default class NationScreen extends DBUtil {
   
   constructor(props) {
     super(props)
-    this.state = {
-      nation: {},
-      city_name: ''
+    const trip_id = this.props.navigation.getParam('trip_id')
+    if(!trip_id){
+      this.state = {
+        trip_id: '',
+        nation: {},
+        city_name: ''
+      }
+    }else{
+      const tripObj = this.props.navigation.getParam('tripObj') || {}
+      this.state = {
+        trip_id: trip_id,
+        nation: (this.getNationList() || []).find((obj)=>{
+          return tripObj.nation_id == obj.id
+        }) || {},
+        city_name: tripObj.city_name||''
+      }
     }
   }
 
@@ -28,15 +41,27 @@ export default class NationScreen extends DBUtil {
     })
   }
 
-  _insertNation(){
-    this.insertTnTrip(this.state, (tx, res)=>{
-      ToastAndroid.showWithGravity(
-        '저장되었습니다.',
-        ToastAndroid.SHORT,
-        ToastAndroid.BOTTOM
-      )
-      this.props.navigation.goBack()
-    })
+  _saveNation(){
+    const trip_id = this.state.trip_id
+    if(!trip_id){
+      this.insertTnTrip(this.state, (tx, res)=>{
+        ToastAndroid.showWithGravity(
+          '저장되었습니다.',
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM
+        )
+        this.props.navigation.goBack()
+      })
+    }else{
+      this.updateTnTrip(this.state, (tx, res)=>{
+        ToastAndroid.showWithGravity(
+          '저장되었습니다.',
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM
+        )
+        this.props.navigation.goBack()
+      })
+    }
   }
 
   render() {
@@ -106,7 +131,7 @@ export default class NationScreen extends DBUtil {
               </View>
               <View style={[{width: 0.1}]}></View>
               <View style={[styles.buttonColumn]}>
-                <TouchableOpacity onPress={()=>this._insertNation()}>
+                <TouchableOpacity onPress={()=>this._saveNation()}>
                   <Text style={[styles.buttonStyle, {color: "rgb(74, 190, 202)"}]}>저장</Text>
                 </TouchableOpacity>
               </View>

@@ -146,6 +146,31 @@ export default class DBUtil extends React.Component {
     )
   }
 
+  updateTnTrip(param={}, callback= ()=>{}){
+    this.queryExecute(
+      `update TN_TRIP 
+        set
+          nation_id = ?,
+          nation_title = ?,
+          nation_utc = ?,
+          nation_uri = ?,
+          city_name = ?,
+          remark = ?
+        where trip_id = ?
+        `,
+      [
+        param.nation.id,
+        param.nation.title,
+        param.nation.utc,
+        param.nation.uri,
+        param.city_name,
+        param.remark,
+        param.trip_id,
+      ],
+      callback
+    )
+  }
+
   listTnTrip(param={}, callback= ()=>{}){
     this.queryExecute(
       `SELECT 

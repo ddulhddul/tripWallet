@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import { Icon } from 'expo'
 import Util from './Util'
@@ -43,34 +43,43 @@ class ExpenseHeader extends DBUtil {
         }, {fromYyyymmdd: 99999999, toYyyymmdd: 0})
 
         return (
-            <View style={{flexDirection: 'row', alignItems: 'center', borderBottomColor: 'rgb(158, 158, 158)', borderBottomWidth: 1}}>
-                <View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={{fontSize: 25, fontWeight: 'bold', margin: 10}}>
-                        { tripObj.nation_title }
-                    </Text>
-                    <View style={{flex:1, marginRight: 15}}>
-                        {(!yyyymmddObj.toYyyymmdd || !yyyymmddObj.fromYyyymmdd) ? null :
-                        <Text style={{fontSize: 10, textAlign: 'right'}}>
-                            {Util.getDateForm(String(yyyymmddObj.fromYyyymmdd||''))} ~ 
-                            {Util.getDateForm(String(yyyymmddObj.toYyyymmdd||''))}
-                        </Text>}
-                        <Text style={{fontSize: 13, textAlign: 'right'}}>
-                            { tripObj.city_name }
+            <TouchableWithoutFeedback onPress={()=>this._modifyTrip()}>
+                <View style={{flexDirection: 'row', alignItems: 'center', borderBottomColor: 'rgb(158, 158, 158)', borderBottomWidth: 1}}>
+                    <View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={{fontSize: 25, fontWeight: 'bold', margin: 10}}>
+                            { tripObj.nation_title }
                         </Text>
+                        <View style={{flex:1, marginRight: 15}}>
+                            {(!yyyymmddObj.toYyyymmdd || !yyyymmddObj.fromYyyymmdd) ? null :
+                            <Text style={{fontSize: 10, textAlign: 'right'}}>
+                                {Util.getDateForm(String(yyyymmddObj.fromYyyymmdd||''))} ~ 
+                                {Util.getDateForm(String(yyyymmddObj.toYyyymmdd||''))}
+                            </Text>}
+                            <Text style={{fontSize: 13, textAlign: 'right'}}>
+                                { tripObj.city_name }
+                            </Text>
+                        </View>
                     </View>
+                    {
+                        isMapView? null: <View style={{flexDirection: 'row'}}>
+                            <TouchableOpacity onPress={()=>showTypeChange(0)} style={{marginRight: 10}}>
+                                <Icon.AntDesign name="profile" size={30} color={pageIndex===0?'blue':null} />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={()=>showTypeChange(1)} style={{marginRight: 10}}>
+                                <Icon.AntDesign name="switcher" size={30} color={pageIndex===1?'blue':null} />
+                            </TouchableOpacity>
+                        </View>
+                    }
                 </View>
-                {
-                    isMapView? null: <View style={{flexDirection: 'row'}}>
-                        <TouchableOpacity onPress={()=>showTypeChange(0)} style={{marginRight: 10}}>
-                            <Icon.AntDesign name="profile" size={30} color={pageIndex===0?'blue':null} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>showTypeChange(1)} style={{marginRight: 10}}>
-                            <Icon.AntDesign name="switcher" size={30} color={pageIndex===1?'blue':null} />
-                        </TouchableOpacity>
-                    </View>
-                }
-            </View>
+            </TouchableWithoutFeedback>
         )
+    }
+
+    _modifyTrip(){
+        this.props.navigation.navigate('Nation', {
+            trip_id: this.props.trip_id,
+            tripObj: this.state.tripObj||{}
+        })
     }
 }
 
