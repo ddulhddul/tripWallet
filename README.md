@@ -20,6 +20,13 @@ $ expo build:android
     }
     ```
 
+## [App Privacy Policy Generator](https://app-privacy-policy-generator.firebaseapp.com/#)
+
+## Icon & Splash
+- 512x512 고해상도 아이콘 (앱 아이콘)
+- 1024x500 그래픽 이미지
+- 1242x2436 Splash 이미지
+
 ## Sqlite
 - [Data types](https://sqlite.org/datatype3.html)
 
