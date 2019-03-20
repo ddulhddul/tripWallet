@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { 
-  View, Dimensions, StyleSheet, TouchableOpacity
+  Text, View, Dimensions, StyleSheet, TouchableOpacity
 } from 'react-native'
 import { Icon, MapView } from 'expo'
 import DBUtil from '../components/database/DBUtil';
@@ -17,6 +17,7 @@ class MapScreen extends DBUtil {
   constructor(props) {
     super(props)
     this.state = {
+      showMap: true,
       thisSection: {},
       sections: [],
       trip_id: ''
@@ -87,29 +88,42 @@ class MapScreen extends DBUtil {
           isMapView={true}
           />
 
-        <View style={styles.mapContainer}>
-          <MapView 
-            // onMapReady = { () => console.log('map ready...') }
-            style={{ alignSelf: 'stretch', flex:1, maxHeight: Dimensions.get('window').height * 0.5 }}
-            region={{ 
-              latitude: (thisSection.maxLatitude + thisSection.minLatitude)/2,
-              longitude: (thisSection.maxLongitude + thisSection.minLongitude)/2,
-              latitudeDelta: Math.max((thisSection.maxLatitude - thisSection.minLatitude) * 1.5, 0.01),
-              longitudeDelta: Math.max((thisSection.maxLongitude - thisSection.minLongitude) * 1.5, 0.01),
-            }}
-            >{
-              ((thisSection || {}).data || []).map((sectionData, sectionIndex)=>{
-                return (
-                  <MapView.Marker
-                    key={sectionIndex}
-                    coordinate={{
-                      latitude: sectionData.latitude, 
-                      longitude: sectionData.longitude, 
-                  }}/>
-                )
-              })
+        <TouchableOpacity onPress={()=>this.setState({showMap: !this.state.showMap})}>
+          <View style={{borderBottomColor: 'grey', borderBottomWidth: 0.5, borderStyle: 'dashed', padding: 5}}>
+            {
+              this.state.showMap
+              ?<Text style={{textAlign: 'center'}}>지도 접기</Text>
+              :<Text style={{textAlign: 'center'}}>지도 펼치기</Text>
             }
-          </MapView>
+          </View>
+        </TouchableOpacity>
+
+        <View style={styles.mapContainer}>
+          {
+            !this.state.showMap? null:
+            <MapView 
+              // onMapReady = { () => console.log('map ready...') }
+              style={{ alignSelf: 'stretch', flex:1, maxHeight: Dimensions.get('window').height * 0.5 }}
+              region={{ 
+                latitude: (thisSection.maxLatitude + thisSection.minLatitude)/2,
+                longitude: (thisSection.maxLongitude + thisSection.minLongitude)/2,
+                latitudeDelta: Math.max((thisSection.maxLatitude - thisSection.minLatitude) * 1.5, 0.01),
+                longitudeDelta: Math.max((thisSection.maxLongitude - thisSection.minLongitude) * 1.5, 0.01),
+              }}
+              >{
+                ((thisSection || {}).data || []).map((sectionData, sectionIndex)=>{
+                  return (
+                    <MapView.Marker
+                      key={sectionIndex}
+                      coordinate={{
+                        latitude: sectionData.latitude, 
+                        longitude: sectionData.longitude, 
+                    }}/>
+                  )
+                })
+              }
+            </MapView>
+          }
 
           <ExpenseListComponent 
             search={()=>this.search()}
@@ -157,7 +171,6 @@ const styles = StyleSheet.create({
 
   mapContainer: {
     flex: 1,
-    marginTop: 20
   },
 })
 
