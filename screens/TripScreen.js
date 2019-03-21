@@ -64,11 +64,7 @@ class TripScreen extends DBUtil {
         {text: '취소', style: 'cancel'},
         {text: '삭제', onPress: () => {
           this.deleteTnTrip(param, (tx, res)=>{
-            ToastAndroid.showWithGravity(
-              '삭제되었습니다.',
-              ToastAndroid.SHORT,
-              ToastAndroid.BOTTOM
-            )
+            Util.toast('삭제되었습니다.')
             this.search()
           })
         }},

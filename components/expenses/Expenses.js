@@ -5,6 +5,7 @@ import { withNavigation } from 'react-navigation';
 import DayHeader from './DayHeader'
 import ExpenseSummary from './ExpenseSummary'
 import DBUtil from '../database/DBUtil'
+import Util from '../Util'
 
 class Expenses extends DBUtil {
   constructor(props) {
@@ -27,11 +28,7 @@ class Expenses extends DBUtil {
         {text: '취소', style: 'cancel'},
         {text: '삭제', onPress: () => {
           this.deleteTnExpense(item, (tx, res)=>{
-            ToastAndroid.showWithGravity(
-              '삭제되었습니다.',
-              ToastAndroid.SHORT,
-              ToastAndroid.BOTTOM
-            )
+            Util.toast('삭제되었습니다.')
             this.props.search()
           })
         }},

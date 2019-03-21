@@ -353,22 +353,14 @@ export default class AddExpensesScreen extends DBUtil {
     if(!param.expense_id){
       this.insertTnExpense(param,
         (tx, res)=>{
-          ToastAndroid.showWithGravity(
-            '저장되었습니다.',
-            ToastAndroid.SHORT,
-            ToastAndroid.BOTTOM
-          )
+          Util.toast('저장되었습니다.')
           this.props.navigation.navigate('mainTabStack')
         }
       )
     }else{
       this.updateTnExpense(param,
         (tx, res)=>{
-          ToastAndroid.showWithGravity(
-            '저장되었습니다.',
-            ToastAndroid.SHORT,
-            ToastAndroid.BOTTOM
-          )
+          Util.toast('저장되었습니다.')
           this.props.navigation.navigate('mainTabStack')
         }
       )

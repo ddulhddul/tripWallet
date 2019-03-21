@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ToastAndroid } from 'react-native'
 import DBUtil from '../components/database/DBUtil'
+import Util from '../components/Util'
 
 export default class NationScreen extends DBUtil {
   
@@ -45,20 +46,12 @@ export default class NationScreen extends DBUtil {
     const trip_id = this.state.trip_id
     if(!trip_id){
       this.insertTnTrip(this.state, (tx, res)=>{
-        ToastAndroid.showWithGravity(
-          '저장되었습니다.',
-          ToastAndroid.SHORT,
-          ToastAndroid.BOTTOM
-        )
+        Util.toast('저장되었습니다.')
         this.props.navigation.goBack()
       })
     }else{
       this.updateTnTrip(this.state, (tx, res)=>{
-        ToastAndroid.showWithGravity(
-          '저장되었습니다.',
-          ToastAndroid.SHORT,
-          ToastAndroid.BOTTOM
-        )
+        Util.toast('저장되었습니다.')
         this.props.navigation.goBack()
       })
     }
