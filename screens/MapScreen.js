@@ -118,8 +118,8 @@ class MapScreen extends DBUtil {
                                 }}>
                         {
                           ((thisSection||{}).data||[]).filter((obj)=>{
-                            return Math.floor(obj.longitude*1000)/1000==Math.floor(sectionData.longitude *1000)/1000
-                              && Math.floor(obj.latitude*1000)/1000==Math.floor(sectionData.latitude *1000)/1000
+                            return Math.floor(obj.longitude*1000)==Math.floor(sectionData.longitude *1000)
+                              && Math.floor(obj.latitude*1000)==Math.floor(sectionData.latitude *1000)
                           }).map((obj, index)=>{
                             return (
                               <View key={[JSON.stringify(obj),index,2].join('_')} style={{flexDirection: 'row'}}>

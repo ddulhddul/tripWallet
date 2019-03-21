@@ -65,7 +65,7 @@ class ExpenseListComponent extends Component {
     const sections = Object.assign([], this.props.sections || [])
     return (
       <View style={styles.container}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{flexDirection: 'row', paddingRight: 20}}>
           <View 
             // pointerEvents="none"
             style={[styles.dayContainer, {flex:1}]}>
@@ -98,12 +98,12 @@ class ExpenseListComponent extends Component {
               )}
             />
           </View>
-          <View style={{justifyContent: 'flex-end', marginRight: 20, marginBottom: 30}}>
+          {/* <View style={{justifyContent: 'flex-end', marginBottom: 30}}>
             <TouchableOpacity onPress={()=>this.setState({expandAll: !this.state.expandAll})}>
               <Icon.MaterialIcons name={this.state.expandAll? "expand-less": "expand-more"} size={30} color='rgb(190, 190, 190)' style={{marginBottom: -20}} />
               <Icon.MaterialIcons name={this.state.expandAll? "expand-less": "expand-more"} size={30} color='rgb(190, 190, 190)' style={{marginTop: -20}} />
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
         {
           !sections || !sections.length ? undefined :
@@ -124,7 +124,7 @@ class ExpenseListComponent extends Component {
                           // style={styles.smallContent}
                           search={()=>search()}
                           item={obj}
-                          expandAll={this.state.expandAll}
+                          expandAll={this.state.expandAll && sections[pageIndex].yyyymmdd==obj.yyyymmdd}
                         ></ExpenseComponent>
                       )
                     })
