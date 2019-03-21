@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { Image, View, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import { Icon } from 'expo'
 import Util from './Util'
@@ -10,6 +10,7 @@ class ExpenseHeader extends DBUtil {
     constructor(props){
         super(props)
         this.state = {
+            nationList: this.getNationList(),
             tripObj: {}
         }
     }
@@ -35,7 +36,7 @@ class ExpenseHeader extends DBUtil {
 
     render() {
         const { sections, isMapView, pageIndex, showTypeChange } = this.props
-        const { tripObj } = this.state
+        const { nationList, tripObj } = this.state
         if(!tripObj.nation_id){
             return null
         }
@@ -50,7 +51,9 @@ class ExpenseHeader extends DBUtil {
             <TouchableWithoutFeedback onPress={()=>this._modifyTrip()}>
                 <View style={{flexDirection: 'row', alignItems: 'center', borderBottomColor: 'rgb(158, 158, 158)', borderBottomWidth: 1}}>
                     <View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={{fontSize: 25, fontWeight: 'bold', margin: 10}}>
+                        <Image style={{width:20, height: 20, borderRadius: 20, marginLeft: 10}}
+                            source={(nationList.find((obj)=>obj.id==tripObj.nation_id)||{}).requiredUri} />
+                        <Text style={{fontSize: 20, fontWeight: 'bold', margin: 10}}>
                             { tripObj.nation_title }
                         </Text>
                         <View style={{flex:1, marginRight: 15}}>
