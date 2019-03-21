@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { 
-  Text, View, Dimensions, StyleSheet, TouchableOpacity, TouchableWithoutFeedback
+  Text, View, Dimensions, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, TouchableHighlight
 } from 'react-native'
 import { Icon, MapView } from 'expo'
 import DBUtil from '../components/database/DBUtil';
+import Util from '../components/Util';
 import ExpenseHeader from '../components/ExpenseHeader'
 import ExpenseListComponent from '../components/daypage/ExpenseListComponent';
 
@@ -17,6 +18,7 @@ class MapScreen extends DBUtil {
   constructor(props) {
     super(props)
     this.state = {
+      selectedMarkerIndex: undefined,
       showMap: true,
       thisSection: {},
       sections: [],
@@ -104,11 +106,32 @@ class MapScreen extends DBUtil {
                 ((thisSection || {}).data || []).map((sectionData, sectionIndex)=>{
                   return (
                     <MapView.Marker
-                      key={sectionIndex}
+                      key={[JSON.stringify(sectionData),sectionIndex].join('_')}
                       coordinate={{
                         latitude: sectionData.latitude, 
                         longitude: sectionData.longitude, 
-                    }}/>
+                    }}>
+                      <MapView.Callout tooltip>
+                        <View style={{
+                                backgroundColor: 'white', padding: 10, borderRadius: 20,
+                                borderWidth: 0.5, borderColor: 'blue'
+                                }}>
+                        {
+                          ((thisSection||{}).data||[]).filter((obj)=>{
+                            return Math.floor(obj.longitude*1000)/1000==Math.floor(sectionData.longitude *1000)/1000
+                              && Math.floor(obj.latitude*1000)/1000==Math.floor(sectionData.latitude *1000)/1000
+                          }).map((obj, index)=>{
+                            return (
+                              <View key={[JSON.stringify(obj),index,2].join('_')} style={{flexDirection: 'row'}}>
+                                <Text style={{fontSize: 10, color:'grey', marginRight: 10}}>{obj.hh}:{obj.mm} {Util.getNoon(Number(obj.hh))}</Text>
+                                <Text style={{fontSize: 12, fontWeight: 'bold', textAlign: 'right'}}>{Util.comma(obj.amount)} {Util.amountUnit}</Text>
+                              </View>
+                            )
+                          })
+                        }
+                        </View>
+                      </MapView.Callout>
+                    </MapView.Marker>
                   )
                 })
               }
