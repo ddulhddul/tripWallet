@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { 
-  Text, View, Dimensions, StyleSheet, TouchableOpacity
+  Text, View, Dimensions, StyleSheet, TouchableOpacity, TouchableWithoutFeedback
 } from 'react-native'
 import { Icon, MapView } from 'expo'
 import DBUtil from '../components/database/DBUtil';
@@ -33,7 +33,7 @@ class MapScreen extends DBUtil {
   }
 
   search(){
-    this.listTnExpense({trip_id: this.props.trip_id},
+    this.props.trip_id && this.listTnExpense({trip_id: this.props.trip_id},
       (tx, res)=>{
         const list = res.rows._array || []
         const objByList = list.reduce((entry, obj)=>{
@@ -88,16 +88,6 @@ class MapScreen extends DBUtil {
           isMapView={true}
           />
 
-        <TouchableOpacity onPress={()=>this.setState({showMap: !this.state.showMap})}>
-          <View style={{borderBottomColor: 'grey', borderBottomWidth: 0.5, borderStyle: 'dashed', padding: 5}}>
-            {
-              this.state.showMap
-              ?<Text style={{textAlign: 'center'}}>지도 접기</Text>
-              :<Text style={{textAlign: 'center'}}>지도 펼치기</Text>
-            }
-          </View>
-        </TouchableOpacity>
-
         <View style={styles.mapContainer}>
           {
             !this.state.showMap? null:
@@ -124,6 +114,23 @@ class MapScreen extends DBUtil {
               }
             </MapView>
           }
+
+          <TouchableWithoutFeedback 
+            onPressIn={(event)=>{this.pressInY = event.nativeEvent.pageY}}
+            onPressOut={(event)=>{
+              const pageY = event.nativeEvent.pageY
+              if(pageY > this.pressInY) this.setState({showMap: true})
+              else if(pageY < this.pressInY) this.setState({showMap: false})
+            }}>
+            <View>
+              <View style={{borderBottomColor: 'grey', borderTopWidth: 0.5, 
+                borderBottomWidth: 0.5, borderStyle: 'dashed', height: 5}}>
+              </View>
+              <Text style={{fontSize: 8, textAlign: 'center'}}>{
+                this.state.showMap? '올려서 지도 숨기기': '내려서 지도 펼치기'
+              }</Text>
+            </View>
+          </TouchableWithoutFeedback>
 
           <ExpenseListComponent 
             search={()=>this.search()}
