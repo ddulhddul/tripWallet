@@ -14,6 +14,13 @@ class ExpenseComponent extends DBUtil {
     }
   }
 
+  componentDidUpdate(prevProps, prevState){
+    const expandAll = this.props.expandAll
+    if(expandAll != prevProps.expandAll){
+      this.setState({expand: expandAll})
+    }
+  }
+
   _onPressEdit(item={}){
     this.props.navigation.navigate('AddExpenses', {
       item: item

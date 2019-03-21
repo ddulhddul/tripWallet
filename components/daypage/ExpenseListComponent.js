@@ -3,6 +3,7 @@ import {
   View, Text, Dimensions, StyleSheet, FlatList,
   ViewPagerAndroid, ScrollView, TouchableWithoutFeedback, TouchableOpacity
 } from 'react-native'
+import { Icon } from 'expo'
 import ExpenseComponent from './ExpenseComponent'
 import Util from '../Util'
 
@@ -11,6 +12,7 @@ class ExpenseListComponent extends Component {
   constructor(props){
     super(props)
     this.state = {
+      expandAll: false,
       viewPagerKey: Date.now(),
       initialPage: 0,
       pageIndex: 0
@@ -63,37 +65,45 @@ class ExpenseListComponent extends Component {
     const sections = Object.assign([], this.props.sections || [])
     return (
       <View style={styles.container}>
-        <View 
-          // pointerEvents="none"
-          style={styles.dayContainer}>
-          <FlatList horizontal={true}
-            ref={(refs)=>this.flatlist=refs}
-            data={sections}
-            keyExtractor={(item, index)=>JSON.stringify(item)}
-            renderItem={({item, index})=>(
-              <View key={[JSON.stringify(item), index].join('_')} 
-                style={[styles.dayStyle]}>
-                <TouchableWithoutFeedback onPress={()=>{
-                  this.onPageSelected(index)
-                  this.viewPager.setPage(index)
-                  }}>
-                  <View>
-                    <Text style={[pageIndex === index
-                      ? {fontSize: 10, fontWeight: 'bold'}
-                      : {fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'},
-                      {textAlign: 'center'}]}>{
-                      Util.getDateForm(item.yyyymmdd)
-                    }</Text>
-                    <Text style={pageIndex === index
-                      ? {fontSize: 20, fontWeight: 'bold'}
-                      : {fontSize: 13, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>
-                      Day {sections.length-index}
-                    </Text>
-                  </View>
-                </TouchableWithoutFeedback>
-              </View>
-            )}
-          />
+        <View style={{flexDirection: 'row'}}>
+          <View 
+            // pointerEvents="none"
+            style={[styles.dayContainer, {flex:1}]}>
+            <FlatList horizontal={true}
+              ref={(refs)=>this.flatlist=refs}
+              data={sections}
+              keyExtractor={(item, index)=>JSON.stringify(item)}
+              renderItem={({item, index})=>(
+                <View key={[JSON.stringify(item), index].join('_')} 
+                  style={[styles.dayStyle]}>
+                  <TouchableWithoutFeedback onPress={()=>{
+                    this.onPageSelected(index)
+                    this.viewPager.setPage(index)
+                    }}>
+                    <View>
+                      <Text style={[pageIndex === index
+                        ? {fontSize: 10, fontWeight: 'bold'}
+                        : {fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'},
+                        {textAlign: 'center'}]}>{
+                        Util.getDateForm(item.yyyymmdd)
+                      }</Text>
+                      <Text style={pageIndex === index
+                        ? {fontSize: 20, fontWeight: 'bold'}
+                        : {fontSize: 13, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>
+                        Day {sections.length-index}
+                      </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
+                </View>
+              )}
+            />
+          </View>
+          <View style={{justifyContent: 'flex-end', marginRight: 20, marginBottom: 30}}>
+            <TouchableOpacity onPress={()=>this.setState({expandAll: !this.state.expandAll})}>
+              <Icon.MaterialIcons name={this.state.expandAll? "expand-less": "expand-more"} size={30} color='rgb(190, 190, 190)' style={{marginBottom: -20}} />
+              <Icon.MaterialIcons name={this.state.expandAll? "expand-less": "expand-more"} size={30} color='rgb(190, 190, 190)' style={{marginTop: -20}} />
+            </TouchableOpacity>
+          </View>
         </View>
         {
           !sections || !sections.length ? undefined :
@@ -114,6 +124,7 @@ class ExpenseListComponent extends Component {
                           // style={styles.smallContent}
                           search={()=>search()}
                           item={obj}
+                          expandAll={this.state.expandAll}
                         ></ExpenseComponent>
                       )
                     })
@@ -138,7 +149,7 @@ const styles = StyleSheet.create({
 
   dayContainer: {
     marginLeft: 30, 
-    marginRight: 30,
+    marginRight: 5,
     marginTop: 20,
     marginBottom: 20,
     borderBottomColor: 'rgb(190, 190, 190)',
