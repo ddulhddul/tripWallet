@@ -84,42 +84,24 @@ export default class DBUtil extends React.Component {
     return nationList
   }
 
-  initNationTable() {
-    db.transaction((txn)=>{
-      txn.executeSql(
-        // `SELECT * FROM sqlite_master WHERE type='table' AND name='TN_TRIP'
-        // AND EXISTS (
-        //   SELECT 1 FROM sqlite_master WHERE name='TN_TRIP' AND sql LIKE '%create_date%'
-        // )`,
-        `SELECT * FROM sqlite_master WHERE type='table' AND name='TN_TRIP'`,
-        [],
-        (tx, res)=>{
-          if (res.rows.length == 0) {
-            txn.executeSql('DROP TABLE IF EXISTS TN_TRIP', [])
-            txn.executeSql(
-              `CREATE TABLE IF NOT EXISTS TN_TRIP (
-                trip_id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                nation_id VARCHAR(8),
-                nation_title VARCHAR(255),
-                nation_utc DOUBLE,
-                nation_uri VARCHAR(255),
-                city_name VARCHAR(255),
-                remark VARCHAR(255),
-                create_date DATE
-              )`,
-              [],
-              (tx, res)=>{
-                console.log('create table log', tx, res)
-              },
-              (...params)=>{
-                console.log('create table error', ...params)
-              }
-            )
-          }
-          this.initTable()
-        }
-      )
-    })
+  initNationTable = async () => {
+    const {res} = await this.queryExecute(`SELECT * FROM sqlite_master WHERE type='table' AND name='TN_TRIP'`,[])
+    if (res.rows.length == 0) {
+      await this.queryExecute('DROP TABLE IF EXISTS TN_TRIP', [])
+      const {tx1, res1} = await this.queryExecute(
+        `CREATE TABLE IF NOT EXISTS TN_TRIP (
+          trip_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+          nation_id VARCHAR(8),
+          nation_title VARCHAR(255),
+          nation_utc DOUBLE,
+          nation_uri VARCHAR(255),
+          city_name VARCHAR(255),
+          remark VARCHAR(255),
+          create_date DATE
+        )`,
+        [])
+      console.log('create table log', tx1, res1)
+    }
   }
 
   insertTnTrip(param={}, callback= ()=>{}){
@@ -193,46 +175,35 @@ export default class DBUtil extends React.Component {
     )
   }
 
-  initTable() {
-    db.transaction((txn)=>{
-      txn.executeSql(
+  initTable = async () => {
+    const {tx, res} = await this.queryExecute(
         // `SELECT * FROM sqlite_master MA WHERE type='table' AND name='TN_EXPENSE'
         // AND EXISTS (
         //   SELECT 1 FROM sqlite_master WHERE name='TN_EXPENSE' AND sql LIKE '%trip_id%'
         // )`,
         `SELECT * FROM sqlite_master MA WHERE type='table' AND name='TN_EXPENSE'`,
-        [],
-        (tx, res)=>{
-          console.log('res.rows', res.rows)
-          if (res.rows.length == 0) {
-            txn.executeSql('DROP TABLE IF EXISTS TN_EXPENSE', [])
-            txn.executeSql(
-              `CREATE TABLE IF NOT EXISTS TN_EXPENSE (
-                expense_id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                trip_id INTEGER NOT NULL,
-                amount INT(10), 
-                remark VARCHAR(255),
-                yyyymmdd VARCHAR(8),
-                hh VARCHAR(2), 
-                mm VARCHAR(2), 
-                latitude DOUBLE,
-                longitude DOUBLE,
-                latitudeDelta DOUBLE,
-                longitudeDelta DOUBLE,
-                images CLOB
-              )`,
-              [],
-              (tx, res)=>{
-                console.log('create table log', tx, res)
-              },
-              (...params)=>{
-                console.log('create table error', ...params)
-              }
-            )
-          }
-        }
-      )
-    })
+        [])
+    console.log('res.rows', res.rows)
+    if (res.rows.length == 0) {
+      await this.queryExecute('DROP TABLE IF EXISTS TN_EXPENSE', [])
+      const {tx1, res1} = await this.queryExecute(
+        `CREATE TABLE IF NOT EXISTS TN_EXPENSE (
+          expense_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+          trip_id INTEGER NOT NULL,
+          amount INT(10), 
+          remark VARCHAR(255),
+          yyyymmdd VARCHAR(8),
+          hh VARCHAR(2), 
+          mm VARCHAR(2), 
+          latitude DOUBLE,
+          longitude DOUBLE,
+          latitudeDelta DOUBLE,
+          longitudeDelta DOUBLE,
+          images CLOB
+        )`,
+        [])
+      console.log('create table log', tx1, res1)
+    }
   }
 
   listTnExpense(param={}, callback= ()=>{}){
@@ -342,26 +313,21 @@ export default class DBUtil extends React.Component {
     )
   }
 
-  queryExecute(sql='', param=[], callback=()=>{}) {
-    InteractionManager.runAfterInteractions(() => {
-      db.transaction(tx => {
-        tx.executeSql(
-          sql,
-          param,
-          callback,
-
-          // `select * from items where done = ?`,
-          // [this.props.done ? 1 : 0],
-          // function(tx, res) {}  
-          // (_, { rows: { _array } }) => this.setState({ items: _array })
-          (...params)=>{
-            console.log('db error', ...params)
-            alert(`관리자에게 문의하세요\n이메일: ddulhddul@gmail.com`)
-            // alert(JSON.stringify({...params}))
-          }
-        )
-      })
-    })
+  queryExecute = async (sql='', param=[], callback=()=>{}) => {
+    return new Promise((resolve, reject) => db.transaction(tx => {
+      tx.executeSql(sql, param, 
+        (tx, res) => {
+          console.log('tx, res',tx, res)
+          callback(tx, res)
+          return resolve({tx, res})
+        },
+        (...params)=>{
+          console.log('db error', ...params)
+          alert(`관리자에게 문의하세요\n이메일: ddulhddul@gmail.com`)
+          reject(...params)
+        }
+      )
+    }))
   }
 
 }

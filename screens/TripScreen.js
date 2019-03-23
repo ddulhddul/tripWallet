@@ -12,9 +12,10 @@ class TripScreen extends DBUtil {
     header: null,
   }
 
-  constructor(props) {
+  constructor(props){
     super(props)
     this.initNationTable()
+    this.initTable()
     this.state = {
       isReady: false,
       nationList: this.getNationList(),
