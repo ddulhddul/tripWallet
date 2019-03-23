@@ -6,6 +6,7 @@ import {
 import { Icon } from 'expo'
 import ExpenseComponent from './ExpenseComponent'
 import Util from '../Util'
+import NoData from '../NoData'
 
 class ExpenseListComponent extends Component {
 
@@ -63,6 +64,7 @@ class ExpenseListComponent extends Component {
     const { search } = this.props
     const { viewPagerKey, pageIndex } = this.state
     const sections = Object.assign([], this.props.sections || [])
+    if(!sections || !sections.length) return <View style={{flex:1}}><NoData /></View>
     return (
       <View style={styles.container}>
         <View style={{flexDirection: 'row', paddingRight: 20}}>

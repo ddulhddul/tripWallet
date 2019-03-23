@@ -11,6 +11,7 @@ import DayPage from '../components/daypage/DayPage'
 import { Icon } from 'expo'
 import DBUtil from '../components/database/DBUtil'
 import Loading from '../components/Loading'
+import NoData from '../components/NoData'
 import Util from '../components/Util'
 import { connect } from 'react-redux'
 import ExpenseHeader from '../components/ExpenseHeader'
@@ -123,18 +124,22 @@ class ExpensesScreen extends DBUtil {
           ref={(ref)=>this.viewPager=ref}
           style={{flex:1}} initialPage={this.state.pageIndex} onPageSelected={(event)=>this.onPageSelected(event)}>
           <View key={0}>
-            <Expenses
-              updateShowTotal={(value)=>this.setState({showTotal: value})}
-              sections={this.state.sections}
-              search={()=>this.search()}
-            />
+            {(!this.state.sections || !this.state.sections.length)? <View style={{flex:1}}><NoData /></View>:
+              <Expenses
+                updateShowTotal={(value)=>this.setState({showTotal: value})}
+                sections={this.state.sections}
+                search={()=>this.search()}
+              />
+            }
           </View>
-          <View key={1}>
-            <DayPage
-              sections={this.state.sections}
-              search={()=>this.search()}
-            />
-          </View>
+          {(!this.state.sections || !this.state.sections.length)? null:
+            <View key={1}>
+              <DayPage
+                sections={this.state.sections}
+                search={()=>this.search()}
+              />
+            </View>
+          }
         </ViewPagerAndroid>
         <TouchableOpacity style={styles.plusIcon} onPress={(event)=>this._pressAdd(event)}>
           <Icon.AntDesign 

@@ -72,7 +72,7 @@ class ExpenseHeader extends DBUtil {
                         </View>
                     </View>
                     {
-                        isMapView? null: <View style={{flexDirection: 'row'}}>
+                        (isMapView || !(sections||[]).length)? null: <View style={{flexDirection: 'row'}}>
                             <TouchableOpacity onPress={()=>showTypeChange(0)} style={{marginRight: 10}}>
                                 <Icon.AntDesign name="profile" size={30} color={pageIndex===0?'blue':null} />
                             </TouchableOpacity>
