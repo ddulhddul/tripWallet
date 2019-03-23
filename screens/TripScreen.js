@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, ToastAndroid } from 'react-native'
 import { Icon, AppLoading } from 'expo'
 import DBUtil from '../components/database/DBUtil'
+import Loading from '../components/Loading'
 import { connect } from 'react-redux'
 import { setTripId } from '../actions/action'
 import Util from '../components/Util'
@@ -21,6 +22,10 @@ class TripScreen extends DBUtil {
       nationList: this.getNationList(),
       tripList: []
     }
+  }
+  
+  componentWillUnmount(){
+    this.focusListener && this.focusListener.remove()
   }
 
   componentDidMount(){
@@ -79,10 +84,10 @@ class TripScreen extends DBUtil {
   }
 
   render() {
-    if(!this.state.isReady) return <AppLoading />
     const data = this.state.tripList
     return (
       <View style={{flex:1}}>
+        {!this.state.isReady? <Loading />: null}
         <View style={styles.header}>
           <Text style={styles.headerText}>여행 기록</Text>
         </View>

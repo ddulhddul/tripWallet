@@ -10,6 +10,7 @@ import Expenses from '../components/expenses/Expenses'
 import DayPage from '../components/daypage/DayPage'
 import { Icon } from 'expo'
 import DBUtil from '../components/database/DBUtil'
+import Loading from '../components/Loading'
 import Util from '../components/Util'
 import { connect } from 'react-redux'
 import ExpenseHeader from '../components/ExpenseHeader'
@@ -23,11 +24,16 @@ class ExpensesScreen extends DBUtil {
     super(props)
     this.initTable()
     this.state = {
+      isReady: false,
       pageIndex: 0,
       sections: [],
       trip_id: '',
       showTotal: true
     }
+  }
+
+  componentWillUnmount(){
+    this.focusListener && this.focusListener.remove()
   }
 
   componentDidMount() {
@@ -41,7 +47,7 @@ class ExpensesScreen extends DBUtil {
   }
 
   search(){
-    
+    this.setState({isReady: false})
     this.listTnExpense({trip_id: this.props.trip_id},
       (tx, res)=>{
         const list = res.rows._array || []
@@ -62,6 +68,7 @@ class ExpensesScreen extends DBUtil {
         }).reverse()
 
         this.setState({
+          isReady: true,
           sections: sections,
           totalExpense: sections.reduce((entry, obj)=>{
             return entry + obj.sumAmount
@@ -109,6 +116,8 @@ class ExpensesScreen extends DBUtil {
             </View>
           </View>
         }
+
+        {(!this.state.isReady)? <Loading />:null}
 
         <ViewPagerAndroid 
           ref={(ref)=>this.viewPager=ref}

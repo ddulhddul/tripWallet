@@ -15,6 +15,10 @@ class ExpenseHeader extends DBUtil {
         }
     }
 
+    componentWillUnmount(){
+        this.focusListener && this.focusListener.remove()
+    }
+
     componentDidMount() {
         const { navigation } = this.props;
         this.focusListener = navigation.addListener("didFocus", () => {

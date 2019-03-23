@@ -5,6 +5,7 @@ import {
 } from 'react-native'
 import { Icon, MapView } from 'expo'
 import DBUtil from '../components/database/DBUtil';
+import Loading from '../components/Loading';
 import Util from '../components/Util';
 import ExpenseHeader from '../components/ExpenseHeader'
 import ExpenseListComponent from '../components/daypage/ExpenseListComponent';
@@ -18,12 +19,17 @@ class MapScreen extends DBUtil {
   constructor(props) {
     super(props)
     this.state = {
+      isReady: false,
       selectedMarkerIndex: undefined,
       showMap: true,
       thisSection: {},
       sections: [],
       trip_id: ''
     }
+  }
+
+  componentWillUnmount(){
+    this.focusListener && this.focusListener.remove()
   }
 
   componentDidMount(){
@@ -35,6 +41,7 @@ class MapScreen extends DBUtil {
   }
 
   search(){
+    this.setState({isReady: false})
     this.props.trip_id && this.listTnExpense({trip_id: this.props.trip_id},
       (tx, res)=>{
         const list = res.rows._array || []
@@ -71,6 +78,7 @@ class MapScreen extends DBUtil {
         })
 
         this.setState({
+          isReady: true,
           sections: sections.reverse()
         })
         // list.length && this.onPageSelected(this.state.pageIndex)
@@ -89,6 +97,8 @@ class MapScreen extends DBUtil {
           sections={sections}
           isMapView={true}
           />
+
+        {(!this.state.isReady)? <Loading />:null}
 
         <View style={styles.mapContainer}>
           {
@@ -161,15 +171,14 @@ class MapScreen extends DBUtil {
             sections={sections}
             />
             
+          <TouchableOpacity style={styles.plusIcon} onPress={(event)=>this._pressAdd(event)}>
+            <Icon.AntDesign 
+              name="pluscircle" 
+              size={45}
+              color="rgb(74, 190, 202)"
+              />
+          </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.plusIcon} onPress={(event)=>this._pressAdd(event)}>
-          <Icon.AntDesign 
-            name="pluscircle" 
-            size={45}
-            color="rgb(74, 190, 202)"
-            />
-        </TouchableOpacity>
       </View>
     )
   }
