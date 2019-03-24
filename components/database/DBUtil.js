@@ -97,6 +97,7 @@ export default class DBUtil extends React.Component {
           nation_uri VARCHAR(255),
           city_name VARCHAR(255),
           remark VARCHAR(255),
+          amount_unit VARCHAR(30),
           create_date DATE
         )`,
         [])
@@ -113,9 +114,10 @@ export default class DBUtil extends React.Component {
         nation_uri,
         city_name,
         remark,
+        amount_unit,
         create_date
       ) values (
-        ?, ?, ?, ?, ?, ?, datetime('now','localtime')
+        ?, ?, ?, ?, ?, ?, ?, datetime('now','localtime')
       )`,
       [
         param.nation.id,
@@ -124,6 +126,7 @@ export default class DBUtil extends React.Component {
         param.nation.uri,
         param.city_name,
         param.remark,
+        param.amount_unit,
       ],
       callback
     )
@@ -138,6 +141,7 @@ export default class DBUtil extends React.Component {
           nation_utc = ?,
           nation_uri = ?,
           city_name = ?,
+          amount_unit = ?,
           remark = ?
         where trip_id = ?
         `,
@@ -147,6 +151,7 @@ export default class DBUtil extends React.Component {
         param.nation.utc,
         param.nation.uri,
         param.city_name,
+        param.amount_unit,
         param.remark,
         param.trip_id,
       ],

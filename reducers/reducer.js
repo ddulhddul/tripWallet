@@ -6,7 +6,8 @@ function tripReducer(state = {}, action) {
         case SET_TRIP_ID:
             return {
                 ...state, 
-                trip_id: action.trip_id
+                trip_id: action.trip_id,
+                amount_unit: action.amount_unit,
             }
         default:
             return state

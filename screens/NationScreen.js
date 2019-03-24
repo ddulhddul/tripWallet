@@ -16,7 +16,8 @@ export default class NationScreen extends DBUtil {
       this.state = {
         trip_id: '',
         nation: {},
-        city_name: ''
+        city_name: '',
+        amount_unit: ''
       }
     }else{
       const tripObj = this.props.navigation.getParam('tripObj') || {}
@@ -25,7 +26,8 @@ export default class NationScreen extends DBUtil {
         nation: (this.getNationList() || []).find((obj)=>{
           return tripObj.nation_id == obj.id
         }) || {},
-        city_name: tripObj.city_name||''
+        city_name: tripObj.city_name||'',
+        amount_unit: tripObj.amount_unit
       }
     }
   }
@@ -58,63 +60,88 @@ export default class NationScreen extends DBUtil {
   }
 
   render() {
-    const {nation} = this.state
+    const {nation, focus} = this.state
     return (
       <View style={{flex:1, justifyContent: 'center', marginLeft: 30, marginRight: 30}}>
         <ScrollView>
-          {
-            this.state.focus === 'remark'? null: (
-
-              <View>
-                <View style={styles.header}>
-                  <Text style={styles.headerText}>국가를 선택해주세요</Text>
-                </View>
-                <View style={[styles.body, {flexDirection: 'row'}]}>
-                  <TouchableOpacity onPress={()=>this._selectNation()} style={{flex:1}}>
-                    {
-                      !nation.title? (
-                        <View style={{flex:1}}>
-                          <View style={{flex:1, aspectRatio: 1.4, borderRadius: 20, backgroundColor: 'grey'}}></View>
-                          <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={{fontSize: 15, fontWeight: 'bold', marginTop: 5, color: "grey"}}>눌러주세요</Text>
-                          </View>
-                        </View>
-                      ) :(
-                        <View style={{flex:1}}>
-                          <View style={{flex:1, aspectRatio: 1.4, borderRadius: 20, elevation: 5}}>
-                            <Image source={nation.requiredUri} style={{flex:1, aspectRatio: 1.4, borderRadius: 20}} />
-                          </View>
-                          <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
-                            <Text style={{fontSize: 15, fontWeight: 'bold', marginTop: 5}}>UTC {nation.utc>0?'+':''}{nation.utc?nation.utc:''}</Text>
-                            <Text style={{fontSize: 25, fontWeight: 'bold', marginTop: 5}}>{nation.title}</Text>
-                          </View>
-                        </View>
-                      )
-                    }
-                  </TouchableOpacity>
-                </View>
+          
+          {(focus)? null:
+            <View>
+              <View style={styles.header}>
+                <Text style={styles.headerText}>국가를 선택해주세요</Text>
               </View>
-            )
+              <View style={[styles.body, {flexDirection: 'row'}]}>
+                <TouchableOpacity onPress={()=>this._selectNation()} style={{flex:1}}>
+                  {
+                    !nation.title? (
+                      <View style={{flex:1}}>
+                        <View style={{flex:1, aspectRatio: 1.4, borderRadius: 20, backgroundColor: 'grey'}}></View>
+                        <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
+                          <Text style={{fontSize: 15, fontWeight: 'bold', marginTop: 5, color: "grey"}}>눌러주세요</Text>
+                        </View>
+                      </View>
+                    ) :(
+                      <View style={{flex:1}}>
+                        <View style={{flex:1, aspectRatio: 1.4, borderRadius: 20, elevation: 5}}>
+                          <Image source={nation.requiredUri} style={{flex:1, aspectRatio: 1.4, borderRadius: 20}} />
+                        </View>
+                        <View style={{flex: 0.4, justifyContent: 'center', alignItems: 'center'}}>
+                          <Text style={{fontSize: 15, fontWeight: 'bold', marginTop: 5}}>UTC {nation.utc>0?'+':''}{nation.utc?nation.utc:''}</Text>
+                          <Text style={{fontSize: 25, fontWeight: 'bold', marginTop: 5}}>{nation.title}</Text>
+                        </View>
+                      </View>
+                    )
+                  }
+                </TouchableOpacity>
+              </View>
+            </View>
           }
-          <TouchableOpacity 
-            style={styles.header}
-            onPress={()=>{this.remark && this.remark.focus()}} >
-            <Text style={[
-                styles.headerText,
-                this.state.focus=='remark'? styles.inputTitleFocusStyle: null
-              ]}>도시를 입력해주세요</Text>
-            <TextInput 
-              ref={(input)=>{this.remark=input}}
-              onFocus={()=>this.setState({focus: 'remark'})}
-              onBlur={()=>this.setState({focus: ''})}
-              value={this.state.city_name}
-              onChangeText={(value)=>this.setState({city_name: value})}
-              maxLength={80}
-              style={[
-                styles.inputStyle,
-                this.state.focus=='remark'? styles.inputFocusStyle: null
-              ]} />
-          </TouchableOpacity>
+
+          {(focus&&focus!=='amount_unit')? null:
+            <TouchableOpacity 
+              style={styles.header}
+              onPress={()=>{this.amount_unit && this.amount_unit.focus()}} >
+              <Text style={[
+                  styles.headerText,
+                  this.state.focus=='amount_unit'? styles.inputTitleFocusStyle: null
+                ]}>금액 단위를 입력해주세요</Text>
+              <TextInput 
+                ref={(input)=>{this.amount_unit=input}}
+                onFocus={()=>this.setState({focus: 'amount_unit'})}
+                onBlur={()=>this.setState({focus: ''})}
+                value={this.state.amount_unit}
+                onChangeText={(value)=>this.setState({amount_unit: value})}
+                maxLength={10}
+                style={[
+                  styles.inputStyle,
+                  this.state.focus=='amount_unit'? styles.inputFocusStyle: null
+                ]} />
+            </TouchableOpacity>
+          }
+
+          {(focus&&focus!=='remark')? null:
+            <TouchableOpacity 
+              style={styles.header}
+              onPress={()=>{this.remark && this.remark.focus()}} >
+              <Text style={[
+                  styles.headerText,
+                  this.state.focus=='remark'? styles.inputTitleFocusStyle: null
+                ]}>도시를 입력해주세요</Text>
+              <TextInput 
+                ref={(input)=>{this.remark=input}}
+                onFocus={()=>this.setState({focus: 'remark'})}
+                onBlur={()=>this.setState({focus: ''})}
+                value={this.state.city_name}
+                onChangeText={(value)=>this.setState({city_name: value})}
+                maxLength={80}
+                style={[
+                  styles.inputStyle,
+                  this.state.focus=='remark'? styles.inputFocusStyle: null
+                ]} />
+            </TouchableOpacity>
+          }
+
+          <View style={{height: 30}}></View>
         </ScrollView>
 
         {

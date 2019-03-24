@@ -85,10 +85,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 10, 
     paddingRight: 10,
-    borderRadius: 20,
+    // borderRadius: 20,
     // borderColor: "rgb(74, 190, 202)",
     borderColor: "rgb(158, 158, 158)",
-    borderWidth: 3
+    borderBottomWidth: 3
   },
 
   scrollView: {

@@ -4,7 +4,7 @@ import { Icon, AppLoading } from 'expo'
 import DBUtil from '../components/database/DBUtil'
 import Loading from '../components/Loading'
 import { connect } from 'react-redux'
-import { setTripId } from '../actions/action'
+import { setTripInfo } from '../actions/action'
 import Util from '../components/Util'
 import NoData from '../components/NoData'
 
@@ -59,7 +59,10 @@ class TripScreen extends DBUtil {
 
   _selectTrip(param){
     const { dispatch } = this.props
-    dispatch(setTripId(param.trip_id))
+    dispatch(setTripInfo({
+      trip_id: param.trip_id,
+      amount_unit: param.amount_unit,
+    }))
     this.props.navigation.navigate('mainTabStack')
   }
 
