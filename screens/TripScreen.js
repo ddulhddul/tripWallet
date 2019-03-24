@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, ToastAndroid } from 'react-native'
+import { Picker, View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, ToastAndroid } from 'react-native'
 import { Icon, AppLoading } from 'expo'
 import DBUtil from '../components/database/DBUtil'
 import Loading from '../components/Loading'
@@ -91,6 +91,15 @@ class TripScreen extends DBUtil {
         {!this.state.isReady? <Loading />: null}
           <View style={styles.header}>
             <Text style={styles.headerText}>여행 기록</Text>
+            <TouchableOpacity 
+              style={{position:'absolute', right: 20, top: 20}}
+              onPress={()=>this.props.navigation.navigate('SettingsStack')}>
+              <Icon.Entypo 
+                name="menu" 
+                size={30}
+                color="black"
+              />
+            </TouchableOpacity>
           </View>
           {(!data||!data.length)?<View style={{flex:1}}><NoData /></View>:
           <View style={styles.body}>

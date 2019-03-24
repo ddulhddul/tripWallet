@@ -84,9 +84,9 @@ export default class DBUtil extends React.Component {
     return nationList
   }
 
-  initNationTable = async () => {
+  initNationTable = async (param) => {
     const {res} = await this.queryExecute(`SELECT * FROM sqlite_master WHERE type='table' AND name='TN_TRIP'`,[])
-    if (res.rows.length == 0) {
+    if (param || res.rows.length == 0) {
       await this.queryExecute('DROP TABLE IF EXISTS TN_TRIP', [])
       const {tx1, res1} = await this.queryExecute(
         `CREATE TABLE IF NOT EXISTS TN_TRIP (
@@ -175,7 +175,7 @@ export default class DBUtil extends React.Component {
     )
   }
 
-  initTable = async () => {
+  initTable = async (param) => {
     const {tx, res} = await this.queryExecute(
         // `SELECT * FROM sqlite_master MA WHERE type='table' AND name='TN_EXPENSE'
         // AND EXISTS (
@@ -183,7 +183,7 @@ export default class DBUtil extends React.Component {
         // )`,
         `SELECT * FROM sqlite_master MA WHERE type='table' AND name='TN_EXPENSE'`,
         [])
-    if (res.rows.length == 0) {
+    if (param || res.rows.length == 0) {
       await this.queryExecute('DROP TABLE IF EXISTS TN_EXPENSE', [])
       const {tx1, res1} = await this.queryExecute(
         `CREATE TABLE IF NOT EXISTS TN_EXPENSE (
