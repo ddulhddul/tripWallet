@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { connect } from 'react-redux'
 import Util from '../Util'
 
-export default class ExpenseSummary extends Component {
+class ExpenseSummary extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -26,7 +27,7 @@ export default class ExpenseSummary extends Component {
           <View style={[styles.centerVerticalLine, {flex: 1}]}></View>
         </View>
         <View style={styles.totalExpenseContainer}>
-          <Text style={styles.expenseStyle}>{Util.comma(item.amount)} {Util.amountUnit}</Text>
+          <Text style={styles.expenseStyle}>{Util.comma(item.amount)} {this.props.amount_unit}</Text>
         </View>
         <View style={styles.detailContainer}>
           <Text style={[styles.detailFontStyle]}>
@@ -98,3 +99,11 @@ const styles = StyleSheet.create({
     fontSize: 11
   }
 })
+
+function select(state) {
+  return {
+    trip_id: state.tripReducer.trip_id,
+    amount_unit: state.tripReducer.amount_unit
+  }
+}
+export default connect(select)(ExpenseSummary)

@@ -2,12 +2,13 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import Util from '../Util'
 import ExpenseListComponent from './ExpenseListComponent'
+import { connect } from 'react-redux'
 
-export default class DayPage extends Component {
+class DayPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      thisSection: {}
+      thisSection: (props.sections||[])[0] || {}
     }
   }
 
@@ -27,7 +28,7 @@ export default class DayPage extends Component {
         }
         <View style={styles.totalExpensesContainer}>
           <Text style={styles.totalExpenseTitle}>사용 금액 : </Text>
-          <Text style={styles.totalExpense}>{Util.comma(sumAmount) || 0} 원</Text>
+          <Text style={styles.totalExpense}>{Util.comma(sumAmount) || 0} {this.props.amount_unit}</Text>
         </View>
         
         <ExpenseListComponent 
@@ -97,3 +98,11 @@ const styles = StyleSheet.create({
   },
 
 })
+
+function select(state) {
+  return {
+    trip_id: state.tripReducer.trip_id,
+    amount_unit: state.tripReducer.amount_unit
+  }
+}
+export default connect(select)(DayPage)

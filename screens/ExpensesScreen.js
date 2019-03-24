@@ -112,8 +112,7 @@ class ExpensesScreen extends DBUtil {
             }}>
             <View style={styles.totalExpensesContainer}>
               <Text style={styles.totalExpenseTitle}>총 사용 금액 : </Text>
-              {/* <Text style={styles.totalExpense}>{Util.comma(sumAmount) || 0} 원</Text> */}
-              <Text style={styles.totalExpense}>{Util.comma(this.state.totalExpense) || 0} 원</Text>
+              <Text style={styles.totalExpense}>{Util.comma(this.state.totalExpense) || 0} {this.props.amount_unit}</Text>
             </View>
           </View>
         }
@@ -191,7 +190,8 @@ const styles = StyleSheet.create({
 
 function select(state) {
   return {
-    trip_id: state.tripReducer.trip_id
+    trip_id: state.tripReducer.trip_id,
+    amount_unit: state.tripReducer.amount_unit,
   }
 }
 

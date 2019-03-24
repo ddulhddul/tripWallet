@@ -130,7 +130,8 @@ class ExpenseListComponent extends Component {
                         ></ExpenseComponent>
                       )
                     })
-                  }</ScrollView>
+                  }<View style={{height:50}}></View>
+                  </ScrollView>
                 </View>
               )
             })

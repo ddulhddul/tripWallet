@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedba
 import Util from '../Util'
 import { MapView, Icon } from 'expo';
 import { withNavigation } from 'react-navigation';
+import { connect } from 'react-redux'
 import DBUtil from '../database/DBUtil'
 
 class ExpenseComponent extends DBUtil {
@@ -71,7 +72,7 @@ class ExpenseComponent extends DBUtil {
               <View style={[{flexDirection: 'row', alignItems: 'center'}]}>
                 <View style={{flex:1}}>
                   <Text style={{fontSize: 15, fontWeight: 'bold'}}>
-                    {Util.comma(item.amount)} {Util.amountUnit}
+                    {Util.comma(item.amount)} {this.props.amount_unit}
                   </Text>
                 </View>
                 <View style={{width: 70, marginRight: 5}}>
@@ -113,7 +114,7 @@ class ExpenseComponent extends DBUtil {
           <TouchableWithoutFeedback onPress={()=>this.changeExpand()}>
             <View style={{flex:1}}>
               <View style={[{flexDirection: 'row', justifyContent: 'space-between'}]}>
-                <Text style={{fontSize: 15, marginTop: 5, fontWeight: 'bold'}}>{Util.comma(item.amount)} {Util.amountUnit}</Text>
+                <Text style={{fontSize: 15, marginTop: 5, fontWeight: 'bold'}}>{Util.comma(item.amount)} {this.props.amount_unit}</Text>
                 <Text style={{fontSize: 12, marginTop: 5, color:'grey'}}>
                   {item.hh}:{item.mm} {Util.getNoon(Number(item.hh))}
                 </Text>
@@ -221,4 +222,10 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withNavigation(ExpenseComponent)
+function select(state) {
+  return {
+    trip_id: state.tripReducer.trip_id,
+    amount_unit: state.tripReducer.amount_unit
+  }
+}
+export default connect(select)(withNavigation(ExpenseComponent))

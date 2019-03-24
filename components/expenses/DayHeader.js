@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux'
 import Util from '../Util'
 
-export default class DayHeader extends Component {
+class DayHeader extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -19,7 +20,7 @@ export default class DayHeader extends Component {
         </View>
         <View style={styles.totalExpenseContainer}>
           <Text style={styles.expenseTitleStyle}>금액</Text>
-          <Text style={styles.expenseStyle}>{Util.comma(sumAmount)} {Util.amountUnit}</Text>
+          <Text style={styles.expenseStyle}>{Util.comma(sumAmount)} {this.props.amount_unit}</Text>
         </View>
       </View>
     );
@@ -69,3 +70,11 @@ const styles = StyleSheet.create({
     textAlign: 'right'
   },
 })
+
+function select(state) {
+  return {
+    trip_id: state.tripReducer.trip_id,
+    amount_unit: state.tripReducer.amount_unit
+  }
+}
+export default connect(select)(DayHeader)

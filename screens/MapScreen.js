@@ -134,7 +134,7 @@ class MapScreen extends DBUtil {
                             return (
                               <View key={[JSON.stringify(obj),index,2].join('_')} style={{flexDirection: 'row'}}>
                                 <Text style={{fontSize: 10, color:'grey', marginRight: 10}}>{obj.hh}:{obj.mm} {Util.getNoon(Number(obj.hh))}</Text>
-                                <Text style={{fontSize: 12, fontWeight: 'bold', textAlign: 'right'}}>{Util.comma(obj.amount)} {Util.amountUnit}</Text>
+                                <Text style={{fontSize: 12, fontWeight: 'bold', textAlign: 'right'}}>{Util.comma(obj.amount)} {this.props.amount_unit}</Text>
                               </View>
                             )
                           })
@@ -215,7 +215,8 @@ const styles = StyleSheet.create({
 
 function select(state) {
   return {
-    trip_id: state.tripReducer.trip_id
+    trip_id: state.tripReducer.trip_id,
+    amount_unit: state.tripReducer.amount_unit
   }
 }
 
