@@ -47,6 +47,26 @@ export default class SettingsScreen extends DBUtil {
     )    
   }
 
+  addColumn(){
+    Alert.alert(
+      '경고',
+      '테이블 컬럼을 수정 하시겠습니까?',
+      [
+        {text: '취소', style: 'cancel'},
+        {text: '수정', onPress: () => {
+          try {
+            this.queryExecute('ALTER TABLE TN_EXPENSE ADD COLUMN locationText VARCHAR(1000)')
+            this.queryExecute('ALTER TABLE TN_TRIP ADD COLUMN amount_unit VARCHAR(30)')
+            Util.toast('수정 완료')
+          } catch (error) {
+            // Util.toast('오류:'+JSON.stringify(error))
+          }
+        }},
+      ],
+      { cancelable: true }
+    )    
+  }
+
   render() {
     return <View>
       <ScrollView>
@@ -82,6 +102,14 @@ export default class SettingsScreen extends DBUtil {
           <Button
             onPress={()=>this.dropTable()}
             title="초기화"
+            style={{fontSize: 10}}
+          />
+        </View>
+        <View style={styles.sectionView}>
+          <Text style={styles.sectionText}>테이블 컬럼 추가</Text>
+          <Button
+            onPress={()=>this.addColumn()}
+            title="추가"
             style={{fontSize: 10}}
           />
         </View>

@@ -30,7 +30,7 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "versionCode": 37
+      "versionCode": 38
     },
     "description": "멋진 여행 가계부",
     "githubUrl": "https://github.com/ddulhddul/tripWallet"
