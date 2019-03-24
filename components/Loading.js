@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import { Image, View, StyleSheet, Dimensions } from 'react-native'
+import { Image, View, StyleSheet, Dimensions, ActivityIndicator } from 'react-native'
 
 class Loading extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Image source={require('../assets/images/loading.png')} style={styles.imageStyle}></Image>
+                {/* <Image source={require('../assets/images/loading.png')} style={styles.imageStyle}></Image> */}
+                <ActivityIndicator size="large" color="#0000ff" style={styles.imageStyle} />
             </View>
         )
     }
