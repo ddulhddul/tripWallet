@@ -31,6 +31,22 @@ export default class SettingsScreen extends DBUtil {
     )    
   }
 
+  dropTable(){
+    Alert.alert(
+      '경고',
+      '테이블을 Drop 하시겠습니까?',
+      [
+        {text: '취소', style: 'cancel'},
+        {text: 'Drop', onPress: () => {
+          this.initNationTable(true)
+          this.initTable(true)
+          Util.toast('Drop 되었습니다.')
+        }},
+      ],
+      { cancelable: true }
+    )    
+  }
+
   render() {
     return <View>
       <ScrollView>
@@ -57,6 +73,14 @@ export default class SettingsScreen extends DBUtil {
           <Text style={styles.sectionText}>데이터 초기화</Text>
           <Button
             onPress={()=>this.initThisTable()}
+            title="초기화"
+            style={{fontSize: 10}}
+          />
+        </View>
+        <View style={styles.sectionView}>
+          <Text style={styles.sectionText}>Drop Table</Text>
+          <Button
+            onPress={()=>this.dropTable()}
             title="초기화"
             style={{fontSize: 10}}
           />

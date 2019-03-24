@@ -12,8 +12,6 @@ export default class App extends DBUtil {
   
   constructor(props){
     super(props)
-    this.initNationTable()
-    this.initTable()
     state = {
       isLoadingComplete: false,
     }
@@ -54,6 +52,8 @@ export default class App extends DBUtil {
         // to remove this if you are not using it in your app
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
       }),
+      this.initNationTable(),
+      this.initTable()
     ]);
   };
 
