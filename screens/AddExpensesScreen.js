@@ -38,7 +38,7 @@ export default class AddExpensesScreen extends DBUtil {
     const item = props.navigation.getParam('item') || {}
     if(!item.expense_id){
       Object.assign(defaultSetting, {
-        location: {coords: { latitude: 37.78825, longitude: -122.4324}},
+        location: {locationText: '', coords: { latitude: 37.78825, longitude: -122.4324}},
         amount: 0,
         remark: '',
         yyyymmdd: Util.yyyymmdd(currentDate),
@@ -50,7 +50,7 @@ export default class AddExpensesScreen extends DBUtil {
     }else{
       Object.assign(defaultSetting, {
         expense_id: item.copy? '': item.expense_id,
-        location: {coords: { latitude: item.latitude, longitude: item.longitude}},
+        location: {locationText: item.locationText, coords: { latitude: item.latitude, longitude: item.longitude}},
         amount: item.amount || 0,
         remark: item.remark || '',
         yyyymmdd: item.yyyymmdd,
@@ -67,16 +67,27 @@ export default class AddExpensesScreen extends DBUtil {
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
-      this.setState({
+      this.setState({location: {
+        ...this.state.location,
         locationText: 'Permission to access location was denied'
-      })
+      }})
     }
 
     let location = await Location.getCurrentPositionAsync({})
-    this.setMarkerByLocation(location)
+    // const reverseGeocode = (await Location.reverseGeocodeAsync(location.coords))[0]
+    this.setMarkerByLocation({
+      ...location,
+      // locationText: [reverseGeocode.postalCode,
+      //   reverseGeocode.country,
+      //   reverseGeocode.region,
+      //   reverseGeocode.city,
+      //   reverseGeocode.street,
+      //   reverseGeocode.name].join(' '),
+    })
   }
 
   setMarkerByLocation= async (location) =>{
+    console.log('location',location)
     this.setState({ location })
   }
 
@@ -333,7 +344,7 @@ export default class AddExpensesScreen extends DBUtil {
     )
   }
 
-  save(){
+  save = async () => {
     const state = this.state
     const {validate} = this.state
     const valid = Object.keys(validate).reduce((entry, obj)=>{
@@ -349,7 +360,16 @@ export default class AddExpensesScreen extends DBUtil {
     }, true)
     if(!valid) return
 
-    const param = this.state
+    let param = this.state
+    if(!param.location.locationText){
+      const reverseGeocode = (await Location.reverseGeocodeAsync(param.location.coords))[0]
+      param.location.locationText = [reverseGeocode.postalCode,
+          reverseGeocode.country,
+          reverseGeocode.region,
+          reverseGeocode.city,
+          reverseGeocode.street,
+          reverseGeocode.name].join(' ')
+    }
     if(!param.expense_id){
       this.insertTnExpense(param,
         (tx, res)=>{

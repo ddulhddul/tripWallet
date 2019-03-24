@@ -198,6 +198,7 @@ export default class DBUtil extends React.Component {
           longitude DOUBLE,
           latitudeDelta DOUBLE,
           longitudeDelta DOUBLE,
+          locationText VARCHAR(1000),
           images CLOB
         )`,
         [])
@@ -256,6 +257,7 @@ export default class DBUtil extends React.Component {
           longitude = ?,
           latitudeDelta = ?,
           longitudeDelta = ?,
+          locationText = ?,
           images = ?
         WHERE expense_id = ?
         AND trip_id = ?
@@ -270,6 +272,7 @@ export default class DBUtil extends React.Component {
         param.location.coords.longitude,
         param.location.coords.latitudeDelta,
         param.location.coords.longitudeDelta,
+        param.location.locationText,
         param.images.join('|'),
         param.expense_id,
         param.trip_id,
@@ -291,9 +294,10 @@ export default class DBUtil extends React.Component {
         longitude,
         latitudeDelta,
         longitudeDelta,
+        locationText,
         images
       ) values (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
       )`,
       [
         param.trip_id,
@@ -306,6 +310,7 @@ export default class DBUtil extends React.Component {
         param.location.coords.longitude,
         param.location.coords.latitudeDelta,
         param.location.coords.longitudeDelta,
+        param.location.locationText,
         param.images.join('|')
       ],
       callback

@@ -88,15 +88,18 @@ class ExpenseComponent extends DBUtil {
                 }
               </View>
               {
-                !item.remark? null:
-                <View style={[{marginTop: 10, flexDirection: 'row'}]}>
-                  <View style={[{flex:0.8}]}>
-                    {/* <Text numberOfLines={1} style={{color: 'rgb(192, 57, 43)', fontSize: 12, marginBottom: 3}}>
-                      <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
-                      수원시 영통구 삼성사거리 111-11
-                      {item.latitude} {item.longitude}
-                    </Text> */}
+                (!item.remark && !item.locationText)? null:
+                <View style={[{marginTop: 5, flexDirection: 'row'}]}>
+                  <View style={[{flex:1}]}>
                     <Text numberOfLines={1} style={{color: 'grey', fontSize: 12}}>{item.remark.replace(/\n/g, ' ')}</Text>
+                    {
+                      !item.locationText? null:
+                      <Text numberOfLines={1} style={{color: 'rgb(192, 57, 43)', fontSize: 12}}>
+                        <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
+                        { item.locationText }
+                        {/* {item.latitude} {item.longitude} */}
+                      </Text>
+                    }
                   </View>
                 </View>
               }
@@ -116,11 +119,15 @@ class ExpenseComponent extends DBUtil {
                 </Text>
               </View>
               <Text style={{color: 'grey', marginTop: 5, fontSize: 12}}>{item.remark}</Text>
-              {/* <Text style={{color: 'rgb(192, 57, 43)', marginTop: 10, fontSize: 12, marginBottom: 3}}>
-                <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
-                수원시 영통구 삼성사거리 111-11
-                {item.latitude} {item.longitude}
-              </Text> */}
+              {
+                !item.locationText? null:
+                <Text style={{color: 'rgb(192, 57, 43)', marginTop: 10, fontSize: 12, marginBottom: 3}}>
+                  <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
+                  {/* 수원시 영통구 삼성사거리 111-11 */}
+                  {item.locationText}
+                  {/* {item.latitude} {item.longitude} */}
+                </Text>
+              }
               <View pointerEvents="none" style={{marginTop: 10}}>
               {
                 item.latitude && item.longitude && <MapView
@@ -181,8 +188,8 @@ class ExpenseComponent extends DBUtil {
 const styles = StyleSheet.create({
   smallContent: {
     flex: 0.9,
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 5,
+    marginBottom: 5,
     marginLeft: 30,
     marginRight: 30,
     padding: 15,

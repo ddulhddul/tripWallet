@@ -1,20 +1,13 @@
 import React from 'react';
 import {
-  Image,
-  Platform,
-  ScrollView,
-  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
-  SectionList,
   Keyboard,
   TextInput,
-  View,
-  Dimensions
+  View
 } from 'react-native';
-import Util from '../components/Util'
-import { Icon, Constants, MapView, Location, Permissions } from 'expo'
+import { Icon, MapView, Location, Permissions } from 'expo'
 import { withNavigation } from 'react-navigation'
 
 class UpdateMapScreen extends React.Component {
@@ -27,13 +20,15 @@ class UpdateMapScreen extends React.Component {
     super(props)
     this.state = {
       searchLocationText: '',
-      locationText: '',
-      location: {coords: { 
-        latitude: 37.78825, 
-        longitude: -122.4324,
-        latitudeDelta: 0.005,
-        longitudeDelta: 0.005,
-      }},
+      location: {
+        locationText: '',
+        coords: { 
+          latitude: 37.78825, 
+          longitude: -122.4324,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        }
+      },
     }
   }
 
@@ -42,10 +37,17 @@ class UpdateMapScreen extends React.Component {
     this.setMarkerByLocation({coords: location})
   }
 
-  setMarkerByLocation(location){
+  setMarkerByLocation = async (location) => {
+    const reverseGeocode = (await Location.reverseGeocodeAsync(location.coords))[0]
     this.setState({ 
       location: {
         ...location,
+        locationText: [reverseGeocode.postalCode,
+                      reverseGeocode.country,
+                      reverseGeocode.region,
+                      reverseGeocode.city,
+                      reverseGeocode.street,
+                      reverseGeocode.name].join(' '),
         coords: {
           ...location.coords
         }
@@ -57,7 +59,10 @@ class UpdateMapScreen extends React.Component {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       this.setState({
-        locationText: 'Permission to access location was denied',
+        location: {
+          ...this.state.location,
+          locationText: 'Permission to access location was denied',
+        }
       })
       return
     }
@@ -107,7 +112,7 @@ class UpdateMapScreen extends React.Component {
               현재 위치로
             </Text>
           </TouchableOpacity>
-          {/* <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row'}}>
             <View style={{flex:1}}>
               <TextInput onChangeText={(value)=>{this.setState({searchLocationText: value})}}
                 placeholder="장소 검색" style={styles.inputTitleStyle} />
@@ -115,7 +120,7 @@ class UpdateMapScreen extends React.Component {
             <TouchableOpacity style={styles.editButtonArea} onPress={()=>this._onPressSearch()}>
               <Text style={{color: 'white', fontSize: 10}}>검색</Text>
             </TouchableOpacity>
-          </View> */}
+          </View>
           {
             location && location.coords && <View style={{marginBottom: 10}}>
               <Text style={[
@@ -123,8 +128,8 @@ class UpdateMapScreen extends React.Component {
                 {minHeight: 40}
                 ]}>
                 <Icon.MaterialIcons size={12} name='location-on' color="rgb(231, 76, 60)" />
-                {/* {locationText} */}
-                {location.coords.latitude} {location.coords.longitude}
+                {location.locationText}
+                {/* {location.coords.latitude} {location.coords.longitude} */}
               </Text>
             </View>
           }
