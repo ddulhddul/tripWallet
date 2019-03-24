@@ -5,12 +5,20 @@ import AppNavigator from './navigation/AppNavigator';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import reducer from './reducers/reducer';
+import DBUtil from './components/database/DBUtil'
 let store = createStore(reducer);
 
-export default class App extends React.Component {
-  state = {
-    isLoadingComplete: false,
-  };
+export default class App extends DBUtil {
+  
+  constructor(props){
+    super(props)
+    this.initNationTable()
+    this.initTable()
+    state = {
+      isLoadingComplete: false,
+    }
+  }
+  
 
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {

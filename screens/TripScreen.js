@@ -16,8 +16,6 @@ class TripScreen extends DBUtil {
 
   constructor(props){
     super(props)
-    this.initNationTable()
-    this.initTable()
     this.state = {
       isReady: false,
       nationList: this.getNationList(),
@@ -106,7 +104,7 @@ class TripScreen extends DBUtil {
           </View>
           {(!data||!data.length)?<View style={{flex:1}}><NoData /></View>:
           <View style={styles.body}>
-            <ScrollView>{
+            <ScrollView style={{padding:30}}>{
               data.map((item, itemIndex)=>{
                 return (
                   <View key={itemIndex} style={{flexDirection: 'row'}}>{
@@ -164,7 +162,7 @@ const styles = StyleSheet.create({
 
   body: {
     flex: 1,
-    margin: 30,
+    // margin: 30,
   },
   componentContainer: {
     flex: 0.5,

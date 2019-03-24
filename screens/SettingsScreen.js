@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     paddingBottom: 5,
-    borderBottomWidth: 1,
+    // borderBottomWidth: 1,
     // borderColor: 'grey'
     borderColor: 'rgb(158, 158, 158)'
   }
