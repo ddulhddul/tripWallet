@@ -6,6 +6,7 @@ import Loading from '../components/Loading'
 import { connect } from 'react-redux'
 import { setTripId } from '../actions/action'
 import Util from '../components/Util'
+import NoData from '../components/NoData'
 
 class TripScreen extends DBUtil {
 
@@ -88,42 +89,44 @@ class TripScreen extends DBUtil {
     return (
       <View style={{flex:1}}>
         {!this.state.isReady? <Loading />: null}
-        <View style={styles.header}>
-          <Text style={styles.headerText}>여행 기록</Text>
-        </View>
-        <View style={styles.body}>
-          <ScrollView>{
-            data.map((item, itemIndex)=>{
-              return (
-                <View key={itemIndex} style={{flexDirection: 'row'}}>{
-                  (item || []).map((obj, index)=>{
-                    return (
-                      <TouchableOpacity key={index} 
-                        delayLongPress={1000}
-                        onPress={()=>this._selectTrip(obj)} 
-                        onLongPress={()=>this._deleteTrip(obj)} 
-                        style={styles.componentContainer}>
-                        <View>
-                          <View style={{flex: 1, aspectRatio: 1, backgroundColor: 'grey', borderRadius: 20}}>
-                            <Image source={obj.requiredUri} style={{flex:1, aspectRatio: 1, borderRadius: 20}} />
+          <View style={styles.header}>
+            <Text style={styles.headerText}>여행 기록</Text>
+          </View>
+          {(!data||!data.length)?<View style={{flex:1}}><NoData /></View>:
+          <View style={styles.body}>
+            <ScrollView>{
+              data.map((item, itemIndex)=>{
+                return (
+                  <View key={itemIndex} style={{flexDirection: 'row'}}>{
+                    (item || []).map((obj, index)=>{
+                      return (
+                        <TouchableOpacity key={index} 
+                          delayLongPress={1000}
+                          onPress={()=>this._selectTrip(obj)} 
+                          onLongPress={()=>this._deleteTrip(obj)} 
+                          style={styles.componentContainer}>
+                          <View>
+                            <View style={{flex: 1, aspectRatio: 1, backgroundColor: 'grey', borderRadius: 20}}>
+                              <Image source={obj.requiredUri} style={{flex:1, aspectRatio: 1, borderRadius: 20}} />
+                            </View>
+                            {
+                              (!obj.min_yyyymmdd || !obj.max_yyyymmdd) ? null :
+                              <Text style={{fontSize: 11, textAlign: 'center'}}>
+                                {Util.getDateForm(obj.min_yyyymmdd)} ~ {Util.getDateForm(obj.max_yyyymmdd)}
+                              </Text>
+                            }
+                            <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{obj.nation_title}</Text>
+                            <Text style={{fontSize: 12, textAlign: 'center'}}>{obj.city_name}</Text>
                           </View>
-                          {
-                            (!obj.min_yyyymmdd || !obj.max_yyyymmdd) ? null :
-                            <Text style={{fontSize: 11, textAlign: 'center'}}>
-                              {Util.getDateForm(obj.min_yyyymmdd)} ~ {Util.getDateForm(obj.max_yyyymmdd)}
-                            </Text>
-                          }
-                          <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{obj.nation_title}</Text>
-                          <Text style={{fontSize: 12, textAlign: 'center'}}>{obj.city_name}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    )
-                  })
-                }</View>
-              )
-            })
-          }</ScrollView>
-        </View>
+                        </TouchableOpacity>
+                      )
+                    })
+                  }</View>
+                )
+              })
+            }</ScrollView>
+          </View>
+        }
         <TouchableOpacity style={styles.plusIcon} onPress={(event)=>this._pressAdd(event)}>
           <Icon.AntDesign 
             name="pluscircle" 

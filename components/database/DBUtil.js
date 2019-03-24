@@ -183,7 +183,6 @@ export default class DBUtil extends React.Component {
         // )`,
         `SELECT * FROM sqlite_master MA WHERE type='table' AND name='TN_EXPENSE'`,
         [])
-    console.log('res.rows', res.rows)
     if (res.rows.length == 0) {
       await this.queryExecute('DROP TABLE IF EXISTS TN_EXPENSE', [])
       const {tx1, res1} = await this.queryExecute(
@@ -317,7 +316,6 @@ export default class DBUtil extends React.Component {
     return new Promise((resolve, reject) => db.transaction(tx => {
       tx.executeSql(sql, param, 
         (tx, res) => {
-          console.log('tx, res',tx, res)
           callback(tx, res)
           return resolve({tx, res})
         },
