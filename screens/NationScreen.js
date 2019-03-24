@@ -62,8 +62,8 @@ export default class NationScreen extends DBUtil {
   render() {
     const {nation, focus} = this.state
     return (
-      <View style={{flex:1, justifyContent: 'center', marginLeft: 30, marginRight: 30}}>
-        <ScrollView>
+      <View style={{flex:1, justifyContent: 'center'}}>
+        <ScrollView style={{paddingLeft: 30, paddingRight: 30}}>
           
           {(focus)? null:
             <View>
