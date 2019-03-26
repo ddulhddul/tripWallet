@@ -102,7 +102,7 @@ class MapScreen extends DBUtil {
 
         <View style={styles.mapContainer}>
           {
-            !this.state.showMap? null:
+            !sections.length || !this.state.showMap? null:
             <MapView 
               // onMapReady = { () => console.log('map ready...') }
               style={{ alignSelf: 'stretch', flex:1, maxHeight: Dimensions.get('window').height * 0.5 }}
@@ -148,6 +148,7 @@ class MapScreen extends DBUtil {
             </MapView>
           }
 
+          {!sections.length? null:
           <TouchableWithoutFeedback 
             onPressIn={(event)=>{this.pressInY = event.nativeEvent.pageY}}
             onPressOut={(event)=>{
@@ -164,6 +165,7 @@ class MapScreen extends DBUtil {
               }</Text>
             </View>
           </TouchableWithoutFeedback>
+          }
 
           <ExpenseListComponent 
             search={()=>this.search()}
