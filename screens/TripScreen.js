@@ -103,7 +103,8 @@ class TripScreen extends DBUtil {
               />
             </TouchableOpacity>
           </View>
-          {(!data||!data.length)?<View style={{flex:1}}><NoData /></View>:
+        {(!data.length || !data[0] || !data[0].length)?
+          <View style={{flex:1}}><NoData /></View> :
           <View style={styles.body}>
             <ScrollView style={{padding:30}}>{
               data.map((item, itemIndex)=>{

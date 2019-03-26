@@ -97,7 +97,7 @@ export default class SettingsScreen extends DBUtil {
             style={{fontSize: 10}}
           />
         </View>
-        <View style={styles.sectionView}>
+        {/* <View style={styles.sectionView}>
           <Text style={styles.sectionText}>Drop Table</Text>
           <Button
             onPress={()=>this.dropTable()}
@@ -112,7 +112,7 @@ export default class SettingsScreen extends DBUtil {
             title="추가"
             style={{fontSize: 10}}
           />
-        </View>
+        </View> */}
 
       </ScrollView>
     </View>
