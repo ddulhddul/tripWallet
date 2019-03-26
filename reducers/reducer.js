@@ -8,6 +8,7 @@ function tripReducer(state = {}, action) {
                 ...state, 
                 trip_id: action.trip_id,
                 amount_unit: action.amount_unit,
+                utc: action.utc,
             }
         default:
             return state

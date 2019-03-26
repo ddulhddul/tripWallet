@@ -7,16 +7,10 @@ export default {
     return String(x || '').replace(/\B(?=(\d{3})+(?!\d))/g, ",")
   },
 
-  getCurrentDate(){
-    return new Date()
-  },
-
-  getDate(param){
-    let date = new Date()
-    if(typeof param === 'number'){
-      date.setDate(date.getDate() + param)
-    }
-    return date
+  getCurrentDate(utc){
+    const now = new Date()
+    if(!utc) return now
+    else return new Date( now.getTime() + (now.getTimezoneOffset() * 60000) + (utc*60*60000) )
   },
 
   getTimeForm(date){

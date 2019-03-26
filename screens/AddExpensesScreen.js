@@ -13,11 +13,12 @@ import {
   View,
   Dimensions
 } from 'react-native';
+import { connect } from 'react-redux'
 import Util from '../components/Util'
 import { Icon, Constants, MapView, Location, Permissions, ImagePicker } from 'expo'
 import DBUtil from '../components/database/DBUtil';
 
-export default class AddExpensesScreen extends DBUtil {
+class AddExpensesScreen extends DBUtil {
   
   static navigationOptions = {
     header: null,
@@ -25,7 +26,7 @@ export default class AddExpensesScreen extends DBUtil {
   
   constructor(props) {
     super(props)
-    const currentDate = Util.getCurrentDate()
+    const currentDate = Util.getCurrentDate(this.props.utc)
     
     let defaultSetting = {
       locationText: '',
@@ -438,3 +439,12 @@ const styles = StyleSheet.create({
   },
   
 })
+
+function select(state) {
+  return {
+    trip_id: state.tripReducer.trip_id,
+    amount_unit: state.tripReducer.amount_unit,
+    utc: state.tripReducer.utc,
+  }
+}
+export default connect(select)(AddExpensesScreen)

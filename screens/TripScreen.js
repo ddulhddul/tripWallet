@@ -60,6 +60,7 @@ class TripScreen extends DBUtil {
     dispatch(setTripInfo({
       trip_id: param.trip_id,
       amount_unit: param.amount_unit,
+      utc: ((this.state.nationList||[]).find((obj)=>obj.id===param.nation_id) || {}).utc
     }))
     this.props.navigation.navigate('mainTabStack')
   }
