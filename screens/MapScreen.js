@@ -163,7 +163,7 @@ class MapScreen extends DBUtil {
                 else if(showMap) this.setState({showMap: false})
               }
             }}>
-            <View style={[showMap=='full'?{marginBottom: 30}:null]}>
+            <View>
               <View style={{borderBottomColor: 'grey', borderTopWidth: 0.5, 
                 borderBottomWidth: 0.5, borderStyle: 'dashed', height: 5}}>
               </View>

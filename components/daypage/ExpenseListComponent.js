@@ -66,7 +66,7 @@ class ExpenseListComponent extends Component {
     const sections = Object.assign([], this.props.sections || [])
     if(!sections || !sections.length) return <View style={{flex:1}}><NoData /></View>
     return (
-      <View style={[styles.container, showMap=='full'?{display:'none'}:null]}>
+      <View style={[styles.container, showMap=='full'?{flex:0.1, minHeight: 50}:null]}>
         <View style={{flexDirection: 'row', paddingRight: 20}}>
           <View 
             // pointerEvents="none"
