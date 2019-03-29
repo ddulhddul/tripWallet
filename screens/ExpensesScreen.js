@@ -106,7 +106,7 @@ class ExpensesScreen extends DBUtil {
           />
 
         {
-          (!this.state.totalExpense || !this.state.showTotal)? null:
+          // (!this.state.totalExpense || !this.state.showTotal)? null:
           <View style={{flexDirection: 'row', justifyContent: 'center', height: 50, alignItems: 'center', 
             // borderBottomColor: 'rgb(158, 158, 158)', borderBottomWidth: 1
             }}>
