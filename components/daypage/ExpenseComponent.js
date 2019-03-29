@@ -95,7 +95,7 @@ class ExpenseComponent extends DBUtil {
                     <Text numberOfLines={1} style={{color: 'grey', fontSize: 12}}>{item.remark.replace(/\n/g, ' ')}</Text>
                     {
                       !item.locationText? null:
-                      <Text numberOfLines={1} style={{color: 'rgb(192, 57, 43)', fontSize: 12}}>
+                      <Text numberOfLines={1} style={{color: 'rgb(192, 57, 43)', fontSize: 10}}>
                         <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
                         { item.locationText }
                         {/* {item.latitude} {item.longitude} */}
@@ -122,7 +122,7 @@ class ExpenseComponent extends DBUtil {
               <Text style={{color: 'grey', marginTop: 5, fontSize: 12}}>{item.remark}</Text>
               {
                 !item.locationText? null:
-                <Text style={{color: 'rgb(192, 57, 43)', marginTop: 10, fontSize: 12, marginBottom: 3}}>
+                <Text style={{color: 'rgb(192, 57, 43)', marginTop: 10, fontSize: 10, marginBottom: 3}}>
                   <Icon.Entypo size={12} name='location-pin' color={'rgb(192, 57, 43)'} />
                   {/* 수원시 영통구 삼성사거리 111-11 */}
                   {item.locationText}
