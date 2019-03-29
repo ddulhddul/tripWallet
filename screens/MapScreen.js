@@ -133,9 +133,17 @@ class MapScreen extends DBUtil {
                               && Math.floor(obj.latitude*1000)==Math.floor(sectionData.latitude *1000)
                           }).map((obj, index)=>{
                             return (
-                              <View key={[JSON.stringify(obj),index,2].join('_')} style={{flexDirection: 'row'}}>
-                                <Text style={{fontSize: 10, color:'grey', marginRight: 10}}>{obj.hh}:{obj.mm} {Util.getNoon(Number(obj.hh))}</Text>
-                                <Text style={{fontSize: 12, fontWeight: 'bold', textAlign: 'right'}}>{Util.comma(obj.amount)} {this.props.amount_unit}</Text>
+                              <View key={[JSON.stringify(obj),index,2].join('_')} style={{flex:1, maxWidth: 170}}>
+                                <View style={{flexDirection: 'row', flex:1, justifyContent: 'space-between'}}>
+                                  <Text style={{fontSize: 10, color:'grey', marginRight: 10}}>{obj.hh}:{obj.mm} {Util.getNoon(Number(obj.hh))}</Text>
+                                  <Text style={{fontSize: 12, fontWeight: 'bold', textAlign: 'right'}}>{Util.comma(obj.amount)} {this.props.amount_unit}</Text>
+                                </View>
+                                <View style={{flex:1}}>
+                                  <Text numberOfLines={1} style={[
+                                      {fontSize: 8, fontWeight: 'bold', textAlign: 'left'},
+                                      obj.remark? {marginBottom: 10, marginLeft: 5}: null
+                                    ]}>{obj.remark}</Text>
+                                </View>
                               </View>
                             )
                           })
