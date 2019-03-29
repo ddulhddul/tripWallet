@@ -83,12 +83,18 @@ class ExpenseListComponent extends Component {
                     this.viewPager.setPage(index)
                     }}>
                     <View>
-                      <Text style={[pageIndex === index
-                        ? {fontSize: 10, fontWeight: 'bold'}
-                        : {fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'},
-                        {textAlign: 'center'}]}>{
-                        Util.getDateForm(item.yyyymmdd)
-                      }</Text>
+                      <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+                        <Text style={[pageIndex === index
+                          ? {fontSize: 10, fontWeight: 'bold'}
+                          : {fontSize: 7, color: 'rgb(190, 190, 190)', fontWeight: 'bold'},
+                          {textAlign: 'center'}]}>{
+                          `${Util.getDateForm(item.yyyymmdd)}`
+                        }</Text>
+                        <Text style={[pageIndex === index
+                          ? {fontSize: 7, fontWeight: 'bold'}
+                          : {fontSize: 4, color: 'rgb(190, 190, 190)', fontWeight: 'bold'},
+                          {textAlign: 'center'}]}>{` (${Util.getDay(item.yyyymmdd)})`}</Text>
+                      </View>
                       <Text style={pageIndex === index
                         ? {fontSize: 20, fontWeight: 'bold'}
                         : {fontSize: 13, color: 'rgb(190, 190, 190)', fontWeight: 'bold'}}>

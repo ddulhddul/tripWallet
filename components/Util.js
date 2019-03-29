@@ -1,5 +1,5 @@
 import { ToastAndroid } from 'react-native'
-const dayObj = { 0: '일', 1: '월', 2: '화', 3: '수', 4: '목', 5: '금', 6: '토' }
+const dayObj = [ '일', '월', '화', '수', '목', '금', '토' ]
 export default {
   
   amountUnit: '원',
@@ -63,7 +63,7 @@ export default {
   getDay(date){
     if(!date) return ''
     if(typeof date === 'string'){
-      const dateTarget = new Date(date.substring(0,4),date.substring(4,6),date.substring(6,8))
+      const dateTarget = new Date(date.substring(0,4),date.substring(4,6)-1,date.substring(6,8))
       return dayObj[dateTarget.getDay()]
     }else{
       return dayObj[date.getDay()]
