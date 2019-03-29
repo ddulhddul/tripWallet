@@ -61,12 +61,12 @@ class ExpenseListComponent extends Component {
   }
 
   render() {
-    const { search } = this.props
+    const { search, showMap } = this.props
     const { viewPagerKey, pageIndex } = this.state
     const sections = Object.assign([], this.props.sections || [])
     if(!sections || !sections.length) return <View style={{flex:1}}><NoData /></View>
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, showMap=='full'?{display:'none'}:null]}>
         <View style={{flexDirection: 'row', paddingRight: 20}}>
           <View 
             // pointerEvents="none"

@@ -88,7 +88,7 @@ class MapScreen extends DBUtil {
 
   render() {
 
-    const {sections, thisSection } = this.state
+    const { sections, thisSection, showMap } = this.state
     return (
       <View style={styles.container}>
         
@@ -102,10 +102,11 @@ class MapScreen extends DBUtil {
 
         <View style={styles.mapContainer}>
           {
-            !sections.length || !this.state.showMap? null:
+            !sections.length || !showMap? null:
             <MapView 
               // onMapReady = { () => console.log('map ready...') }
-              style={{ alignSelf: 'stretch', flex:1, maxHeight: Dimensions.get('window').height * 0.5 }}
+              style={[{ alignSelf: 'stretch', flex:1, maxHeight: Dimensions.get('window').height * 0.5 },
+                showMap=='full'? {maxHeight: Dimensions.get('window').height}: null]}
               region={{ 
                 latitude: (thisSection.maxLatitude + thisSection.minLatitude)/2,
                 longitude: (thisSection.maxLongitude + thisSection.minLongitude)/2,
@@ -149,25 +150,36 @@ class MapScreen extends DBUtil {
           }
 
           {!sections.length? null:
-          <TouchableWithoutFeedback 
+          <TouchableWithoutFeedback
             onPressIn={(event)=>{this.pressInY = event.nativeEvent.pageY}}
             onPressOut={(event)=>{
+              if(!event || !event.nativeEvent || !event.nativeEvent) return
               const pageY = event.nativeEvent.pageY
-              if(pageY > this.pressInY) this.setState({showMap: true})
-              else if(pageY < this.pressInY) this.setState({showMap: false})
+              if(pageY > this.pressInY){
+                if(!showMap) this.setState({showMap: true})
+                else if(showMap && showMap!='full') this.setState({showMap: 'full'})
+              }else if(pageY < this.pressInY){
+                if(showMap=='full') this.setState({showMap: true})
+                else if(showMap) this.setState({showMap: false})
+              }
             }}>
-            <View>
+            <View style={[showMap=='full'?{marginBottom: 30}:null]}>
               <View style={{borderBottomColor: 'grey', borderTopWidth: 0.5, 
                 borderBottomWidth: 0.5, borderStyle: 'dashed', height: 5}}>
               </View>
               <Text style={{fontSize: 8, textAlign: 'center'}}>{
-                this.state.showMap? '올려서 지도 숨기기': '내려서 지도 펼치기'
+                showMap=='full'
+                  ? '올려서 지도 반으로 접기'
+                : showMap
+                  ? '올려서 지도 숨기기 / 내려서 지도 펼치기'
+                  : '내려서 지도 펼치기'
               }</Text>
             </View>
           </TouchableWithoutFeedback>
           }
 
           <ExpenseListComponent 
+            showMap={showMap}
             search={()=>this.search()}
             onPageSelected={(thisSection={})=>this.setState({thisSection: thisSection})}
             sections={sections}
