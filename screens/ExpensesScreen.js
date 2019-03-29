@@ -131,14 +131,14 @@ class ExpensesScreen extends DBUtil {
               />
             }
           </View>
-          {(!this.state.sections || !this.state.sections.length)? null:
-            <View key={1}>
+          <View key={1}>
+            {(!this.state.sections || !this.state.sections.length)? null:
               <DayPage
                 sections={this.state.sections}
                 search={()=>this.search()}
               />
-            </View>
-          }
+            }
+          </View>
         </ViewPagerAndroid>
         <TouchableOpacity style={styles.plusIcon} onPress={(event)=>this._pressAdd(event)}>
           <Icon.AntDesign 
