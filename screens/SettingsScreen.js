@@ -81,10 +81,10 @@ export default class SettingsScreen extends DBUtil {
           <Text style={styles.sectionText}>E-mail</Text>
           <Text style={styles.sectionText}>ddulhddul@gmail.com</Text>
         </View>
-        <View style={styles.sectionView}>
+        {/* <View style={styles.sectionView}>
           <Text style={styles.sectionText}>Github</Text>
           <Text style={styles.sectionText}>github.com/ddulhddul</Text>
-        </View>
+        </View> */}
 
         <View style={styles.sectionTitleView}>
           <Text style={styles.sectionTitleText}>데이터</Text>
