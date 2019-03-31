@@ -15,7 +15,17 @@ class DBUtil extends React.Component {
   }
 
   initNationTable = async (param) => {
-    const {res} = await this.queryExecute(`SELECT * FROM sqlite_master WHERE type='table' AND name='TN_TRIP'`,[])
+    const {res} = await this.queryExecute(`
+      SELECT 1 FROM sqlite_master 
+      WHERE type='table' 
+      AND name='TN_TRIP'
+      AND EXISTS (
+        SELECT 1 
+        FROM sqlite_master 
+        WHERE name = 'TN_TRIP' 
+        AND sql LIKE '%amount_unit%'
+      )
+    `,[])
     if (param || res.rows.length == 0) {
       await this.queryExecute('DROP TABLE IF EXISTS TN_TRIP', [])
       const {tx1, res1} = await this.queryExecute(
@@ -111,13 +121,18 @@ class DBUtil extends React.Component {
   }
 
   initTable = async (param) => {
-    const {tx, res} = await this.queryExecute(
-        // `SELECT * FROM sqlite_master MA WHERE type='table' AND name='TN_EXPENSE'
-        // AND EXISTS (
-        //   SELECT 1 FROM sqlite_master WHERE name='TN_EXPENSE' AND sql LIKE '%trip_id%'
-        // )`,
-        `SELECT * FROM sqlite_master MA WHERE type='table' AND name='TN_EXPENSE'`,
-        [])
+    const {tx, res} = await this.queryExecute(`
+        SELECT 1 
+        FROM sqlite_master MA 
+        WHERE type='table' 
+        AND name='TN_EXPENSE'
+        AND EXISTS (
+          SELECT 1 
+          FROM sqlite_master 
+          WHERE name='TN_EXPENSE' 
+          AND sql LIKE '%locationText%'
+        )
+        `,[])
     if (param || res.rows.length == 0) {
       await this.queryExecute('DROP TABLE IF EXISTS TN_EXPENSE', [])
       const {tx1, res1} = await this.queryExecute(

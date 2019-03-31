@@ -126,6 +126,7 @@ class ExpenseListComponent extends Component {
                 <View key={[JSON.stringify(sectionObj), index].join('_')}>
                   <ScrollView>{
                     (sectionObj.data || []).map((obj, sectionIndex)=>{
+                      if(showMap=='full') return undefined
                       return (
                         <ExpenseComponent 
                           key={[obj.expense_id, sectionIndex].join('_')} 
