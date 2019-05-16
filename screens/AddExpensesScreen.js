@@ -174,12 +174,14 @@ class AddExpensesScreen extends DBUtil {
               style={[styles.column, {flex:1}]}>
               <Text style={[styles.inputTitleStyle, this.state.focus=='amount'? styles.inputTitleFocusStyle: null]}>비용</Text>
               <View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
-                <TouchableOpacity onPress={()=>{this.setState({minus: !this.state.minus})}}
+                <TouchableOpacity onPress={()=>{
+                    this.setState({minus: !this.state.minus}
+                  )}}
                   style={{marginLeft: 15, marginRight: 25}} >
                   {
                     this.state.minus
-                    ?<Icon.FontAwesome name={"minus"} size={20} />
-                    :<Icon.FontAwesome name={"plus"} size={20} />
+                    ?<Icon.FontAwesome name={"minus"} size={30} />
+                    :<Icon.FontAwesome name={"plus"} size={30} />
                   }
                 </TouchableOpacity>
                 <TextInput 
