@@ -27,7 +27,7 @@ class DBUtil extends React.Component {
       )
     `,[])
     if (param || res.rows.length == 0) {
-      await this.queryExecute('DROP TABLE IF EXISTS TN_TRIP', [])
+      // await this.queryExecute('DROP TABLE IF EXISTS TN_TRIP', [])
       const {tx1, res1} = await this.queryExecute(
         `CREATE TABLE IF NOT EXISTS TN_TRIP (
           trip_id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -134,7 +134,7 @@ class DBUtil extends React.Component {
         )
         `,[])
     if (param || res.rows.length == 0) {
-      await this.queryExecute('DROP TABLE IF EXISTS TN_EXPENSE', [])
+      // await this.queryExecute('DROP TABLE IF EXISTS TN_EXPENSE', [])
       const {tx1, res1} = await this.queryExecute(
         `CREATE TABLE IF NOT EXISTS TN_EXPENSE (
           expense_id INTEGER PRIMARY KEY AUTOINCREMENT, 
