@@ -41,6 +41,7 @@ class AddExpensesScreen extends DBUtil {
       Object.assign(defaultSetting, {
         location: {locationText: '', coords: { latitude: 37.78825, longitude: -122.4324}},
         amount: 0,
+        minus: false,
         remark: '',
         yyyymmdd: Util.yyyymmdd(currentDate),
         hh: Util.hhmm(currentDate).substring(0,2),
@@ -53,6 +54,7 @@ class AddExpensesScreen extends DBUtil {
         expense_id: item.copy? '': item.expense_id,
         location: {locationText: item.locationText, coords: { latitude: item.latitude, longitude: item.longitude}},
         amount: item.amount || 0,
+        minus: Number(item.amount || 0) < 0,
         remark: item.remark || '',
         yyyymmdd: item.yyyymmdd,
         hh: item.hh,
@@ -171,18 +173,27 @@ class AddExpensesScreen extends DBUtil {
               onPress={()=>{this.amount && this.amount.focus()}} 
               style={[styles.column, {flex:1}]}>
               <Text style={[styles.inputTitleStyle, this.state.focus=='amount'? styles.inputTitleFocusStyle: null]}>비용</Text>
-              <View>
+              <View style={{flex:1, flexDirection: 'row', alignItems: 'center'}}>
+                <TouchableOpacity onPress={()=>{this.setState({minus: !this.state.minus})}}
+                  style={{marginLeft: 15, marginRight: 25}} >
+                  {
+                    this.state.minus
+                    ?<Icon.FontAwesome name={"minus"} size={20} />
+                    :<Icon.FontAwesome name={"plus"} size={20} />
+                  }
+                </TouchableOpacity>
                 <TextInput 
                   autoFocus={false}
                   style={[
                     styles.inputStyle, 
+                    {flex: 1},
                     this.state.focus=='amount'? styles.inputFocusStyle: null, {fontSize: 17, textAlign: 'right'}
                   ]}
                   onFocus={()=>this.setState({focus: 'amount'})}
                   onBlur={()=>this.setState({focus: ''})}
                   ref={(input)=>{this.amount=input}}
                   keyboardType="numeric"
-                  value={Util.comma(String(this.state.amount || ''))}
+                  value={Util.comma(String(this.state.amount || '').replace(/[^0-9]/g,''))}
                   onChangeText={(value)=>{
                     this.setState({
                       amount: Number(String(value || '').replace(/[^0-9]/g,''))
@@ -370,6 +381,14 @@ class AddExpensesScreen extends DBUtil {
           reverseGeocode.city,
           reverseGeocode.street,
           reverseGeocode.name].join(' ')
+    }
+
+    // amount minus
+    if(param.minus){
+      param.amount = Number('-'+param.amount)
+      if(isNaN(param.amount)){
+        param.amount = 0
+      }
     }
     if(!param.expense_id){
       this.insertTnExpense(param,
