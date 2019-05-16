@@ -1,5 +1,9 @@
 # Trip-Wallet
 
+- 1.0.6
+    - 마이너스 금액 입력 가능하도록 수정
+    - 최근 사용중인 여행기록이 있으면, 앱 구동과 동시에 이동
+
 ## build command
 ```bash
 $ expo build:android 

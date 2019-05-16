@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
-import { Picker, View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, ToastAndroid } from 'react-native'
+import { 
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert,
+  AsyncStorage,
+} from 'react-native'
 import { Icon, AppLoading } from 'expo'
 import DBUtil from '../components/database/DBUtil'
 import Loading from '../components/Loading'
@@ -19,7 +22,8 @@ class TripScreen extends DBUtil {
     this.state = {
       isReady: false,
       nationList: this.getNationList(),
-      tripList: []
+      tripList: [],
+      mounted: false
     }
   }
   
@@ -41,6 +45,7 @@ class TripScreen extends DBUtil {
         const nationList = this.state.nationList||[]
         this.setState({
           isReady: true,
+          rawTripList: (res.rows._array || []),
           tripList: (res.rows._array || []).reduce((entry, obj)=>{
             obj.requiredUri = (nationList.find((nation)=>nation.id==obj.nation_id) || {}).requiredUri
             if(entry[entry.length-1].length < 2){
@@ -86,8 +91,27 @@ class TripScreen extends DBUtil {
     this.props.navigation.navigate('Nation')
   }
 
-  render() {
+  mountedCheck= async ()=>{
+    // 최근 사용중인 여행기록이 있으면
+    if(!this.state.mounted){
+      try {
+        const recentTripId = await AsyncStorage.getItem('RECENT_TRIP_ID')
+        const tripExist = (this.state.rawTripList||[]).find((obj)=>{
+          return obj.trip_id == recentTripId
+        })
+        if (recentTripId && tripExist) {
+          this.setState({mounted: true})
+          this._selectTrip(tripExist)
+        }
+      } catch (error) {
+      }
+    }
+  }
+
+  render(){
     const data = this.state.tripList
+    this.mountedCheck()
+    
     return (
       <View style={{flex:1}}>
         {!this.state.isReady? <Loading />: null}

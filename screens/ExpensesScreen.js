@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   ViewPagerAndroid,
+  AsyncStorage,
   View
 } from 'react-native';
 import Expenses from '../components/expenses/Expenses'
@@ -23,6 +24,10 @@ class ExpensesScreen extends DBUtil {
 
   constructor(props){
     super(props)
+    try {
+      AsyncStorage.setItem('RECENT_TRIP_ID', String(props.trip_id))
+    } catch (error) {
+    }
     this.initTable()
     this.state = {
       isReady: false,

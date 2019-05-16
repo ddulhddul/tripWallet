@@ -7,7 +7,7 @@
     "platforms": [
       "android"
     ],
-    "version": "1.0.5",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/512x512_no_background.png",
     "splash": {
@@ -30,7 +30,7 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "versionCode": 48
+      "versionCode": 49
     },
     "description": "멋진 여행 가계부",
     "githubUrl": "https://github.com/ddulhddul/tripWallet"
