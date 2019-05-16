@@ -387,10 +387,12 @@ class AddExpensesScreen extends DBUtil {
 
     // amount minus
     if(param.minus){
-      param.amount = Number('-'+param.amount)
-      if(isNaN(param.amount)){
-        param.amount = 0
-      }
+      param.amount = Math.abs(Number(param.amount)) * -1
+    }else{
+      param.amount = Math.abs(Number(param.amount))
+    }
+    if(isNaN(param.amount)){
+      param.amount = 0
     }
     if(!param.expense_id){
       this.insertTnExpense(param,
