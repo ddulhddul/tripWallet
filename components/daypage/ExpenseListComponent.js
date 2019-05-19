@@ -5,6 +5,7 @@ import {
 } from 'react-native'
 import { Icon } from 'expo'
 import ExpenseComponent from './ExpenseComponent'
+import ExpenseSummary from '../expenses/ExpenseSummary'
 import Util from '../Util'
 import NoData from '../NoData'
 
@@ -61,7 +62,7 @@ class ExpenseListComponent extends Component {
   }
 
   render() {
-    const { search, showMap } = this.props
+    const { search, showMap, mapScreenTf } = this.props
     const { viewPagerKey, pageIndex } = this.state
     const sections = Object.assign([], this.props.sections || [])
     if(!sections || !sections.length) return <View style={{flex:1}}><NoData /></View>
@@ -127,6 +128,22 @@ class ExpenseListComponent extends Component {
                   <ScrollView>{
                     (sectionObj.data || []).map((obj, sectionIndex)=>{
                       if(showMap=='full') return undefined
+                      if(mapScreenTf){
+                        return (
+                          <TouchableOpacity 
+                            key={[obj.expense_id, sectionIndex].join('_')} 
+                            // delayLongPress={1500}  
+                            // onLongPress={()=>this._onDelete(obj)}
+                            onPress={()=>{
+                              if(this.props.onComponentSelected){
+                                this.props.onComponentSelected(obj)
+                              }
+                            }} 
+                            >
+                            <ExpenseSummary item={obj} />
+                          </TouchableOpacity>
+                        )
+                      }
                       return (
                         <ExpenseComponent 
                           key={[obj.expense_id, sectionIndex].join('_')} 

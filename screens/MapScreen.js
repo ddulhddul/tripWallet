@@ -194,6 +194,7 @@ class MapScreen extends DBUtil {
 
           <ExpenseListComponent 
             showMap={showMap}
+            mapScreenTf={true}
             search={()=>this.search()}
             onPageSelected={(thisSection={})=>this.setState({thisSection: thisSection})}
             onComponentSelected={(sectionData={})=>{
