@@ -133,6 +133,11 @@ class ExpenseListComponent extends Component {
                           // style={styles.smallContent}
                           search={()=>search()}
                           item={obj}
+                          onComponentSelected={(sectionData={})=>{
+                            if(this.props.onComponentSelected){
+                              this.props.onComponentSelected(sectionData)
+                            }
+                          }}
                           expandAll={this.state.expandAll && sections[pageIndex].yyyymmdd==obj.yyyymmdd}
                         ></ExpenseComponent>
                       )

@@ -24,7 +24,8 @@ class MapScreen extends DBUtil {
       showMap: true,
       thisSection: {},
       sections: [],
-      trip_id: ''
+      trip_id: '',
+      selectedMarkerKey: ''
     }
   }
 
@@ -118,6 +119,11 @@ class MapScreen extends DBUtil {
                   return (
                     <MapView.Marker
                       key={[JSON.stringify(sectionData),sectionIndex].join('_')}
+                      ref={(refs)=>this[`mapMarker_${sectionData.trip_id}_${sectionData.expense_id}`]=refs}
+                      // style={[
+                      //   (this.state.selectedMarkerKey == `mapMarker_${sectionData.trip_id}_${sectionData.expense_id}`)
+                      //   ? {zIndex: 1} : null
+                      // ]}
                       coordinate={{
                         latitude: sectionData.latitude, 
                         longitude: sectionData.longitude, 
@@ -190,6 +196,14 @@ class MapScreen extends DBUtil {
             showMap={showMap}
             search={()=>this.search()}
             onPageSelected={(thisSection={})=>this.setState({thisSection: thisSection})}
+            onComponentSelected={(sectionData={})=>{
+              const selectedMarkerKey = `mapMarker_${sectionData.trip_id}_${sectionData.expense_id}`
+              const thisMapMarker = this[selectedMarkerKey]
+              if(thisMapMarker){
+                thisMapMarker.showCallout()
+                // this.setState({selectedMarkerKey})
+              }
+            }}
             sections={sections}
             />
             

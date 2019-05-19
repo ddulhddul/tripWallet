@@ -51,7 +51,10 @@ class ExpenseComponent extends DBUtil {
     )    
   }
 
-  changeExpand(){
+  changeExpand(item={}){
+    if(this.props.onComponentSelected){
+      this.props.onComponentSelected(item)
+    }
     this.setState({
       expand: !this.state.expand
     })
@@ -66,7 +69,7 @@ class ExpenseComponent extends DBUtil {
         <TouchableWithoutFeedback 
             delayLongPress={1000}  
             onLongPress={()=>this._onDelete(item)}
-            onPress={()=>this.changeExpand()}>
+            onPress={()=>this.changeExpand(item)}>
           <View style={[styles.smallContent]}>
             <View style={{flex:1, flexDirection: 'column', marginLeft: 10}}>
               <View style={[{flexDirection: 'row', alignItems: 'center'}]}>
@@ -111,7 +114,7 @@ class ExpenseComponent extends DBUtil {
     }else{
       return (
         <View style={[styles.smallContent, {flexDirection: 'column'}]}>
-          <TouchableWithoutFeedback onPress={()=>this.changeExpand()}>
+          <TouchableWithoutFeedback onPress={()=>this.changeExpand(item)}>
             <View style={{flex:1}}>
               <View style={[{flexDirection: 'row', justifyContent: 'space-between'}]}>
                 <Text style={{fontSize: 15, marginTop: 5, fontWeight: 'bold'}}>{Util.comma(item.amount)} {this.props.amount_unit}</Text>
