@@ -7,7 +7,7 @@ import {
   TextInput,
   View
 } from 'react-native';
-import { Icon, MapView, Location, Permissions } from 'expo'
+import { Constants, Icon, MapView, Location, Permissions } from 'expo'
 import { withNavigation } from 'react-navigation'
 
 class UpdateMapScreen extends React.Component {
@@ -97,7 +97,9 @@ class UpdateMapScreen extends React.Component {
     const { location } = this.state
     return (
       <View style={{flex:1}}>
-        <View style={{marginTop: 30, marginBottom: 20}}>
+        <View style={{
+          marginTop: Constants.statusBarHeight + 5, 
+          marginBottom: 20}}>
           <TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
             <Icon.MaterialIcons size={40} name='arrow-back' color="black" />
           </TouchableOpacity>
@@ -239,7 +241,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 30,
+    paddingTop: Constants.statusBarHeight + 5,
     alignItems: 'center',
     justifyContent: 'center',
   },

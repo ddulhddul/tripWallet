@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Expenses from '../components/expenses/Expenses'
 import DayPage from '../components/daypage/DayPage'
-import { Icon } from 'expo'
+import { Icon, Constants } from 'expo'
 import DBUtil from '../components/database/DBUtil'
 import Loading from '../components/Loading'
 import NoData from '../components/NoData'
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 30
+    paddingTop: Constants.statusBarHeight + 5
   },
 
   // 총 사용금액

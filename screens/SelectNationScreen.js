@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, Image, ScrollView, TextInput, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import DBUtil, {getNationList} from '../components/database/DBUtil'
-import { AppLoading, Asset } from 'expo'
+import { AppLoading, Asset, Constants } from 'expo'
 
 export default class SelectNationScreen extends DBUtil {
   
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flex:1,
     marginLeft: 30,
     marginRight: 30,
-    marginTop: 40,
+    marginTop: Constants.statusBarHeight + 5,
   },
   
   searchInputContainer: {

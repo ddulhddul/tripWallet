@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { 
   Text, View, Dimensions, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, TouchableHighlight
 } from 'react-native'
-import { Icon, MapView } from 'expo'
+import { Icon, MapView, Constants } from 'expo'
 import DBUtil from '../components/database/DBUtil';
 import Loading from '../components/Loading';
 import Util from '../components/Util';
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 30
+    paddingTop: Constants.statusBarHeight + 5
   },
   plusIcon: {
     backgroundColor: 'white',

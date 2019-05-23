@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, TextInput, Image, ToastAndroid } from 'react-native'
 import DBUtil from '../components/database/DBUtil'
 import Util from '../components/Util'
+import { Constants } from 'expo'
 
 export default class NationScreen extends DBUtil {
   
@@ -63,7 +64,9 @@ export default class NationScreen extends DBUtil {
     const {nation, focus} = this.state
     return (
       <View style={{flex:1, justifyContent: 'center'}}>
-        <ScrollView style={{paddingLeft: 30, paddingRight: 30}}>
+        <ScrollView style={{
+          marginTop: Constants.statusBarHeight + 5,
+          paddingLeft: 30, paddingRight: 30}}>
           
           {(focus)? null:
             <View>
@@ -166,7 +169,7 @@ export default class NationScreen extends DBUtil {
 const styles = StyleSheet.create({
   header: {
     flex:1, 
-    marginTop: 50,
+    // marginTop: 50,
     justifyContent: 'center',
     alignItems: 'center',
   },

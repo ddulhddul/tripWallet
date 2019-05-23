@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, StyleSheet, ScrollView, View, Text, Alert } from 'react-native'
 import DBUtil from '../components/database/DBUtil'
 import Util from '../components/Util'
+import { Constants } from 'expo'
 
 export default class SettingsScreen extends DBUtil {
 
@@ -68,7 +69,9 @@ export default class SettingsScreen extends DBUtil {
   }
 
   render() {
-    return <View>
+    return <View style={{
+      marginTop: Constants.statusBarHeight + 5
+    }}>
       <ScrollView>
         <View style={styles.sectionTitleView}>
           <Text style={styles.sectionTitleText}>정보</Text>

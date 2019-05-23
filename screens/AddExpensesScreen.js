@@ -149,7 +149,9 @@ class AddExpensesScreen extends DBUtil {
 
     return (
       <View style={{flex:1}}>
-        <View style={{marginTop: 30, marginBottom: 30, flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{
+          marginTop: Constants.statusBarHeight + 5, 
+          marginBottom: 30, flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity 
             style={{justifyContent: 'center'}}
             onPress={()=>this.props.navigation.navigate('mainTabStack')}>
